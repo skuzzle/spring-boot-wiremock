@@ -16,15 +16,16 @@
 
     <properties>
         <coveralls.skip>false</coveralls.skip>
-        <maven.compiler.release>1.8</maven.compiler.release>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.release>11</maven.compiler.release>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
 
         <version.spring-boot>2.4.5</version.spring-boot>
         <version.wiremock>2.26.3</version.wiremock>
         <version.guava>28.2-jre</version.guava>
 
-        <site.name>restrict-imports-enforcer-rule</site.name>
-        <github.name>restrict-imports-enforcer-rule</github.name>
+        <site.name>spring-boot-wiremock</site.name>
+        <github.name>spring-boot-wiremock</github.name>
     </properties>
 
     <dependencyManagement>
