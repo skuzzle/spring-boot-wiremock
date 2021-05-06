@@ -1,5 +1,6 @@
 # spring-boot-wiremock
-(This is *not* an official extension from the Spring Team!)
+(This is **not** an official extension from the Spring Team!)
+
 The easiest way to setup a [WireMock](http://wiremock.org/) server in your Spring-Boot tests
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
@@ -12,7 +13,7 @@ configuration options but the most notable one is `injectHttpHostInto`.
 ```java
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "your.application.serviceUrl")
-public class WiremockInitializerTest {
+public class WiremockTest {
 
     @Value("${your.application.serviceUrl}")
     private String serviceUrl;
