@@ -18,7 +18,7 @@ pipeline {
     }
     stage('Create release branch') {
       steps {
-        sh 'mvn -B gitflow:release-start
+        sh 'mvn -B gitflow:release-start'
       }
     }
     stage('Verify release') {
