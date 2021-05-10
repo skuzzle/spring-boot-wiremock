@@ -9,6 +9,11 @@ import java.lang.annotation.Target;
 import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
 import org.springframework.test.context.ContextConfiguration;
 
+/**
+ * Configures a WireMock server that is integrated with the Spring ApplicationContext.
+ *
+ * @author Simon Taddiken
+ */
 @Retention(RUNTIME)
 @Target(TYPE)
 @ContextConfiguration(initializers = WiremockInitializer.class)
@@ -42,11 +47,14 @@ public @interface WithWiremock {
     @PropertyMapping(PROP_INJECT_HTTP_HOST_INTO)
     String injectHttpHostInto() default "";
 
+    /**
+     * Whether client authentication (via SSL client certificate) is required.
+     */
     @PropertyMapping(PROP_NEED_CLIENT_AUTH)
     boolean needClientAuth() default false;
 
     @PropertyMapping(PROP_KEYSTORE_PASSWORD)
-    String keystorePassword() default "changeit";
+    String keystorePassword() default "password";
 
     @PropertyMapping(PROP_KEYSTORE_LOCATION)
     String keystoreLocation() default "classpath:/certs/server_keystore.jks";
@@ -55,16 +63,16 @@ public @interface WithWiremock {
     String keystoreType() default "JKS";
 
     @PropertyMapping(PROP_TRUSTSTORE_PASSWORD)
-    String truststorePassword() default "";
+    String truststorePassword() default "password";
 
     @PropertyMapping(PROP_TRUSTSTORE_LOCATION)
-    String truststoreLocation() default "";
+    String truststoreLocation() default "classpath:/certs/server_truststore.jks";
 
     @PropertyMapping(PROP_TRUSTSTORE_TYPE)
     String truststoreType() default "JKS";
 
     /**
-     * Disable HTTP and only server HTTPS.
+     * Disable HTTP and only serves HTTPS.
      */
     @PropertyMapping(PROP_SSL_ONLY)
     boolean sslOnly() default false;
@@ -76,8 +84,8 @@ public @interface WithWiremock {
     int httpPort() default 0;
 
     /**
-     * Port for HTTPS. Use 0 for random port.
+     * Port for HTTPS. Use 0 for random port. Use -1 for disable HTTPS.
      */
     @PropertyMapping(PROP_HTTPS_PORT)
-    int httpsPort() default 0;
+    int httpsPort() default -1;
 }

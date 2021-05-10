@@ -1,5 +1,6 @@
 package de.skuzzle.springboot.test.wiremock;
 
+import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_HTTPS_PORT;
 import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_HTTP_PORT;
 import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_INJECT_HTTPS_HOST_INTO;
 import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_INJECT_HTTP_HOST_INTO;
@@ -28,7 +29,7 @@ import com.google.common.base.Preconditions;
  *
  * @author Simon Taddiken
  */
-class WiremockAnnotationProps {
+final class WiremockAnnotationProps {
 
     private final ResourceLoader resourceLoader;
     private final Environment environment;
@@ -51,8 +52,27 @@ class WiremockAnnotationProps {
         return getString(fromProperty(PROP_INJECT_HTTPS_HOST_INTO));
     }
 
-    public WireMockConfiguration createWiremockConfig() {
-        final boolean needClientAuth = getBoolean(fromProperty(PROP_NEED_CLIENT_AUTH));
+    public boolean needsClientAuth() {
+        return getBoolean(fromProperty(PROP_NEED_CLIENT_AUTH));
+    }
+
+    public int httpPort() {
+        return getInt(fromProperty(PROP_HTTP_PORT));
+    }
+
+    public int httpsPort() {
+        return getInt(fromProperty(PROP_HTTPS_PORT));
+    }
+
+    public boolean sslOnly() {
+        return getBoolean(fromProperty(PROP_SSL_ONLY));
+    }
+
+    WireMockConfiguration createWiremockConfig() {
+        final boolean needClientAuth = needsClientAuth();
+        final boolean sslOnly = sslOnly();
+        final int httpPort = httpPort();
+        final int httpsPort = httpsPort();
 
         final String keystoreLocation = getResource(fromProperty(PROP_KEYSTORE_LOCATION));
         final String keystorePassword = getString(fromProperty(PROP_KEYSTORE_PASSWORD));
@@ -61,10 +81,6 @@ class WiremockAnnotationProps {
         final String truststoreLocation = getResource(fromProperty(PROP_TRUSTSTORE_LOCATION));
         final String truststorePassword = getString(fromProperty(PROP_TRUSTSTORE_PASSWORD));
         final String truststoreType = getString(fromProperty(PROP_TRUSTSTORE_TYPE));
-
-        final boolean sslOnly = getBoolean(fromProperty(PROP_SSL_ONLY));
-        final int httpPort = getInt(fromProperty(PROP_HTTP_PORT));
-        final int httpsPort = getInt(fromProperty(PROP_HTTP_PORT));
 
         final WireMockConfiguration configuration = new WireMockConfiguration()
                 .needClientAuth(needClientAuth)

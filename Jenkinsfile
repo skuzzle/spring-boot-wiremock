@@ -1,8 +1,8 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3.6.1-jdk-11'
-      args '-v /home/jenkins/.m2:/var/maven/.m2 -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
+      image 'maven:3.6-jdk-11'
+      args '-v $HOME/.m2:/root/.m2 -v $HOME/.gnupg:/root/.gnupg -u 0:0'
     }
   }
   stages {

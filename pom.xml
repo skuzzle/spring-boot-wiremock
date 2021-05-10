@@ -24,6 +24,8 @@
         <version.wiremock>2.26.3</version.wiremock>
         <version.guava>28.2-jre</version.guava>
 
+        <version.gitflow-maven-plugin>1.16.0</version.gitflow-maven-plugin>
+
         <site.name>spring-boot-wiremock</site.name>
         <github.name>spring-boot-wiremock</github.name>
     </properties>
@@ -91,4 +93,34 @@
             </exclusions>
         </dependency>
     </dependencies>
+
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <property>
+                    <name>skuzzle.release</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.amashchenko.maven.plugin</groupId>
+                        <artifactId>gitflow-maven-plugin</artifactId>
+                        <version>${version.gitflow-maven-plugin}</version>
+                        <configuration>
+                            <indentSize>4</indentSize>
+                            <pushRemote>false</pushRemote>
+                            <fetchRemote>false</fetchRemote>
+                            <gitFlowConfig>
+                                <productionBranch>main</productionBranch>
+                                <developmentBranch>dev</developmentBranch>
+                            </gitFlowConfig>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

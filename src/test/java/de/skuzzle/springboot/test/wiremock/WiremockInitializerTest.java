@@ -16,7 +16,8 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "your.application.serviceUrl",
-        injectHttpsHostInto = "your.application.serviceUrlSsl")
+        injectHttpsHostInto = "your.application.serviceUrlSsl",
+        httpsPort = 0)
 public class WiremockInitializerTest {
 
     @Value("${your.application.serviceUrl}")

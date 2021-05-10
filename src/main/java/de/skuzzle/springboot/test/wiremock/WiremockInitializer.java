@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
@@ -12,6 +13,12 @@ import org.springframework.test.context.event.AfterTestExecutionEvent;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
+/**
+ * Sets up the WireMock server and integrates it with the Spring
+ * {@link ApplicationContext}.
+ *
+ * @author Simon Taddiken
+ */
 class WiremockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
     @Override
