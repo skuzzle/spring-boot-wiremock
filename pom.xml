@@ -145,9 +145,9 @@
                     <pushRemote>false</pushRemote>
                     <fetchRemote>false</fetchRemote>
                     <postReleaseGoals>deploy</postReleaseGoals>
-                    <argLine>-Prelease -B -Dgpg.passphrase=TBD</argLine>
                     <detail>true</detail>
                     <verbose>true</verbose>
+                    <skipTestProject>true</skipTestProject>
                     <gitFlowConfig>
                         <productionBranch>main</productionBranch>
                         <developmentBranch>dev</developmentBranch>
