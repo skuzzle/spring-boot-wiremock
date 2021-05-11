@@ -1,10 +1,18 @@
 # spring-boot-wiremock
 (This is **not** an official extension from the Spring Team!)
 
-The easiest way to setup a [WireMock](http://wiremock.org/) server in your Spring-Boot tests
+The easiest way to setup a [WireMock](http://wiremock.org/) server in your Spring-Boot tests with *JUnit5*
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
+
+```xml
+<dependency>
+    <groupId>de.skuzzle.springboot.test</groupId>
+    <artifactId>spring-boot-wiremock</artifactId>
+    <version>0.0.1</version>
+</dependency>
+```
 
 ## Quick start
 All you need to do is to add the `WithWiremock` annotation to your Spring-Boot test. The annotation has some 
@@ -33,3 +41,7 @@ public class WiremockTest {
 }
 ```
 
+## Changelog
+
+### Version 0.0.1
+* Initial prototype
