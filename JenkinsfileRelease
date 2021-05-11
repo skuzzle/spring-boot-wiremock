@@ -8,22 +8,28 @@ pipeline {
   environment {
     GPG_SECRET = credentials('gpg_password')
     GITHUB = credentials('Github-Username-Pw')
+    GIT_ASKPASS='./.git-askpass'
   }
   stages {
     stage ('Set Git Information') {
         steps {
-            sh 'git config --global user.email "simon.taddiken@gmail.com"'
-            sh 'git config --global user.name "Simon Taddiken"'
+            sh 'echo \'echo \$GITHUB_PSW\' > ./.git-askpass'
+            sh 'chmod +x ./.git-askpass'
+            sh 'git config url."https://api@github.com/".insteadOf "https://github.com/"'
+            sh 'git config url."https://ssh@github.com/".insteadOf "ssh://git@github.com/"'
+            sh 'git config url."https://git@github.com/".insteadOf "git@github.com:"'
+            sh 'git config user.email "simon.taddiken@gmail.com"'
+            sh 'git config user.name "Simon Taddiken"'
         }
     }
     stage('Create release branch') {
       steps {
-        sh 'mvn -B gitflow:release-start'
+        sh 'mvn -B -Prelease gitflow:release-start'
       }
     }
     stage('Verify release') {
       steps {
-        sh 'mvn -B -Prelease verify'
+        sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} verify'
       }
     }
     stage('Perform release') {
