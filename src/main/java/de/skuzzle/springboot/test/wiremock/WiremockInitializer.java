@@ -12,6 +12,7 @@ import org.springframework.test.context.event.AfterTestExecutionEvent;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.google.common.base.Preconditions;
 
 /**
  * Sets up the WireMock server and integrates it with the Spring
@@ -35,6 +36,7 @@ class WiremockInitializer implements ApplicationContextInitializer<ConfigurableA
         final WireMockConfiguration wiremockConfig = wiremockProps.createWiremockConfig();
         final WireMockServer wiremockServer = new WireMockServer(wiremockConfig);
         wiremockServer.start();
+        WireMockHolder.setServer(wiremockServer);
         return wiremockServer;
     }
 
@@ -43,14 +45,21 @@ class WiremockInitializer implements ApplicationContextInitializer<ConfigurableA
             WireMockServer wiremockServer) {
 
         final Map<String, String> props = new HashMap<>();
-        if (!wiremockServer.getOptions().getHttpDisabled()) {
+        final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
+        if (isHttpEnabled) {
             final String injectHttpPropertyName = wiremockProps.getInjectHttpHostPropertyName();
             final String httpHost = String.format("http://localhost:%d", wiremockServer.port());
             if (!injectHttpPropertyName.isEmpty()) {
                 props.put(injectHttpPropertyName, httpHost);
             }
         }
-        if (wiremockServer.getOptions().httpsSettings().enabled()) {
+        final boolean sslOnly = wiremockProps.sslOnly();
+        final boolean isHttpsEnabled = wiremockServer.getOptions().httpsSettings().enabled();
+        Preconditions.checkArgument(isHttpsEnabled || !sslOnly,
+                "WireMock configured for 'sslOnly' but with HTTPS disabled. Configure httpsPort with value >= 0");
+        Preconditions.checkArgument(isHttpEnabled || isHttpsEnabled,
+                "WireMock configured with disabled HTTP and disabled HTTPS. Please configure either httpPort or httpsPort with a value >= 0");
+        if (isHttpsEnabled) {
             final String injectHttpsPropertyName = wiremockProps.getInjectHttpsHostPropertyName();
             final String httpsHost = String.format("https://localhost:%d", wiremockServer.httpsPort());
             if (!injectHttpsPropertyName.isEmpty()) {
@@ -78,6 +87,7 @@ class WiremockInitializer implements ApplicationContextInitializer<ConfigurableA
             }
             if (applicationEvent instanceof ContextClosedEvent) {
                 wiremockServer.stop();
+                WireMockHolder.clearServer();
             }
         });
     }

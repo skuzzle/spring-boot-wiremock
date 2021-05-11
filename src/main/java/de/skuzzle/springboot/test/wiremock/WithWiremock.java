@@ -6,22 +6,28 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * Configures a WireMock server that is integrated with the Spring ApplicationContext.
+ * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
+ * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}.
  *
  * @author Simon Taddiken
  */
 @Retention(RUNTIME)
 @Target(TYPE)
+@ExtendWith(StubExtension.class)
 @ContextConfiguration(initializers = WiremockInitializer.class)
 @PropertyMapping(WithWiremock.PREFIX)
 public @interface WithWiremock {
     static final String PREFIX = "wiremock";
-    static final String PROP_INJECT_HTTPS_HOST_INTO = "injectHttpsHostInto";
     static final String PROP_INJECT_HTTP_HOST_INTO = "injectHttpHostInto";
+    static final String PROP_HTTP_PORT = "httpPort";
+    static final String PROP_INJECT_HTTPS_HOST_INTO = "injectHttpsHostInto";
+    static final String PROP_HTTPS_PORT = "httpsPort";
     static final String PROP_NEED_CLIENT_AUTH = "needClientAuth";
     static final String PROP_KEYSTORE_PASSWORD = "keystorePassword";
     static final String PROP_KEYSTORE_LOCATION = "keystoreLocation";
@@ -30,8 +36,6 @@ public @interface WithWiremock {
     static final String PROP_TRUSTSTORE_LOCATION = "truststoreLocation";
     static final String PROP_TRUSTSTORE_TYPE = "truststoreType";
     static final String PROP_SSL_ONLY = "sslOnly";
-    static final String PROP_HTTP_PORT = "httpPort";
-    static final String PROP_HTTPS_PORT = "httpsPort";
 
     /**
      * The name of the application property that will be added and contain the wiremock's
