@@ -6,7 +6,7 @@ pipeline {
     }
   }
   environment {
-    GITHUB = credentials('Github-Username-Pw')
+    COVERALLS_REPO_TOKEN = credentials('coveralls_repo_token_spring_boot_wiremock')
     GPG_SECRET = credentials('gpg_password')
   }
   stages {
@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Coverage') {
       steps {
-        sh 'mvn -B jacoco:report jacoco:report-integration coveralls:report -DrepoToken=$GITHUB_PSW'
+        sh 'mvn -B jacoco:report jacoco:report-integration coveralls:report -DrepoToken=$COVERALLS_REPO_TOKEN'
       }
     }
     stage('javadoc') {
