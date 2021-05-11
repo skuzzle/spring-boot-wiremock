@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        sh 'mvn -B clean verify jacoco:report jacoco:report-integration coveralls:report'
+        sh 'mvn -B clean verify'
       }
     }
     stage('Coverage') {
