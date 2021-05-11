@@ -7,7 +7,4 @@ cache:
   - $HOME/.m2
   
 script:
-  - mvn -B clean package 
-  
-after_success:
-  - mvn -B clean verify jacoco:report jacoco:report-integration coveralls:report
+  - mvn -B clean verify 

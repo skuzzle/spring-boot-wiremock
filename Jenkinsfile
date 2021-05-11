@@ -6,12 +6,18 @@ pipeline {
     }
   }
   environment {
+    GITHUB = credentials('Github-Username-Pw')
     GPG_SECRET = credentials('gpg_password')
   }
   stages {
     stage('Build') {
       steps {
-        sh 'mvn -B clean verify'
+        sh 'mvn -B clean verify jacoco:report jacoco:report-integration coveralls:report'
+      }
+    }
+    stage('Coverage') {
+      steps {
+        sh 'mvn -B jacoco:report jacoco:report-integration coveralls:report -DrepoToken=$GITHUB_PSW'
       }
     }
     stage('javadoc') {
