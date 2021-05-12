@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "mockHost")
-public class TestSimpleStub {
+public class TestHttpStub {
 
     @Value("${mockHost}")
     private String mockHost;
@@ -26,8 +26,11 @@ public class TestSimpleStub {
     @HttpStub(
             onRequest = @Request(
                     withMethod = "POST",
-                    toUrl = "/endpoint",
-                    containingHeaders = "Request-Header=value"),
+                    toUrlPath = "/endpoint",
+                    withQueryParameters = "param=matching:[a-z]+",
+                    containingHeaders = "Request-Header=eq:value",
+                    containingCookies = "sessionId=containing:123456",
+                    withBody = "containing:Just a body"),
             authenticatedBy = @Auth(
                     basicAuthUsername = "username",
                     basicAuthPassword = "password"),
@@ -36,12 +39,15 @@ public class TestSimpleStub {
                     withBody = "Hello World",
                     withContentType = "application/text",
                     withHeaders = "Response-Header=value"))
-    void testSimpleStubWithBasicAuth_Body_ContentType_And_Headers() {
+    void testSimpleStubWithBasicAuth_Body_ContentType_Cookie_QueryParam_And_Headers() {
+        final RequestEntity<String> request = RequestEntity.post("/endpoint?param=abc")
+                .header("Request-Header", "value")
+                .header("Cookie", "sessionId=1234567890")
+                .body("Just a body");
         final ResponseEntity<String> response = client()
                 .basicAuthentication("username", "password")
-                .defaultHeader("Request-Header", "value")
                 .build()
-                .postForEntity("/endpoint", null, String.class);
+                .exchange(request, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody()).isEqualTo("Hello World");
         assertThat(response.getHeaders().get("Content-Type")).containsOnly("application/text");

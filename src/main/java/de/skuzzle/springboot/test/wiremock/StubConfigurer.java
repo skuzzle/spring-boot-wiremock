@@ -13,12 +13,6 @@ class StubConfigurer {
     }
 
     private static MappingBuilder annotation(HttpStub stub) {
-        final UrlPattern urlPattern = UrlPattern.fromOneOf(
-                nullIfEmpty(stub.onRequest().toUrl()),
-                nullIfEmpty(stub.onRequest().toUrlPattern()),
-                nullIfEmpty(stub.onRequest().toUrlPath()),
-                nullIfEmpty(stub.onRequest().toUrlPathPattern()));
-
         final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
                 .withStatus(stub.respond().withStatus().value());
 
@@ -45,11 +39,27 @@ class StubConfigurer {
             responseBuilder.withHeader("Content-Type", responseContentType);
         }
 
+        final UrlPattern urlPattern = UrlPattern.fromOneOf(
+                nullIfEmpty(stub.onRequest().toUrl()),
+                nullIfEmpty(stub.onRequest().toUrlPattern()),
+                nullIfEmpty(stub.onRequest().toUrlPath()),
+                nullIfEmpty(stub.onRequest().toUrlPathPattern()));
+
         final MappingBuilder requestBuilder = WireMock.request(stub.onRequest().withMethod(), urlPattern);
         final String[] requestHeaders = stub.onRequest().containingHeaders();
         for (final String headerAndValue : requestHeaders) {
             final String[] parts = headerAndValue.split("=", 2);
-            requestBuilder.withHeader(parts[0], WireMock.equalTo(parts[1]));
+            requestBuilder.withHeader(parts[0], StringValuePatterns.parseFromPrefix(parts[1]));
+        }
+        final String[] queryParams = stub.onRequest().withQueryParameters();
+        for (final String paramAndValue : queryParams) {
+            final String[] parts = paramAndValue.split("=", 2);
+            requestBuilder.withQueryParam(parts[0], StringValuePatterns.parseFromPrefix(parts[1]));
+        }
+        final String[] cookies = stub.onRequest().containingCookies();
+        for (final String cookieAndValue : cookies) {
+            final String[] parts = cookieAndValue.split("=", 2);
+            requestBuilder.withCookie(parts[0], StringValuePatterns.parseFromPrefix(parts[1]));
         }
 
         final String basicAuthUsername = nullIfEmpty(stub.authenticatedBy().basicAuthUsername());
@@ -60,6 +70,11 @@ class StubConfigurer {
         final String bearerToken = nullIfEmpty(stub.authenticatedBy().bearerToken());
         if (bearerToken != null) {
             requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
+        }
+
+        final String requestBody = nullIfEmpty(stub.onRequest().withBody());
+        if (requestBody != null) {
+            requestBuilder.withRequestBody(StringValuePatterns.parseFromPrefix(requestBody));
         }
         return requestBuilder.willReturn(responseBuilder);
     }

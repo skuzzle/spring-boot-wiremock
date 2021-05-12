@@ -67,6 +67,8 @@ extension works out of the box with your current context configuration.
 ### Version 0.0.3
 * Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
 * `HttpStatus` enum is now used for defining the stubbed response status
+* Match any HTTP method by default
+* Allow to define different matchers for params, cookies, headers and body using prefixes like `eq:` or `containing:`
 
 ### Version 0.0.2
 * Support multiple `@SimpleStub` instances per test method
