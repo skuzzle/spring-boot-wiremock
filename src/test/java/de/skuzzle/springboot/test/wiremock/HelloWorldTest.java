@@ -22,11 +22,11 @@ public class HelloWorldTest {
     }
 
     @Test
-    @SimpleStub(
-            request = @Request(method = "POST"),
-            response = @Response(
-                    status = 201, body = "{\"value\": \"Hello World\"}",
-                    contentType = "application/json"))
+    @HttpStub(
+            onRequest = @Request(withMethod = "POST"),
+            respond = @Response(
+                    withStatus = HttpStatus.CREATED, withBody = "{\"value\": \"Hello World\"}",
+                    withContentType = "application/json"))
     void testCallWiremockWithRestTemplate() throws Exception {
         final ResponseEntity<HelloWorld> response = client()
                 .build()

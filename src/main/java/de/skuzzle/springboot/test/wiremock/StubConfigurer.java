@@ -8,23 +8,23 @@ import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
 class StubConfigurer {
 
-    static void configureStubOn(WireMockServer wiremock, SimpleStub annotation) {
+    static void configureStubOn(WireMockServer wiremock, HttpStub annotation) {
         wiremock.stubFor(annotation(annotation));
     }
 
-    private static MappingBuilder annotation(SimpleStub stub) {
+    private static MappingBuilder annotation(HttpStub stub) {
         final UrlPattern urlPattern = UrlPattern.fromOneOf(
-                nullIfEmpty(stub.request().url()),
-                nullIfEmpty(stub.request().urlPattern()),
-                nullIfEmpty(stub.request().urlPath()),
-                nullIfEmpty(stub.request().urlPathPattern()));
+                nullIfEmpty(stub.onRequest().toUrl()),
+                nullIfEmpty(stub.onRequest().toUrlPattern()),
+                nullIfEmpty(stub.onRequest().toUrlPath()),
+                nullIfEmpty(stub.onRequest().toUrlPathPattern()));
 
         final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
-                .withStatus(stub.response().status());
+                .withStatus(stub.respond().withStatus().value());
 
-        final String body = nullIfEmpty(stub.response().body());
-        final String bodyBase64 = nullIfEmpty(stub.response().bodyBase64());
-        final String bodyFile = nullIfEmpty(stub.response().bodyFile());
+        final String body = nullIfEmpty(stub.respond().withBody());
+        final String bodyBase64 = nullIfEmpty(stub.respond().withBodyBase64());
+        final String bodyFile = nullIfEmpty(stub.respond().withBodyFile());
 
         if (body != null) {
             responseBuilder.withBody(body);
@@ -34,30 +34,30 @@ class StubConfigurer {
             responseBuilder.withBodyFile(bodyFile);
         }
 
-        final String[] responseHeaders = stub.response().headers();
+        final String[] responseHeaders = stub.respond().withHeaders();
         for (final String headerAndValue : responseHeaders) {
             final String[] parts = headerAndValue.split("=", 2);
             responseBuilder.withHeader(parts[0], parts[1]);
         }
 
-        final String responseContentType = nullIfEmpty(stub.response().contentType());
+        final String responseContentType = nullIfEmpty(stub.respond().withContentType());
         if (responseContentType != null) {
             responseBuilder.withHeader("Content-Type", responseContentType);
         }
 
-        final MappingBuilder requestBuilder = WireMock.request(stub.request().method(), urlPattern);
-        final String[] requestHeaders = stub.request().headers();
+        final MappingBuilder requestBuilder = WireMock.request(stub.onRequest().withMethod(), urlPattern);
+        final String[] requestHeaders = stub.onRequest().containingHeaders();
         for (final String headerAndValue : requestHeaders) {
             final String[] parts = headerAndValue.split("=", 2);
             requestBuilder.withHeader(parts[0], WireMock.equalTo(parts[1]));
         }
 
-        final String basicAuthUsername = nullIfEmpty(stub.auth().basicAuthUsername());
-        final String basicAuthPassword = nullIfEmpty(stub.auth().basicAuthPassword());
+        final String basicAuthUsername = nullIfEmpty(stub.authenticatedBy().basicAuthUsername());
+        final String basicAuthPassword = nullIfEmpty(stub.authenticatedBy().basicAuthPassword());
         if (basicAuthUsername != null && basicAuthPassword != null) {
             requestBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
         }
-        final String bearerToken = nullIfEmpty(stub.auth().bearerToken());
+        final String bearerToken = nullIfEmpty(stub.authenticatedBy().bearerToken());
         if (bearerToken != null) {
             requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
         }

@@ -17,15 +17,15 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  *
  * @author Simon Taddiken
  */
-@Repeatable(SimpleStubs.class)
+@Repeatable(HttpStubs.class)
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
-public @interface SimpleStub {
+public @interface HttpStub {
 
-    Request request() default @Request;
+    Request onRequest() default @Request;
 
-    Response response() default @Response;
+    Auth authenticatedBy() default @Auth;
 
-    Auth auth() default @Auth;
+    Response respond() default @Response;
 
 }

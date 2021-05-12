@@ -44,7 +44,7 @@ public class WiremockTest {
     }
     
     @Test
-    @SimpleStub(request = @Request(method = "GET"), response = @Response(status = 200))
+    @HttpStub(onRequest = @Request(withMethod = "GET"), respond = @Response(withStatus = HttpStatus.OK))
     void testWithSimpleStub() throws Exception {
         final ResponseEntity<Object> response = new RestTemplateBuilder()
                 .rootUri(serviceUrl)
@@ -65,7 +65,8 @@ extension works out of the box with your current context configuration.
 ## Changelog
 
 ### Version 0.0.3
-* Split `SimpleStub` configuration into multiple annotations
+* Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
+* `HttpStatus` enum is now used for defining the stubbed response status
 
 ### Version 0.0.2
 * Support multiple `@SimpleStub` instances per test method

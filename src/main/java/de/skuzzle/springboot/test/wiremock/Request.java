@@ -8,20 +8,20 @@ import java.lang.annotation.Retention;
 public @interface Request {
 
     /** Request method for this stub. Defaults to GET. */
-    String method() default "GET";
+    String withMethod() default "GET";
 
     /**
-     * The URL for this stub. Mutual exclusive to {@link #urlPattern()},
-     * {@link #urlPath()} and {@link #urlPathPattern()}. If not specified, every url will
+     * The URL for this stub. Mutual exclusive to {@link #toUrlPattern()},
+     * {@link #toUrlPath()} and {@link #toUrlPathPattern()}. If not specified, every url will
      * be matched.
      */
-    String url() default "";
+    String toUrl() default "";
 
-    String urlPattern() default "";
+    String toUrlPattern() default "";
 
-    String urlPath() default "";
+    String toUrlPath() default "";
 
-    String urlPathPattern() default "";
+    String toUrlPathPattern() default "";
 
-    String[] headers() default {};
+    String[] containingHeaders() default {};
 }

@@ -42,7 +42,7 @@ public class WireMockInitializerHttpsTest {
     }
 
     @Test
-    @SimpleStub
+    @HttpStub
     void testCallWiremockWithRestTemplate() throws Exception {
         final ResponseEntity<String> response = client()
                 .build()

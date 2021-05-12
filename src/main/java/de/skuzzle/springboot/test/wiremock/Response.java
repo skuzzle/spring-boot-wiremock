@@ -4,39 +4,41 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import org.springframework.http.HttpStatus;
+
 @Retention(RUNTIME)
 public @interface Response {
 
-    /** The HTTP status of the response. Defaults to 200 */
-    int status() default 200;
+    /** The HTTP status of the response. Defaults to {@link HttpStatus#OK}. */
+    HttpStatus withStatus() default HttpStatus.OK;
 
     /**
-     * The body of the response. Mutual exclusive to {@link #bodyBase64()} and
-     * {@link #bodyFile()}. Defaults to 'no body'.
+     * The body of the response. Mutual exclusive to {@link #withBodyBase64()} and
+     * {@link #withBodyFile()}. Defaults to 'no body'.
      */
-    String body() default "";
+    String withBody() default "";
 
     /**
-     * The body of the response. Mutual exclusive to {@link #body()} and
-     * {@link #bodyFile()}. Defaults to 'no body'.
+     * The body of the response. Mutual exclusive to {@link #withBody()} and
+     * {@link #withBodyFile()}. Defaults to 'no body'.
      */
-    String bodyBase64() default "";
+    String withBodyBase64() default "";
 
     /**
-     * The body of the response. Mutual exclusive to {@link #body()} and
-     * {@link #bodyBase64()}. Defaults to 'no body'.
+     * The body of the response. Mutual exclusive to {@link #withBody()} and
+     * {@link #withBodyBase64()}. Defaults to 'no body'.
      */
-    String bodyFile() default "";
+    String withBodyFile() default "";
 
     /**
      * Content-Type for the response. If configured, this value takes precedence if
-     * {@code "Content-Type"} is also configured using {@link #headers()}.
+     * {@code "Content-Type"} is also configured using {@link #withHeaders()}.
      */
-    String contentType() default "";
+    String withContentType() default "";
 
     /**
      * Headers that will be added to the response. Specify pairs like
      * {@code "Content-Type=application/json"}
      */
-    String[] headers() default {};
+    String[] withHeaders() default {};
 }
