@@ -8,14 +8,14 @@ import java.lang.annotation.Retention;
 public @interface Auth {
 
     /**
-     * Required basic auth user name. Only take into consideration if
+     * Required basic auth user name. Only taken into consideration if
      * {@link #basicAuthPassword()} is also configured. Mutual exclusive to
      * {@link #bearerToken()}.
      */
     String basicAuthUsername() default "";
 
     /**
-     * Required basic auth user password. Only take into consideration if
+     * Required basic auth user password. Only taken into consideration if
      * {@link #basicAuthUsername()} is also configured. Mutual exclusive to
      * {@link #bearerToken()}.
      */
