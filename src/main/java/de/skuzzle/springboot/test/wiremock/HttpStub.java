@@ -24,8 +24,6 @@ public @interface HttpStub {
 
     Request onRequest() default @Request;
 
-    Auth authenticatedBy() default @Auth;
-
     Response respond() default @Response;
 
 }

@@ -62,12 +62,12 @@ class StubTranslator {
             requestBuilder.withCookie(parts[0], StringValuePatterns.parseFromPrefix(parts[1]));
         }
 
-        final String basicAuthUsername = nullIfEmpty(stub.authenticatedBy().basicAuthUsername());
-        final String basicAuthPassword = nullIfEmpty(stub.authenticatedBy().basicAuthPassword());
+        final String basicAuthUsername = nullIfEmpty(stub.onRequest().authenticatedBy().basicAuthUsername());
+        final String basicAuthPassword = nullIfEmpty(stub.onRequest().authenticatedBy().basicAuthPassword());
         if (basicAuthUsername != null && basicAuthPassword != null) {
             requestBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
         }
-        final String bearerToken = nullIfEmpty(stub.authenticatedBy().bearerToken());
+        final String bearerToken = nullIfEmpty(stub.onRequest().authenticatedBy().bearerToken());
         if (bearerToken != null) {
             requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
         }

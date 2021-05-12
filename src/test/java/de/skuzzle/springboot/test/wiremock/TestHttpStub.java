@@ -30,10 +30,10 @@ public class TestHttpStub {
                     withQueryParameters = "param=matching:[a-z]+",
                     containingHeaders = "Request-Header=eq:value",
                     containingCookies = "sessionId=containing:123456",
-                    withBody = "containing:Just a body"),
-            authenticatedBy = @Auth(
-                    basicAuthUsername = "username",
-                    basicAuthPassword = "password"),
+                    withBody = "containing:Just a body",
+                    authenticatedBy = @Auth(
+                            basicAuthUsername = "username",
+                            basicAuthPassword = "password")),
             respond = @Response(
                     withStatus = HttpStatus.CREATED,
                     withBody = "Hello World",
@@ -55,7 +55,7 @@ public class TestHttpStub {
     }
 
     @Test
-    @HttpStub(authenticatedBy = @Auth(bearerToken = "valid-token"))
+    @HttpStub(onRequest = @Request(authenticatedBy = @Auth(bearerToken = "valid-token")))
     void testBearerAuth() {
         final RequestEntity<Void> requestEntity = RequestEntity.get("/")
                 .header("Authorization", "bearer Valid-Token")

@@ -14,6 +14,10 @@ public @interface Request {
      * The URL for this stub. Mutual exclusive to {@link #toUrlPattern()},
      * {@link #toUrlPath()} and {@link #toUrlPathPattern()}. If not specified, every url
      * will be matched.
+     * <p>
+     * Warning: Using {@link #toUrl()} in combination with {@link #withQueryParameters()}
+     * will effectively result in a conflicting stub definition that will never match. Use
+     * {@link #toUrlPath()} instead.
      */
     String toUrl() default "";
 
@@ -23,6 +27,11 @@ public @interface Request {
 
     String toUrlPathPattern() default "";
 
+    /**
+     * The expected body to match. You can optionally prefix the string with a matching
+     * operator like {@code containing:} or {@code matching:} By default, matches every
+     * body.
+     */
     String withBody() default "";
 
     String[] containingHeaders() default {};
@@ -35,4 +44,6 @@ public @interface Request {
      * https://github.com/tomakehurst/wiremock/issues/1262
      */
     String[] withQueryParameters() default {};
+
+    Auth authenticatedBy() default @Auth;
 }
