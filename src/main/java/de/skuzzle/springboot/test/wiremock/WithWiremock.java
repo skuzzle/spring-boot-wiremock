@@ -6,9 +6,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
@@ -16,11 +16,14 @@ import org.springframework.test.context.ContextConfiguration;
  * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}.
  *
  * @author Simon Taddiken
+ * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
+ *           configured values of the annotation instance accessible from the
+ *           {@link WireMockInitializer}. The {@link WiremockAnnotationProps} class can be
+ *           used to read the configured values from the {@link ApplicationContext}.
  */
 @Retention(RUNTIME)
 @Target(TYPE)
-@ExtendWith(StubExtension.class)
-@ContextConfiguration(initializers = WiremockInitializer.class)
+@ContextConfiguration(initializers = WireMockInitializer.class)
 @PropertyMapping(WithWiremock.PREFIX)
 public @interface WithWiremock {
     static final String PREFIX = "wiremock";
@@ -52,7 +55,10 @@ public @interface WithWiremock {
     String injectHttpHostInto() default "";
 
     /**
-     * Whether client authentication (via SSL client certificate) is required.
+     * Whether client authentication (via SSL client certificate) is required. When
+     * {@link #truststoreLocation()} is not configured then the mock server trusts the
+     * single certificate that can be retrieved using
+     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE}.
      */
     @PropertyMapping(PROP_NEED_CLIENT_AUTH)
     boolean needClientAuth() default false;

@@ -10,28 +10,58 @@ import java.security.cert.CertificateException;
 
 import com.google.common.io.Resources;
 
+/**
+ * Holds the locations for the default key- and truststores that are used for mock SSL
+ * connections. These certificates can be used if no custom key- or truststore have been
+ * configured in your test.
+ * <p>
+ * <b>Never use any of these in production.</b>
+ *
+ * @author Simon Taddiken
+ */
 public final class TestKeystores {
 
     private TestKeystores() {
     }
 
+    /**
+     * A keystore containing a client certificate that is considered valid by the mock
+     * server.
+     */
     public static final KeystoreLocation TEST_CLIENT_CERTIFICATE = new KeystoreLocation(
-            "/certs/client_keystore.pkcs12",
+            "certs/client_keystore.pkcs12",
             "password",
             "PKCS12");
+    /**
+     * A truststore for trusting the client certificate contained in
+     * {@link #TEST_CLIENT_CERTIFICATE}.
+     */
     public static final KeystoreLocation TEST_CLIENT_CERTIFICATE_TRUST = new KeystoreLocation(
-            "/certs/server_truststore.jks",
+            "certs/server_truststore.jks",
             "password",
             "JKS");
+    /**
+     * A keystore containing a self signed server certificate which is used by the mock.
+     */
     public static final KeystoreLocation TEST_SERVER_CERTIFICATE = new KeystoreLocation(
-            "/certs/server_keystore.jks",
-            "password",
-            "JKS");
-    public static final KeystoreLocation TEST_SERVER_CERTIFICATE_TRUST = new KeystoreLocation(
-            "/certs/client_truststore.jks",
+            "certs/server_keystore.jks",
             "password",
             "JKS");
 
+    /**
+     * A truststore for trusting the self signed server certificate contained in
+     * {@link #TEST_SERVER_CERTIFICATE}
+     */
+    public static final KeystoreLocation TEST_SERVER_CERTIFICATE_TRUST = new KeystoreLocation(
+            "certs/client_truststore.jks",
+            "password",
+            "JKS");
+
+    /**
+     * Information about a test keystore.
+     *
+     * @author Simon Taddiken
+     */
     public static final class KeystoreLocation {
         private final String classpathLocation;
         private final String password;
@@ -49,6 +79,14 @@ public final class TestKeystores {
 
         public String getLocation() {
             return toURL().toString();
+        }
+
+        public String getPassword() {
+            return this.password;
+        }
+
+        public String getType() {
+            return this.type;
         }
 
         public KeyStore getKeystore() {

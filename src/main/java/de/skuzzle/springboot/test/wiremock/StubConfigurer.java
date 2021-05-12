@@ -1,30 +1,18 @@
 package de.skuzzle.springboot.test.wiremock;
 
-import java.lang.reflect.Method;
-
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
-class StubExtension implements BeforeEachCallback {
+class StubConfigurer {
 
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-        final Method method = context.getRequiredTestMethod();
-        final SimpleStub stub = method.getAnnotation(SimpleStub.class);
-        if (stub == null) {
-            return;
-        }
-        final WireMockServer wireMockServer = WireMockHolder.getServer();
-        wireMockServer.stubFor(annotation(stub));
+    static void configureStubOn(WireMockServer wiremock, SimpleStub annotation) {
+        wiremock.stubFor(annotation(annotation));
     }
 
-    private MappingBuilder annotation(SimpleStub stub) {
+    private static MappingBuilder annotation(SimpleStub stub) {
         final UrlPattern urlPattern = UrlPattern.fromOneOf(
                 nullIfEmpty(stub.url()),
                 nullIfEmpty(stub.urlPattern()),
@@ -46,16 +34,31 @@ class StubExtension implements BeforeEachCallback {
             responseBuilder.withBodyFile(bodyFile);
         }
 
+        final String[] responseHeaders = stub.responseHeaders();
+        for (final String headerAndValue : responseHeaders) {
+            final String[] parts = headerAndValue.split("=", 2);
+            responseBuilder.withHeader(parts[0], parts[1]);
+        }
+
         final String responseContentType = nullIfEmpty(stub.responseContentType());
         if (responseContentType != null) {
             responseBuilder.withHeader("Content-Type", responseContentType);
         }
 
-        return WireMock.request(stub.method(), urlPattern)
-                .willReturn(responseBuilder);
+        final MappingBuilder requestBuilder = WireMock.request(stub.method(), urlPattern);
+        final String basicAuthUsername = nullIfEmpty(stub.basicAuthUsername());
+        final String basicAuthPassword = nullIfEmpty(stub.basicAuthPassword());
+        if (basicAuthUsername != null && basicAuthPassword != null) {
+            requestBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
+        }
+        final String bearerToken = nullIfEmpty(stub.bearerToken());
+        if (bearerToken != null) {
+            requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
+        }
+        return requestBuilder.willReturn(responseBuilder);
     }
 
-    private String nullIfEmpty(String s) {
+    private static String nullIfEmpty(String s) {
         return s == null || s.isEmpty() ? null : s;
     }
 }

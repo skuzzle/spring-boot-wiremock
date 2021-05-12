@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.enforcer/restrict-imports-enforcer-rule)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -14,7 +14,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/) server in your Sprin
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ public class WiremockTest {
     private WireMockServer wiremock;
 
     @Test
-    void testCallWiremockWithRestTemplate() throws Exception {
+    void testWithExplicitStub() throws Exception {
         wiremock.stubFor(WireMock.get("/")
                 .willReturn(aResponse().withStatus(200)));
         final ResponseEntity<Object> response = new RestTemplateBuilder()
@@ -42,10 +42,32 @@ public class WiremockTest {
                 .getForEntity("/", Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    
+    @Test
+    @SimpleStub(method = "GET", status = 200)
+    void testWithSimpleStub() throws Exception {
+        final ResponseEntity<Object> response = new RestTemplateBuilder()
+                .rootUri(serviceUrl)
+                .build()
+                .getForEntity("/", Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
 ```
+Injecting the host into the application context happens _before_ any bean instances are created. Also the injected 
+property values takes precedence over any other, for example statically configured value. This means, in most cases the 
+extension works out of the box with your current context configuration.
+
+## Compatibility
+- [x] Requires Java 11
+- [x] Tested against Spring-Boot `2.4.5`
 
 ## Changelog
+
+### Version 0.0.2
+* Support multiple `@SimpleStub` instances per test method
+* Allow to stub authentication and response headers via `@SimpleStub`
+* Fix bug with unresolvable test keystore locations
 
 ### Version 0.0.1
 * Initial prototype
