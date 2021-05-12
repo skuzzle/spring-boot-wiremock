@@ -88,7 +88,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
                 final HttpStub[] stubs = e.getTestContext().getTestMethod().getAnnotationsByType(HttpStub.class);
-                Arrays.stream(stubs).forEach(stub -> StubConfigurer.configureStubOn(wiremockServer, stub));
+                Arrays.stream(stubs).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {
                 wiremockServer.resetAll();

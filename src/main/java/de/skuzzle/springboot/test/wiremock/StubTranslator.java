@@ -6,7 +6,7 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 
-class StubConfigurer {
+class StubTranslator {
 
     static void configureStubOn(WireMockServer wiremock, HttpStub annotation) {
         wiremock.stubFor(annotation(annotation));
