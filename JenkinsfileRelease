@@ -11,16 +11,26 @@ pipeline {
     GIT_ASKPASS='./.git-askpass'
   }
   stages {
-    stage ('Set Git Information') {
-        steps {
-            sh 'echo \'echo \$GITHUB_PSW\' > ./.git-askpass'
-            sh 'chmod +x ./.git-askpass'
-            sh 'git config url."https://api@github.com/".insteadOf "https://github.com/"'
-            sh 'git config url."https://ssh@github.com/".insteadOf "ssh://git@github.com/"'
-            sh 'git config url."https://git@github.com/".insteadOf "git@github.com:"'
-            sh 'git config user.email "simon.taddiken@gmail.com"'
-            sh 'git config user.name "Simon Taddiken"'
+    stage ('Ensure dev branch') {
+      when {
+        expression {
+            return env.BRANCH_NAME != 'dev';
         }
+      }
+      steps {
+        error("Releasing is only possible from dev branch")
+      }
+    }
+    stage ('Set Git Information') {
+      steps {
+        sh 'echo \'echo \$GITHUB_PSW\' > ./.git-askpass'
+        sh 'chmod +x ./.git-askpass'
+        sh 'git config url."https://api@github.com/".insteadOf "https://github.com/"'
+        sh 'git config url."https://ssh@github.com/".insteadOf "ssh://git@github.com/"'
+        sh 'git config url."https://git@github.com/".insteadOf "git@github.com:"'
+        sh 'git config user.email "simon.taddiken@gmail.com"'
+        sh 'git config user.name "Simon Taddiken"'
+      }
     }
     stage('Create release branch') {
       steps {
