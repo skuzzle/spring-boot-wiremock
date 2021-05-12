@@ -13,7 +13,7 @@
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
 
     <name>SpringBoot WireMock</name>
-    <description>Easiyl set up WireMock in your SpringBoot tests</description>
+    <description>Easily set up WireMock in your SpringBoot tests</description>
 
     <properties>
         <coveralls.skip>false</coveralls.skip>

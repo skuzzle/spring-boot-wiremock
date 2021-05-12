@@ -11,17 +11,21 @@ import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "serviceUrl")
-public class WiremockInitializerTest {
+public class HelloWorldTest {
 
     @Value("${serviceUrl}")
     private String serviceUrl;
+
+    private RestTemplateBuilder client() {
+        return new RestTemplateBuilder()
+                .rootUri(serviceUrl);
+    }
 
     @Test
     @SimpleStub(method = "POST", status = 201, body = "{\"value\": \"Hello World\"}",
             responseContentType = "application/json")
     void testCallWiremockWithRestTemplate() throws Exception {
-        final ResponseEntity<HelloWorld> response = new RestTemplateBuilder()
-                .rootUri(serviceUrl)
+        final ResponseEntity<HelloWorld> response = client()
                 .build()
                 .postForEntity("/", null, HelloWorld.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);

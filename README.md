@@ -14,7 +14,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/) server in your Sprin
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ public class WiremockTest {
     private WireMockServer wiremock;
 
     @Test
-    void testCallWiremockWithRestTemplate() throws Exception {
+    void testWithExplicitStub() throws Exception {
         wiremock.stubFor(WireMock.get("/")
                 .willReturn(aResponse().withStatus(200)));
         final ResponseEntity<Object> response = new RestTemplateBuilder()
@@ -42,10 +42,31 @@ public class WiremockTest {
                 .getForEntity("/", Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+    
+    @Test
+    @SimpleStub(method = "GET", status = 200)
+    void testWithSimpleStub() throws Exception {
+        final ResponseEntity<Object> response = new RestTemplateBuilder()
+                .rootUri(serviceUrl)
+                .build()
+                .getForEntity("/", Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
 ```
+Injecting the host into the application context happens _before_ any bean instances are created. Also the injected 
+property values takes precedence over any other, for example statically configured value. This means, in most cases the 
+extension works out of the box with your current context configuration.
+
+## Compatibility
+Tested against Spring-Boot `2.4.5`
 
 ## Changelog
+
+### Version 0.0.2
+* Support multiple `@SimpleStub` instances per test method
+* Allow to stub authentication and response headers via `@SimpleStub`
+* Fix bug with unresolvable test keystore locations
 
 ### Version 0.0.1
 * Initial prototype
