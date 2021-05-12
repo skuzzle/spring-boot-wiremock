@@ -59,7 +59,8 @@ property values takes precedence over any other, for example statically configur
 extension works out of the box with your current context configuration.
 
 ## Compatibility
-Tested against Spring-Boot `2.4.5`
+- [x] Requires Java 11
+- [x] Tested against Spring-Boot `2.4.5`
 
 ## Changelog
 
