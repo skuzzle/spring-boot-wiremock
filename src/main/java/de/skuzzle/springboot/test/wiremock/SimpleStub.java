@@ -21,72 +21,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
 public @interface SimpleStub {
-    /** Request method for this stub. Defaults to GET. */
-    String method() default "GET";
 
-    /**
-     * The URL for this stub. Mutual exclusive to {@link #urlPattern()},
-     * {@link #urlPath()} and {@link #urlPathPattern()}. If not specified, every url will
-     * be matched.
-     */
-    String url() default "";
+    Request request() default @Request;
 
-    String urlPattern() default "";
+    Response response() default @Response;
 
-    String urlPath() default "";
+    Auth auth() default @Auth;
 
-    String urlPathPattern() default "";
-
-    /**
-     * Required basic auth user name. Only take into consideration if
-     * {@link #basicAuthPassword()} is also configured. Mutual exclusive to
-     * {@link #bearerToken()}.
-     */
-    String basicAuthUsername() default "";
-
-    /**
-     * Required basic auth user password. Only take into consideration if
-     * {@link #basicAuthUsername()} is also configured. Mutual exclusive to
-     * {@link #bearerToken()}.
-     */
-    String basicAuthPassword() default "";
-
-    /**
-     * Required bearer token (case insensitive). Mutual exclusive to
-     * {@link #basicAuthUsername()} and {@link #basicAuthPassword()}.
-     */
-    String bearerToken() default "";
-
-    /** The HTTP status of the response. Defaults to 200 */
-    int status() default 200;
-
-    /**
-     * The body of the response. Mutual exclusive to {@link #bodyBase64()} and
-     * {@link #bodyFile()}. Defaults to 'no body'.
-     */
-    String body() default "";
-
-    /**
-     * The body of the response. Mutual exclusive to {@link #body()} and
-     * {@link #bodyFile()}. Defaults to 'no body'.
-     */
-    String bodyBase64() default "";
-
-    /**
-     * The body of the response. Mutual exclusive to {@link #body()} and
-     * {@link #bodyBase64()}. Defaults to 'no body'.
-     */
-    String bodyFile() default "";
-
-    /**
-     * Content-Type for the response. If configured, this value takes precedence if
-     * {@code "Content-Type"} is also configured using {@link #responseHeaders()}.
-     */
-    String responseContentType() default "";
-
-    /**
-     * Headers that will be added to the response. Specify pairs like
-     * {@code "Content-Type=application/json"}
-     */
-    String[] responseHeaders() default {};
 }

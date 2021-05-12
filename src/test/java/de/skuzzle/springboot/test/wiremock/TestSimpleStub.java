@@ -24,17 +24,22 @@ public class TestSimpleStub {
 
     @Test
     @SimpleStub(
-            method = "POST",
-            url = "/endpoint",
-            status = 201,
-            body = "Hello World",
-            basicAuthUsername = "username",
-            basicAuthPassword = "password",
-            responseContentType = "application/text",
-            responseHeaders = "Response-Header=value")
+            request = @Request(
+                    method = "POST",
+                    url = "/endpoint",
+                    headers = "Request-Header=value"),
+            response = @Response(
+                    status = 201,
+                    body = "Hello World",
+                    contentType = "application/text",
+                    headers = "Response-Header=value"),
+            auth = @Auth(
+                    basicAuthUsername = "username",
+                    basicAuthPassword = "password"))
     void testSimpleStubWithBasicAuth_Body_ContentType_And_Headers() {
         final ResponseEntity<String> response = client()
                 .basicAuthentication("username", "password")
+                .defaultHeader("Request-Header", "value")
                 .build()
                 .postForEntity("/endpoint", null, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -44,7 +49,7 @@ public class TestSimpleStub {
     }
 
     @Test
-    @SimpleStub(bearerToken = "valid-token")
+    @SimpleStub(auth = @Auth(bearerToken = "valid-token"))
     void testBearerAuth() {
         final RequestEntity<Void> requestEntity = RequestEntity.get("/")
                 .header("Authorization", "bearer Valid-Token")
@@ -55,12 +60,14 @@ public class TestSimpleStub {
 
     @Test
     @SimpleStub(
-            method = "POST",
-            url = "/endpoint",
-            status = 201,
-            body = "Hello World",
-            responseContentType = "application/text",
-            responseHeaders = "Content-Type=application/json")
+            request = @Request(
+                    method = "POST",
+                    url = "/endpoint"),
+            response = @Response(
+                    status = 201,
+                    body = "Hello World",
+                    contentType = "application/text",
+                    headers = "Content-Type=application/json"))
     void testContenTypeTakesPrecedenceOverHeaders() {
         final ResponseEntity<String> response = client().build().postForEntity("/endpoint", null, String.class);
         assertThat(response.getBody()).isEqualTo("Hello World");
@@ -69,7 +76,7 @@ public class TestSimpleStub {
 
     @Test
     @SimpleStub
-    @SimpleStub(method = "POST", status = 201)
+    @SimpleStub(request = @Request(method = "POST"), response = @Response(status = 201))
     void testMultipleStubs() throws Exception {
         final ResponseEntity<String> responseGet = client().build().getForEntity("/", null, String.class);
         assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.OK);

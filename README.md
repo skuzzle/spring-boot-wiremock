@@ -14,7 +14,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/) server in your Sprin
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ public class WiremockTest {
     }
     
     @Test
-    @SimpleStub(method = "GET", status = 200)
+    @SimpleStub(request = @Request(method = "GET"), response = @Response(status = 200))
     void testWithSimpleStub() throws Exception {
         final ResponseEntity<Object> response = new RestTemplateBuilder()
                 .rootUri(serviceUrl)
@@ -63,6 +63,9 @@ extension works out of the box with your current context configuration.
 - [x] Tested against Spring-Boot `2.4.5`
 
 ## Changelog
+
+### Version 0.0.3
+* Split `SimpleStub` configuration into multiple annotations
 
 ### Version 0.0.2
 * Support multiple `@SimpleStub` instances per test method
