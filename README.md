@@ -5,10 +5,11 @@
 # spring-boot-wiremock
 (This is **not** an official extension from the Spring Team!)
 
-The easiest way to setup a [WireMock](http://wiremock.org/) server in your Spring-Boot tests with *JUnit5*
+The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests with *JUnit5*
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
+- [x] Define simple stubs using annotations
 
 ```xml
 <dependency>
@@ -54,9 +55,25 @@ public class WiremockTest {
     }
 }
 ```
-Injecting the host into the application context happens _before_ any bean instances are created. Also the injected 
+Injecting the host into the application context happens _before_ any bean instances are created and the injected 
 property values takes precedence over any other, for example statically configured value. This means, in most cases the 
 extension works out of the box with your current context configuration.
+
+## Rationale
+[WireMock](http://wiremock.org/) is an awesome library for mocking HTTP endpoints in unit tests. However, it can be 
+quite cumbersome to integrate with Spring-Boot: when you manually manage the `WireMockServer` from within the test,
+there is hardly a chance to use its random base url during Bean creation. That often results in the weirdest stunts of
+Spring context configuration in order to somehow inject the mock location. For example, your client under test might 
+use the `RestTemplate` and you decide to make it a mutable field in order to replace it in your test with an instance
+that knows the WireMock's location.
+
+In a perfect world, you would not need to touch your existing context configuration for just injecting a mock. Consider
+the `@MockBean` annotation that allows to simply replace an already configured Bean with a mock. This works without a 
+hassle and involves no stunts like defining a new Bean with same type and `@Primary` annotation or manually replacing
+an injected instance using a setter.
+
+The `@WithWiremock` annotation works just like that: It sets up a WireMock server early enough, so that its base url
+can be injected into the Spring application properties, simply replacing an existing value. 
 
 ## Compatibility
 - [x] Requires Java 11
@@ -67,7 +84,7 @@ extension works out of the box with your current context configuration.
 ### Version 0.0.3
 * Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
 * `HttpStatus` enum is now used for defining the stubbed response status
-* Match any HTTP method by default
+* Match _any_ HTTP method by default (instead of _GET_)
 * Allow to define different matchers for params, cookies, headers and body using prefixes like `eq:` or `containing:`
 
 ### Version 0.0.2
