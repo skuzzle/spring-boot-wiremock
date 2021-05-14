@@ -45,7 +45,10 @@ public class WiremockTest {
     }
     
     @Test
-    @HttpStub(onRequest = @Request(withMethod = "GET"), respond = @Response(withStatus = HttpStatus.OK))
+    @HttpStub(
+        onRequest = @Request(withMethod = "GET"), 
+        respond = @Response(withStatus = HttpStatus.OK)
+    )
     void testWithSimpleStub() throws Exception {
         final ResponseEntity<Object> response = new RestTemplateBuilder()
                 .rootUri(serviceUrl)
