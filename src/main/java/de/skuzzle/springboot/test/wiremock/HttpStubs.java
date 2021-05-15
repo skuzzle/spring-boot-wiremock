@@ -7,13 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * Container annotation for repeatable {@link SimpleStub} annotation.
+ * Container annotation for repeatable {@link HttpStub} annotation.
  *
  * @author Simon Taddiken
  */
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
-public @interface SimpleStubs {
+public @interface HttpStubs {
     /** All the stubs that should be added. */
-    SimpleStub[] value() default {};
+    HttpStub[] value() default {};
 }

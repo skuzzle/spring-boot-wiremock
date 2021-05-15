@@ -26,6 +26,9 @@ pipeline {
       }
     }
     stage('Deploy SNAPSHOT') {
+      when {
+        branch 'dev'
+      }
       steps {
         sh 'mvn -B -Prelease -DskipTests -Dgpg.passphrase=${GPG_SECRET} deploy'
       }

@@ -73,8 +73,22 @@ public final class TestKeystores {
             this.type = type;
         }
 
+        /**
+         * Location resolved from classpath.
+         *
+         * @return The location as URL.
+         */
         public URL toURL() {
             return Resources.getResource(classpathLocation);
+        }
+
+        /**
+         * Location that can be resolved using {@link ClassLoader#getResource(String)}.
+         *
+         * @return The classpath location.
+         */
+        public String getClasspathLocation() {
+            return classpathLocation;
         }
 
         public String getLocation() {
@@ -89,6 +103,11 @@ public final class TestKeystores {
             return this.type;
         }
 
+        /**
+         * Materializes the keystore from its location.
+         *
+         * @return The keystore.
+         */
         public KeyStore getKeystore() {
             try (InputStream in = toURL().openStream()) {
                 final KeyStore keyStore = KeyStore.getInstance(type);
