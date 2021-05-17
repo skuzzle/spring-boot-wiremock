@@ -20,7 +20,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 ```
 
 ## Quick start
-All you need to do is to add the `WithWiremock` annotation to your Spring-Boot test. The annotation has some 
+All you need to do is to add the `@WithWiremock` annotation to your Spring-Boot test. The annotation has some 
 configuration options but the most notable one is `injectHttpHostInto`.
 
 ```java
@@ -35,25 +35,25 @@ public class WiremockTest {
 
     @Test
     void testWithExplicitStub() throws Exception {
+        // Use standard WireMock API for minimum coupling to this library
         wiremock.stubFor(WireMock.get("/")
                 .willReturn(aResponse().withStatus(200)));
-        final ResponseEntity<Object> response = new RestTemplateBuilder()
-                .rootUri(serviceUrl)
-                .build()
-                .getForEntity("/", Object.class);
+
+        final ResponseEntity<Object> response = new RestTemplate()
+                .getForEntity(serviceUrl, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
-    
+
     @Test
     @HttpStub(
         onRequest = @Request(withMethod = "GET"), 
         respond = @Response(withStatus = HttpStatus.OK)
     )
-    void testWithSimpleStub() throws Exception {
-        final ResponseEntity<Object> response = new RestTemplateBuilder()
-                .rootUri(serviceUrl)
-                .build()
-                .getForEntity("/", Object.class);
+    void testWithAnnotationStub() throws Exception {
+        // Make full use of this library by defining stubs using annotations
+
+        final ResponseEntity<Object> response = new RestTemplate()
+                .getForEntity(serviceUrl, Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }
@@ -80,6 +80,7 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java 11
+- [x] Requires JUnit 5
 - [x] Tested against Spring-Boot `2.4.5`
 
 ## Changelog
@@ -88,6 +89,8 @@ can be injected into the Spring application properties, simply replacing an exis
 * Improve JavaDoc
 * Improve configuration consistency checks
 * Allow `@HttpStub` on test class itself (instead of only on test method)
+* Allow to set _status message_ on mock response
+* Allow to configure WireMock _scenarios_ for stateful request matching using annotations
 
 ### Version 0.0.3
 * Renamed `SimpleStub` to `HttpStub` and split into multiple annotations

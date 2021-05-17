@@ -93,4 +93,22 @@ public class TestHttpStub {
         final ResponseEntity<String> responsePost = client().build().postForEntity("/", null, String.class);
         assertThat(responsePost.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
+
+    @Test
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", nextState = "1")))
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", state = "1", nextState = "2")),
+            respond = @Response(withStatus = HttpStatus.CREATED))
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", state = "2", nextState = "1")),
+            respond = @Response(withStatus = HttpStatus.OK))
+    void testScenario() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity("/", null, String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response2 = client().build().getForEntity("/", null, String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        final ResponseEntity<String> response3 = client().build().getForEntity("/", null, String.class);
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response4 = client().build().getForEntity("/", null, String.class);
+        assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
 }

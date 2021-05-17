@@ -7,6 +7,12 @@ import java.lang.annotation.Retention;
 @Retention(RUNTIME)
 public @interface Request {
 
+    /**
+     * Allows to configure WireMock scenarios that can be used for stateful request
+     * matching.
+     */
+    Scenario scenario() default @Scenario;
+
     /** Request method for this stub. If not specified, every method will be matched. */
     String withMethod() default "ANY";
 

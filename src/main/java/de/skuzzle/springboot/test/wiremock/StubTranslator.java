@@ -38,8 +38,14 @@ class StubTranslator {
 
     private static MappingBuilder annotation(HttpStub stub) {
         final Response response = stub.respond();
+
         final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
                 .withStatus(response.withStatus().value());
+
+        final String statusMessage = nullIfEmpty(response.withStatusMessage());
+        if (statusMessage != null) {
+            responseBuilder.withStatusMessage(statusMessage);
+        }
 
         final String body = nullIfEmpty(response.withBody());
         final String bodyBase64 = nullIfEmpty(response.withBodyBase64());
@@ -78,6 +84,17 @@ class StubTranslator {
         final UrlPattern urlPattern = UrlPattern.fromOneOf(toUrl, toUrlPattern, toUrlPath, toUrlPathPattern);
 
         final MappingBuilder requestBuilder = WireMock.request(request.withMethod(), urlPattern);
+
+        final Scenario scenario = request.scenario();
+        final String scenarioName = nullIfEmpty(scenario.name());
+        if (scenarioName != null) {
+            final String scenarioState = nullIfEmpty(scenario.state());
+            final String nextState = defaultIfEmpty(scenario.nextState(), scenarioName);
+            requestBuilder.inScenario(scenarioName)
+                    .whenScenarioStateIs(scenarioState)
+                    .willSetStateTo(nextState);
+        }
+
         parseValueArray(request.containingHeaders(), requestBuilder::withHeader);
         parseValueArray(request.withQueryParameters(), requestBuilder::withQueryParam);
         parseValueArray(request.containingCookies(), requestBuilder::withCookie);
@@ -109,6 +126,10 @@ class StubTranslator {
             final StringValuePattern valuePattern = StringValuePatterns.parseFromPrefix(valueWithPrefix);
             builder.accept(key, valuePattern);
         }
+    }
+
+    private static String defaultIfEmpty(String s, String defaultValue) {
+        return s == null || s.isEmpty() ? defaultValue : s;
     }
 
     private static String nullIfEmpty(String s) {
