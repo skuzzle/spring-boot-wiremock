@@ -14,6 +14,9 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
  * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}.
+ * <p>
+ * By default, the mock server is only served on HTTP. If you want to test with SSL, you
+ * need to specify {@link #httpsPort()} with a value >= 0.
  *
  * @author Simon Taddiken
  * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
@@ -63,21 +66,41 @@ public @interface WithWiremock {
     @PropertyMapping(PROP_NEED_CLIENT_AUTH)
     boolean needClientAuth() default false;
 
-    @PropertyMapping(PROP_KEYSTORE_PASSWORD)
-    String keystorePassword() default "password";
-
+    /**
+     * Location of the keystore to use for server side SSL. Defaults to
+     * {@link TestKeystores#TEST_SERVER_CERTIFICATE}.
+     */
     @PropertyMapping(PROP_KEYSTORE_LOCATION)
     String keystoreLocation() default "classpath:/certs/server_keystore.jks";
 
+    /**
+     * Type of the {@link #keystoreLocation() keystore}.
+     */
     @PropertyMapping(PROP_KEYSTORE_TYPE)
     String keystoreType() default "JKS";
 
-    @PropertyMapping(PROP_TRUSTSTORE_PASSWORD)
-    String truststorePassword() default "password";
+    /**
+     * Password of the {@link #keystoreLocation() keystore}.
+     */
+    @PropertyMapping(PROP_KEYSTORE_PASSWORD)
+    String keystorePassword() default "password";
 
+    /**
+     * Location for the trustsore to use for client side SSL. Defaults to
+     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}.
+     */
     @PropertyMapping(PROP_TRUSTSTORE_LOCATION)
     String truststoreLocation() default "classpath:/certs/server_truststore.jks";
 
+    /**
+     * Password of the {@link #truststoreLocation() truststore}.
+     */
+    @PropertyMapping(PROP_TRUSTSTORE_PASSWORD)
+    String truststorePassword() default "password";
+
+    /**
+     * Type of the {@link #truststoreLocation() truststore}.
+     */
     @PropertyMapping(PROP_TRUSTSTORE_TYPE)
     String truststoreType() default "JKS";
 

@@ -22,8 +22,17 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 @Target(ElementType.METHOD)
 public @interface HttpStub {
 
+    /**
+     * The request that must be matched in order to produce a mock {@link #respond()
+     * response}. By default, every request will be matched.
+     */
     Request onRequest() default @Request;
 
+    /**
+     * The mock response that will be returned by the server if an incoming request
+     * matched what has been configured in {@link #onRequest()}. By default, returns an
+     * empty 200 OK message with no further details.
+     */
     Response respond() default @Response;
 
 }
