@@ -23,8 +23,8 @@ class StubTranslator {
     }
 
     private static void mutuallyExclusive(String[] names, Object[] args) {
-        final long nullCount = Arrays.stream(args).filter(arg -> arg == null).count();
-        Preconditions.checkArgument(nullCount > 1,
+        final long notNullCount = Arrays.stream(args).filter(arg -> arg != null).count();
+        Preconditions.checkArgument(notNullCount <= 1,
                 "Parameters '%s' are mutually exclusive and only one must be specified", Arrays.toString(names));
     }
 
