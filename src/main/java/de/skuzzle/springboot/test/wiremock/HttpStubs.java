@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
  * Container annotation for repeatable {@link HttpStub} annotation.
  *
  * @author Simon Taddiken
+ * @see HttpStub
  */
 @Retention(RUNTIME)
 @Target(ElementType.METHOD)
