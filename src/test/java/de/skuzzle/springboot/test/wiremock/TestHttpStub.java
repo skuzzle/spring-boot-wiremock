@@ -9,6 +9,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import de.skuzzle.springboot.test.wiremock.TestClients.ClientBuilder;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "mockHost")
@@ -17,9 +20,9 @@ public class TestHttpStub {
     @Value("${mockHost}")
     private String mockHost;
 
-    private RestTemplateBuilder client() {
-        return new RestTemplateBuilder()
-                .rootUri(mockHost);
+    private ClientBuilder<RestTemplateBuilder, RestTemplate> client() {
+        return TestClients.restTemplate()
+                .withBaseUrl(mockHost);
     }
 
     @Test
@@ -45,7 +48,7 @@ public class TestHttpStub {
                 .header("Cookie", "sessionId=1234567890")
                 .body("Just a body");
         final ResponseEntity<String> response = client()
-                .basicAuthentication("username", "password")
+                .withBasicAuth("username", "password")
                 .build()
                 .exchange(request, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
