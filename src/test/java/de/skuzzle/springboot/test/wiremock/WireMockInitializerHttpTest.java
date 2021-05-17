@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest
+@HttpStub
 @WithWiremock(injectHttpHostInto = "serviceUrl")
 public class WireMockInitializerHttpTest {
 
@@ -22,7 +23,6 @@ public class WireMockInitializerHttpTest {
     }
 
     @Test
-    @HttpStub
     void testCallWiremockWithRestTemplate() throws Exception {
         final ResponseEntity<String> response = client()
                 .build()

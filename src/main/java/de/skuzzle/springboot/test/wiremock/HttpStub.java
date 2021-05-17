@@ -19,7 +19,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  */
 @Repeatable(HttpStubs.class)
 @Retention(RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface HttpStub {
 
     /**

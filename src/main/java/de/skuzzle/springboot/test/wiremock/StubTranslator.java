@@ -68,14 +68,14 @@ class StubTranslator {
         }
 
         final Request request = stub.onRequest();
+        final String toUrl = nullIfEmpty(request.toUrl());
+        final String toUrlPattern = nullIfEmpty(request.toUrlPattern());
+        final String toUrlPath = nullIfEmpty(request.toUrlPath());
+        final String toUrlPathPattern = nullIfEmpty(request.toUrlPathPattern());
         mutuallyExclusive(
                 parameters("url", "urlPattern", "urlPath", "urlPathPattern"),
-                values(request.toUrl(), request.toUrlPattern(), request.toUrlPath(), request.toUrlPathPattern()));
-        final UrlPattern urlPattern = UrlPattern.fromOneOf(
-                nullIfEmpty(request.toUrl()),
-                nullIfEmpty(request.toUrlPattern()),
-                nullIfEmpty(request.toUrlPath()),
-                nullIfEmpty(request.toUrlPathPattern()));
+                values(toUrl, toUrlPattern, toUrlPath, toUrlPathPattern));
+        final UrlPattern urlPattern = UrlPattern.fromOneOf(toUrl, toUrlPattern, toUrlPath, toUrlPathPattern);
 
         final MappingBuilder requestBuilder = WireMock.request(request.withMethod(), urlPattern);
         parseValueArray(request.containingHeaders(), requestBuilder::withHeader);

@@ -87,6 +87,7 @@ can be injected into the Spring application properties, simply replacing an exis
 ### Version 0.0.4
 * Improve JavaDoc
 * Improve configuration consistency checks
+* Allow `@HttpStub` on test class itself (instead of only on test method)
 
 ### Version 0.0.3
 * Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
