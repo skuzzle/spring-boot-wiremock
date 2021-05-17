@@ -18,62 +18,15 @@ import com.google.common.base.Preconditions;
  */
 class StubTranslator {
 
-    static void configureStubOn(WireMockServer wiremock, HttpStub annotation) {
-        wiremock.stubFor(annotation(annotation));
+    static void configureStubOn(WireMockServer wiremock, HttpStub stub) {
+        final MappingBuilder requestBuilder = buildRequest(stub);
+        final ResponseDefinitionBuilder responseBuilder = buildResponse(stub);
+        wiremock.stubFor(requestBuilder.willReturn(responseBuilder));
     }
 
-    private static void mutuallyExclusive(String[] names, Object[] args) {
-        final long notNullCount = Arrays.stream(args).filter(arg -> arg != null).count();
-        Preconditions.checkArgument(notNullCount <= 1,
-                "Parameters '%s' are mutually exclusive and only one must be specified", Arrays.toString(names));
-    }
-
-    private static String[] parameters(String... names) {
-        return names;
-    }
-
-    private static Object[] values(Object... values) {
-        return values;
-    }
-
-    private static MappingBuilder annotation(HttpStub stub) {
-        final Response response = stub.respond();
-
-        final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
-                .withStatus(response.withStatus().value());
-
-        final String statusMessage = nullIfEmpty(response.withStatusMessage());
-        if (statusMessage != null) {
-            responseBuilder.withStatusMessage(statusMessage);
-        }
-
-        final String body = nullIfEmpty(response.withBody());
-        final String bodyBase64 = nullIfEmpty(response.withBodyBase64());
-        final String bodyFile = nullIfEmpty(response.withBodyFile());
-        mutuallyExclusive(
-                parameters("body", "bodyBase64", "bodyFile"),
-                values(body, bodyBase64, bodyFile));
-
-        if (body != null) {
-            responseBuilder.withBody(body);
-        } else if (bodyBase64 != null) {
-            responseBuilder.withBase64Body(bodyBase64);
-        } else if (bodyFile != null) {
-            responseBuilder.withBodyFile(bodyFile);
-        }
-
-        final String[] responseHeaders = response.withHeaders();
-        for (final String headerAndValue : responseHeaders) {
-            final String[] parts = headerAndValue.split("=", 2);
-            responseBuilder.withHeader(parts[0], parts[1]);
-        }
-
-        final String responseContentType = nullIfEmpty(response.withContentType());
-        if (responseContentType != null) {
-            responseBuilder.withHeader("Content-Type", responseContentType);
-        }
-
+    private static MappingBuilder buildRequest(HttpStub stub) {
         final Request request = stub.onRequest();
+
         final String toUrl = nullIfEmpty(request.toUrl());
         final String toUrlPattern = nullIfEmpty(request.toUrlPattern());
         final String toUrlPath = nullIfEmpty(request.toUrlPath());
@@ -115,7 +68,46 @@ class StubTranslator {
         if (requestBody != null) {
             requestBuilder.withRequestBody(StringValuePatterns.parseFromPrefix(requestBody));
         }
-        return requestBuilder.willReturn(responseBuilder);
+        return requestBuilder;
+    }
+
+    private static ResponseDefinitionBuilder buildResponse(HttpStub stub) {
+        final Response response = stub.respond();
+
+        final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
+                .withStatus(response.withStatus().value());
+
+        final String statusMessage = nullIfEmpty(response.withStatusMessage());
+        if (statusMessage != null) {
+            responseBuilder.withStatusMessage(statusMessage);
+        }
+
+        final String body = nullIfEmpty(response.withBody());
+        final String bodyBase64 = nullIfEmpty(response.withBodyBase64());
+        final String bodyFile = nullIfEmpty(response.withBodyFile());
+        mutuallyExclusive(
+                parameters("body", "bodyBase64", "bodyFile"),
+                values(body, bodyBase64, bodyFile));
+
+        if (body != null) {
+            responseBuilder.withBody(body);
+        } else if (bodyBase64 != null) {
+            responseBuilder.withBase64Body(bodyBase64);
+        } else if (bodyFile != null) {
+            responseBuilder.withBodyFile(bodyFile);
+        }
+
+        final String[] responseHeaders = response.withHeaders();
+        for (final String headerAndValue : responseHeaders) {
+            final String[] parts = headerAndValue.split("=", 2);
+            responseBuilder.withHeader(parts[0], parts[1]);
+        }
+
+        final String responseContentType = nullIfEmpty(response.withContentType());
+        if (responseContentType != null) {
+            responseBuilder.withHeader("Content-Type", responseContentType);
+        }
+        return responseBuilder;
     }
 
     private static void parseValueArray(String[] array, BiConsumer<String, StringValuePattern> builder) {
@@ -135,4 +127,19 @@ class StubTranslator {
     private static String nullIfEmpty(String s) {
         return s == null || s.isEmpty() ? null : s;
     }
+
+    private static void mutuallyExclusive(String[] names, Object[] args) {
+        final long notNullCount = Arrays.stream(args).filter(arg -> arg != null).count();
+        Preconditions.checkArgument(notNullCount <= 1,
+                "Parameters '%s' are mutually exclusive and only one must be specified", Arrays.toString(names));
+    }
+
+    private static String[] parameters(String... names) {
+        return names;
+    }
+
+    private static Object[] values(Object... values) {
+        return values;
+    }
+
 }
