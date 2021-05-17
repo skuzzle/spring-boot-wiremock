@@ -5,9 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "serviceUrl")
@@ -15,11 +14,6 @@ public class HelloWorldTest {
 
     @Value("${serviceUrl}")
     private String serviceUrl;
-
-    private RestTemplateBuilder client() {
-        return new RestTemplateBuilder()
-                .rootUri(serviceUrl);
-    }
 
     @Test
     @HttpStub(
@@ -29,9 +23,7 @@ public class HelloWorldTest {
                     withBody = "{\"value\": \"Hello World\"}",
                     withContentType = "application/json"))
     void testCallWiremockWithRestTemplate() throws Exception {
-        final ResponseEntity<HelloWorld> response = client()
-                .build()
-                .postForEntity("/", null, HelloWorld.class);
+        final var response = new RestTemplate().postForEntity(serviceUrl, null, HelloWorld.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(response.getBody().getValue()).isEqualTo("Hello World");
     }
