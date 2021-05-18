@@ -29,6 +29,9 @@ public @interface Response {
     /**
      * The body of the response. Mutual exclusive to {@link #withBody()} and
      * {@link #withBodyBase64()}. Defaults to 'no body'.
+     * <p>
+     * By default, files must be contained in a folder on the classpath called
+     * {@code __files}.
      */
     String withBodyFile() default "";
 

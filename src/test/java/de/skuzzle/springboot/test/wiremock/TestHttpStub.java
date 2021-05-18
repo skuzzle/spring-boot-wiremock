@@ -111,4 +111,18 @@ public class TestHttpStub {
         final ResponseEntity<String> response4 = client().build().getForEntity("/", null, String.class);
         assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
+
+    @Test
+    @HttpStub(respond = @Response(withBodyBase64 = "SGVsbG8gV29ybGQ=", withContentType = "text/plain"))
+    void testWithBodyBase64() throws Exception {
+        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        assertThat(response.getBody()).isEqualTo("Hello World");
+    }
+
+    @Test
+    @HttpStub(respond = @Response(withBodyFile = "bodyFile.txt", withContentType = "text/plain"))
+    void testWithBodyFromFile() throws Exception {
+        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        assertThat(response.getBody()).isEqualTo("Hello World");
+    }
 }
