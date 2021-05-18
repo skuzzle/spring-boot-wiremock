@@ -15,7 +15,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 </dependency>
 ```
 
@@ -85,12 +85,15 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Changelog
 
-### Version 0.0.4
+### Version 0.0.5
 * Improve JavaDoc
 * Improve configuration consistency checks
 * Allow `@HttpStub` on test class itself (instead of only on test method)
 * Allow to set _status message_ on mock response
 * Allow to configure WireMock _scenarios_ for stateful request matching using annotations
+
+### Version 0.0.4
+* Skipped by accident 🤡
 
 ### Version 0.0.3
 * Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
