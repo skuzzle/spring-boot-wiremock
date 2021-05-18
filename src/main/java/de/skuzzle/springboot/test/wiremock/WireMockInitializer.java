@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
@@ -30,7 +31,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
         final WireMockServer wiremockServer = startWiremock(wiremockProps);
 
         injectWiremockHostIntoProperty(applicationContext, wiremockProps, wiremockServer);
-        registerWiremockServerAsBean(applicationContext, wiremockServer);
+        registerWiremockServerAsBean(applicationContext, wiremockProps, wiremockServer);
         addLifecycleEvents(applicationContext, wiremockServer);
     }
 
@@ -76,10 +77,12 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
     }
 
     private void registerWiremockServerAsBean(ConfigurableApplicationContext applicationContext,
+            WiremockAnnotationProps wiremockProps,
             WireMockServer wiremockServer) {
-        applicationContext
-                .getBeanFactory()
-                .registerSingleton("wiremockServer", wiremockServer);
+        final ConfigurableListableBeanFactory beanFactory = applicationContext
+                .getBeanFactory();
+        beanFactory.registerSingleton("wiremockServer", wiremockServer);
+        beanFactory.registerSingleton("wiremockProps", wiremockProps);
     }
 
     private void addLifecycleEvents(ConfigurableApplicationContext applicationContext,
@@ -87,8 +90,13 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
         applicationContext.addApplicationListener(applicationEvent -> {
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
-                final HttpStub[] stubs = e.getTestContext().getTestMethod().getAnnotationsByType(HttpStub.class);
-                Arrays.stream(stubs).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
+
+                final HttpStub[] stubsOnClass = e.getTestContext().getTestClass().getAnnotationsByType(HttpStub.class);
+                final HttpStub[] stubsOnMethod = e.getTestContext().getTestMethod()
+                        .getAnnotationsByType(HttpStub.class);
+
+                Arrays.stream(stubsOnClass).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
+                Arrays.stream(stubsOnMethod).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {
                 wiremockServer.resetAll();

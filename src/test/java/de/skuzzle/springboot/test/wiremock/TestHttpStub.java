@@ -9,6 +9,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import de.skuzzle.springboot.test.wiremock.TestClients.ClientBuilder;
 
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "mockHost")
@@ -17,9 +20,9 @@ public class TestHttpStub {
     @Value("${mockHost}")
     private String mockHost;
 
-    private RestTemplateBuilder client() {
-        return new RestTemplateBuilder()
-                .rootUri(mockHost);
+    private ClientBuilder<RestTemplateBuilder, RestTemplate> client() {
+        return TestClients.restTemplate()
+                .withBaseUrl(mockHost);
     }
 
     @Test
@@ -45,7 +48,7 @@ public class TestHttpStub {
                 .header("Cookie", "sessionId=1234567890")
                 .body("Just a body");
         final ResponseEntity<String> response = client()
-                .basicAuthentication("username", "password")
+                .withBasicAuth("username", "password")
                 .build()
                 .exchange(request, String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -89,5 +92,37 @@ public class TestHttpStub {
 
         final ResponseEntity<String> responsePost = client().build().postForEntity("/", null, String.class);
         assertThat(responsePost.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", nextState = "1")))
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", state = "1", nextState = "2")),
+            respond = @Response(withStatus = HttpStatus.CREATED))
+    @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", state = "2", nextState = "1")),
+            respond = @Response(withStatus = HttpStatus.OK))
+    void testScenario() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity("/", null, String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response2 = client().build().getForEntity("/", null, String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        final ResponseEntity<String> response3 = client().build().getForEntity("/", null, String.class);
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response4 = client().build().getForEntity("/", null, String.class);
+        assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @HttpStub(respond = @Response(withBodyBase64 = "SGVsbG8gV29ybGQ=", withContentType = "text/plain"))
+    void testWithBodyBase64() throws Exception {
+        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        assertThat(response.getBody()).isEqualTo("Hello World");
+    }
+
+    @Test
+    @HttpStub(respond = @Response(withBodyFile = "bodyFile.txt", withContentType = "text/plain"))
+    void testWithBodyFromFile() throws Exception {
+        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        assertThat(response.getBody()).isEqualTo("Hello World");
     }
 }

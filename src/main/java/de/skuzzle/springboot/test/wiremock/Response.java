@@ -12,6 +12,8 @@ public @interface Response {
     /** The HTTP status of the response. Defaults to {@link HttpStatus#OK}. */
     HttpStatus withStatus() default HttpStatus.OK;
 
+    String withStatusMessage() default "";
+
     /**
      * The body of the response. Mutual exclusive to {@link #withBodyBase64()} and
      * {@link #withBodyFile()}. Defaults to 'no body'.
@@ -27,6 +29,9 @@ public @interface Response {
     /**
      * The body of the response. Mutual exclusive to {@link #withBody()} and
      * {@link #withBodyBase64()}. Defaults to 'no body'.
+     * <p>
+     * By default, files must be contained in a folder on the classpath called
+     * {@code __files}.
      */
     String withBodyFile() default "";
 

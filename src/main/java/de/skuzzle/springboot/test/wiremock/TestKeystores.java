@@ -79,7 +79,7 @@ public final class TestKeystores {
          * @return The location as URL.
          */
         public URL toURL() {
-            return Resources.getResource(classpathLocation);
+            return Resources.getResource(getClasspathLocation());
         }
 
         /**
@@ -110,8 +110,8 @@ public final class TestKeystores {
          */
         public KeyStore getKeystore() {
             try (InputStream in = toURL().openStream()) {
-                final KeyStore keyStore = KeyStore.getInstance(type);
-                keyStore.load(in, password.toCharArray());
+                final KeyStore keyStore = KeyStore.getInstance(getType());
+                keyStore.load(in, getPassword().toCharArray());
                 return keyStore;
             } catch (final KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
                 throw new IllegalStateException(
