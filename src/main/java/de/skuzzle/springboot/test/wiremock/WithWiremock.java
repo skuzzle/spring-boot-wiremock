@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
  * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}.
  * <p>
  * By default, the mock server is only served on HTTP. If you want to test with SSL, you
- * need to specify {@link #httpsPort()} with a value >= 0.
+ * need to specify {@link #httpsPort()} with a value &gt;= 0.
  *
  * @author Simon Taddiken
  * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
