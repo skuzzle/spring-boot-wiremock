@@ -4,6 +4,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+/**
+ * For defining authentication information for a stub. If no attributes are specified, no
+ * authentication will be required in order for the stub to match.
+ *
+ * @author Simon Taddiken
+ * @see Request
+ */
 @Retention(RUNTIME)
 public @interface Auth {
 

@@ -26,6 +26,13 @@ public class TestHttpStub {
     }
 
     @Test
+    @HttpStub(respond = @Response(withStatus = HttpStatus.CREATED))
+    void testMatchAnyUrl() throws Exception {
+        final ResponseEntity<Object> response = client().build().getForEntity("/whatever", Object.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
     @HttpStub(
             onRequest = @Request(
                     withMethod = "POST",

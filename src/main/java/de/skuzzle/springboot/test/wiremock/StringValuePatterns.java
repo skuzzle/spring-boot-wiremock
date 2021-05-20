@@ -1,6 +1,6 @@
 package de.skuzzle.springboot.test.wiremock;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -15,7 +15,7 @@ final class StringValuePatterns {
 
     private static final Map<String, Function<String, StringValuePattern>> builders;
     static {
-        final Map<String, Function<String, StringValuePattern>> temp = new HashMap<>();
+        final Map<String, Function<String, StringValuePattern>> temp = new LinkedHashMap<>();
         temp.put("eq:", WireMock::equalTo);
         temp.put("eqIgnoreCase:", WireMock::equalToIgnoreCase);
         temp.put("eqToJson:", WireMock::equalToJson);
