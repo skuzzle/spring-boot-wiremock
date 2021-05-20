@@ -15,6 +15,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
  * contains {@code "someString"}. There are multiple such operators that are supported:
  *
  * <table>
+ * <caption>Supported string matching operations</caption>
  * <tr>
  * <th>prefix</th>
  * <th>operation</th>
@@ -29,7 +30,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
  * </tr>
  * <tr>
  * <td><code>eqToJson:</code></td>
- * <td>{@link WireMock#eqToJson(String)}</td>
+ * <td>{@link WireMock#equalToJson(String)}</td>
  * </tr>
  * <tr>
  * <td><code>eqToXml:</code></td>
