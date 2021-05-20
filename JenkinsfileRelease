@@ -42,6 +42,12 @@ pipeline {
         sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} verify'
       }
     }
+    stage('Update readme') {
+      steps {
+        sh 'git add -f README.md'
+        sh 'git commit -m "Update README"'
+      }
+    }
     stage('Perform release') {
       steps {
         sh 'mvn -B gitflow:release-finish -DargLine="-Prelease -B -Dgpg.passphrase=${GPG_SECRET}"'

@@ -141,6 +141,13 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>readme/</directory>
+                <filtering>true</filtering>
+                <targetPath>../../</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
