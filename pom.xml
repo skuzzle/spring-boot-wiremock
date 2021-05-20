@@ -141,17 +141,28 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-            <resource>
-                <directory>readme/</directory>
-                <filtering>true</filtering>
-                <targetPath>../../</targetPath>
-            </resource>
-        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>readme/</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
