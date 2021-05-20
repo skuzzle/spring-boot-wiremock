@@ -87,6 +87,7 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ### Version 0.0.6
 * Improve JavaDoc
+* Add automatic module name to jar manifest
 
 ### Version 0.0.5
 * Improve JavaDoc
