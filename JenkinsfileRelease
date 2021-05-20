@@ -44,7 +44,7 @@ pipeline {
     }
     stage('Update readme') {
       steps {
-        sh 'git add -f README.md'
+        sh 'git add README.md'
         sh 'git commit -m "Update README"'
       }
     }
