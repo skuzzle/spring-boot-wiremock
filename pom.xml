@@ -9,7 +9,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
 
     <name>SpringBoot WireMock</name>
@@ -142,6 +142,38 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>readme/</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Automatic-Module-Name>de.skuzzle.springboot.test.wiremock</Automatic-Module-Name>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>

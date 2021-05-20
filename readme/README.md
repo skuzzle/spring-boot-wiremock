@@ -15,7 +15,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.6</version>
+    <version>${project.version}</version>
 </dependency>
 ```
 
@@ -79,9 +79,9 @@ The `@WithWiremock` annotation works just like that: It sets up a WireMock serve
 can be injected into the Spring application properties, simply replacing an existing value. 
 
 ## Compatibility
-- [x] Requires Java 11
+- [x] Requires Java ${maven.compiler.source}
 - [x] Requires JUnit 5
-- [x] Tested against Spring-Boot `2.4.5`
+- [x] Tested against Spring-Boot `${version.spring-boot}`
 
 ## Changelog
 

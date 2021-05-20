@@ -4,6 +4,63 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
+/**
+ * Defines the stub request that will be matched in order to produce a mock response. If
+ * no attributes are specified, every request will be matched.
+ * <p>
+ * Some attributes of this annotation support advanced matching instead of plain text
+ * comparison. For example, {@code withBody = "containing:someString"} matches a body that
+ * contains {@code "someString"}. There are multiple such operators that are supported:
+ *
+ * <table>
+ * <caption>Supported string matching operations</caption>
+ * <tr>
+ * <th>prefix</th>
+ * <th>operation</th>
+ * </tr>
+ * <tr>
+ * <td><code>eq:</code></td>
+ * <td>{@link WireMock#equalTo(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>eqIgnoreCase:</code></td>
+ * <td>{@link WireMock#equalToIgnoreCase(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>eqToJson:</code></td>
+ * <td>{@link WireMock#equalToJson(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>eqToXml:</code></td>
+ * <td>{@link WireMock#equalToXml(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>matching:</code></td>
+ * <td>{@link WireMock#matching(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>notMatching:</code></td>
+ * <td>{@link WireMock#notMatching(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>matchingXPath:</code></td>
+ * <td>{@link WireMock#matchingXPath(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>matchingJsonPath:</code></td>
+ * <td>{@link WireMock#matchingJsonPath(String)}</td>
+ * </tr>
+ * <tr>
+ * <td><code>containing:</code></td>
+ * <td>{@link WireMock#containing(String)}</td>
+ * </tr>
+ * </table>
+ *
+ * @author Simon Taddiken
+ * @see Response
+ */
 @Retention(RUNTIME)
 public @interface Request {
 
@@ -12,6 +69,12 @@ public @interface Request {
      * matching.
      */
     Scenario scenario() default @Scenario;
+
+    /**
+     * Authentication information required for the stub to match. By default, no
+     * authentication is required.
+     */
+    Auth authenticatedBy() default @Auth;
 
     /** Request method for this stub. If not specified, every method will be matched. */
     String withMethod() default "ANY";
@@ -51,6 +114,8 @@ public @interface Request {
      *     "Content-Type=application/json"
      * }
      * </pre>
+     *
+     * See the documentation for {@link Request} for a list of supported operators.
      */
     String[] containingHeaders() default {};
 
@@ -63,6 +128,8 @@ public @interface Request {
      *     "jsessionId=matching:[a-z0-9]"
      * }
      * </pre>
+     *
+     * See the documentation for {@link Request} for a list of supported operators.
      */
     String[] containingCookies() default {};
 
@@ -76,6 +143,8 @@ public @interface Request {
      *     "limit=100"
      * }
      * </pre>
+     *
+     * See the documentation for {@link Request} for a list of supported operators.
      * <p>
      * Note: Doesn't work in combination with {@link #toUrl()} but you can use
      * {@link #toUrlPath()} instead. See related GitHub issue:
@@ -83,9 +152,4 @@ public @interface Request {
      */
     String[] withQueryParameters() default {};
 
-    /**
-     * Authentication information required for the stub to match. By default, no
-     * authentication is required.
-     */
-    Auth authenticatedBy() default @Auth;
 }
