@@ -47,4 +47,9 @@ pipeline {
       }
     }
   }
+  post {
+    always {
+        archiveArtifacts 'README.md'
+    }
+  }
 }
