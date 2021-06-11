@@ -10,19 +10,17 @@ pipeline {
     GPG_SECRET = credentials('gpg_password')
   }
   stages {
-    stage ('Build Spring-Boot GA 2.3.12') {
+    stage ('Test Spring-Boot Compatibility') {
       steps {
-        sh 'mvn -B clean verify -Dversion.spring-boot=2.3.12.RELEASE'
-      }
-    }
-    stage ('Build Spring-Boot GA 2.4.7') {
-      steps {
-        sh 'mvn -B clean verify -Dversion.spring-boot=2.4.7'
-      }
-    }
-    stage ('Build Spring-Boot Current 2.5.1') {
-      steps {
-        sh 'mvn -B clean verify -Dversion.spring-boot=2.5.1'
+        script {
+            def versionsAsString = sh(script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=compatible-spring-boot-versions -q -DforceStdout', returnStdout:true).trim()
+            def versionsArray = versionsAsString.split(',')
+            versionsArray.each {
+                stage("Verify against Spring-Boot ${it}") {
+                    sh "mvn -B clean verify -Dversion.spring-boot=${it.trim()}"
+                }
+            }
+        }
       }
     }
     stage('Build Final') {
@@ -47,6 +45,11 @@ pipeline {
       steps {
         sh 'mvn -B -Prelease -DskipTests -Dgpg.passphrase=${GPG_SECRET} deploy'
       }
+    }
+  }
+  post {
+    always {
+        archiveArtifacts 'README.md'
     }
   }
 }
