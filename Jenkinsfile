@@ -17,9 +17,7 @@ pipeline {
             def versionsArray = versionsAsString.split(',')
             for (int i = 0; i < versionsArray.length; ++i) {
                 stage("Verify against ${versionsArray[i]}") {
-                    steps {
-                        sh "mvn -B clean verify -Dversion.spring-boot=${versionsArray[i]}"
-                    }
+                    sh "mvn -B clean verify -Dversion.spring-boot=${versionsArray[i]}"
                 }
             }
         }
