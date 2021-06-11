@@ -18,7 +18,8 @@
     <properties>
         <coveralls.skip>false</coveralls.skip>
 
-        <version.spring-boot>2.4.5</version.spring-boot>
+        <!-- Minimal compatible Spring-Boot version. Newer versions are tested during Jenkins build. -->
+        <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
         <version.wiremock>2.26.3</version.wiremock>
         <version.guava>30.1.1-jre</version.guava>
 
