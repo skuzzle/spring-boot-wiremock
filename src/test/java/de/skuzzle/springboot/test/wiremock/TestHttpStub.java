@@ -2,6 +2,8 @@ package de.skuzzle.springboot.test.wiremock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,10 +27,14 @@ public class TestHttpStub {
                 .withBaseUrl(mockHost);
     }
 
+    private URI url(String path) {
+        return URI.create(mockHost + path);
+    }
+
     @Test
     @HttpStub(respond = @Response(withStatus = HttpStatus.CREATED))
     void testMatchAnyUrl() throws Exception {
-        final ResponseEntity<Object> response = client().build().getForEntity("/whatever", Object.class);
+        final ResponseEntity<Object> response = client().build().getForEntity(url("/whatever"), Object.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
@@ -50,7 +56,7 @@ public class TestHttpStub {
                     withContentType = "application/text",
                     withHeaders = "Response-Header=value"))
     void testSimpleStubWithBasicAuth_Body_ContentType_Cookie_QueryParam_And_Headers() {
-        final RequestEntity<String> request = RequestEntity.post("/endpoint?param=abc")
+        final RequestEntity<String> request = RequestEntity.post(url("/endpoint?param=abc"))
                 .header("Request-Header", "value")
                 .header("Cookie", "sessionId=1234567890")
                 .body("Just a body");
@@ -67,7 +73,7 @@ public class TestHttpStub {
     @Test
     @HttpStub(onRequest = @Request(authenticatedBy = @Auth(bearerToken = "valid-token")))
     void testBearerAuth() {
-        final RequestEntity<Void> requestEntity = RequestEntity.get("/")
+        final RequestEntity<Void> requestEntity = RequestEntity.get(url("/"))
                 .header("Authorization", "bearer Valid-Token")
                 .build();
         final ResponseEntity<String> response = client().build().exchange(requestEntity, String.class);
@@ -85,7 +91,7 @@ public class TestHttpStub {
                     withContentType = "application/text",
                     withHeaders = "Content-Type=application/json"))
     void testContenTypeTakesPrecedenceOverHeaders() {
-        final ResponseEntity<String> response = client().build().postForEntity("/endpoint", null, String.class);
+        final ResponseEntity<String> response = client().build().postForEntity(url("/endpoint"), null, String.class);
         assertThat(response.getBody()).isEqualTo("Hello World");
         assertThat(response.getHeaders().get("Content-Type")).containsOnly("application/text");
     }
@@ -108,28 +114,28 @@ public class TestHttpStub {
     @HttpStub(onRequest = @Request(scenario = @Scenario(name = "Scenario", state = "2", nextState = "1")),
             respond = @Response(withStatus = HttpStatus.OK))
     void testScenario() throws Exception {
-        final ResponseEntity<String> response1 = client().build().getForEntity("/", null, String.class);
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/"), String.class);
         assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
-        final ResponseEntity<String> response2 = client().build().getForEntity("/", null, String.class);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/"), String.class);
         assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        final ResponseEntity<String> response3 = client().build().getForEntity("/", null, String.class);
+        final ResponseEntity<String> response3 = client().build().getForEntity(url("/"), String.class);
         assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK);
-        final ResponseEntity<String> response4 = client().build().getForEntity("/", null, String.class);
+        final ResponseEntity<String> response4 = client().build().getForEntity(url("/"), String.class);
         assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
     @Test
     @HttpStub(respond = @Response(withBodyBase64 = "SGVsbG8gV29ybGQ=", withContentType = "text/plain"))
     void testWithBodyBase64() throws Exception {
-        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        final ResponseEntity<String> response = client().build().getForEntity(url("/"), String.class);
         assertThat(response.getBody()).isEqualTo("Hello World");
     }
 
     @Test
     @HttpStub(respond = @Response(withBodyFile = "bodyFile.txt", withContentType = "text/plain"))
     void testWithBodyFromFile() throws Exception {
-        final ResponseEntity<String> response = client().build().getForEntity("/", String.class);
+        final ResponseEntity<String> response = client().build().getForEntity(url("/"), String.class);
         assertThat(response.getBody()).isEqualTo("Hello World");
     }
 }

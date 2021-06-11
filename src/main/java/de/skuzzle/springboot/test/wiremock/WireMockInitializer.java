@@ -3,6 +3,7 @@ package de.skuzzle.springboot.test.wiremock;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -72,8 +73,15 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
         }
 
         TestPropertyValues
-                .of(props)
+                .of(toStringProps(props))
                 .applyTo(applicationContext);
+    }
+
+    private Stream<String> toStringProps(Map<String, String> props) {
+        // Only for compatibility to older Spring-Boot versions that do not support
+        // TestPropertyValues.of(Map)
+        return props.entrySet().stream()
+                .map(entry -> entry.getKey() + "=" + entry.getValue());
     }
 
     private void registerWiremockServerAsBean(ConfigurableApplicationContext applicationContext,

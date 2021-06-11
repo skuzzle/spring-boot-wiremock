@@ -10,7 +10,22 @@ pipeline {
     GPG_SECRET = credentials('gpg_password')
   }
   stages {
-    stage('Build') {
+    stage ('Build Spring-Boot GA 2.3.12') {
+      steps {
+        sh 'mvn -B clean verify -Dversion.spring-boot=2.3.12.RELEASE'
+      }
+    }
+    stage ('Build Spring-Boot GA 2.4.7') {
+      steps {
+        sh 'mvn -B clean verify -Dversion.spring-boot=2.4.7'
+      }
+    }
+    stage ('Build Spring-Boot Current 2.5.1') {
+      steps {
+        sh 'mvn -B clean verify -Dversion.spring-boot=2.5.1'
+      }
+    }
+    stage('Build Final') {
       steps {
         sh 'mvn -B clean verify'
       }
