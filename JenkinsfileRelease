@@ -38,22 +38,20 @@ pipeline {
       }
     }
     
-    stage ('Verify release against Spring-Boot GA 2.3.12') {
+    stage ('Test Spring-Boot Compatibility') {
       steps {
-        sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} clean verify -Dversion.spring-boot=2.3.12.RELEASE'
+        script {
+            def versionsAsString = sh(script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=compatible-spring-boot-versions -q -DforceStdout', returnStdout:true).trim()
+            def versionsArray = versionsAsString.split(',')
+            versionsArray.each {
+                stage("Verify against Spring-Boot ${it}") {
+                    sh "mvn -B -prelease -Dgpg.passphrase=${GPG_SECRET} clean verify -Dversion.spring-boot=${it}"
+                }
+            }
+        }
       }
     }
-    stage ('Verify release against Spring-Boot GA 2.4.7') {
-      steps {
-        sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} clean verify -Dversion.spring-boot=2.4.7'
-      }
-    }
-    stage ('Verify release against Spring-Boot Current 2.5.1') {
-      steps {
-        sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} clean verify -Dversion.spring-boot=2.5.1'
-      }
-    }
-    stage('Verify release') {
+    stage('Verify Release') {
       steps {
         sh 'mvn -B -Prelease -Dgpg.passphrase=${GPG_SECRET} verify'
       }
