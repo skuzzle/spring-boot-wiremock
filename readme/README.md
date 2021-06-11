@@ -83,7 +83,7 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java ${maven.compiler.source}
-- [x] Tested against Spring-Boot `2.2.13.RELEASE`, `2.3.12.RELEASE`, `2.4.7`, `2.5.1`
+- [x] Tested against Spring-Boot `${version.spring-boot}, ${compatible-spring-boot-versions}`
 
 ## Changelog
 
