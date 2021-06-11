@@ -16,7 +16,7 @@ pipeline {
             def versionsAsString = sh(script: 'mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=compatible-spring-boot-versions -q -DforceStdout', returnStdout:true).trim()
             def versionsArray = versionsAsString.split(',')
             for (int i = 0; i < versionsArray.length; ++i) {
-                sh(script: "mvn clean verify -Dversion.spring-boot=${versionsArry[i]}")
+                sh(script: "mvn clean verify -Dversion.spring-boot=${versionsArray[i]}")
             }
         }
       }
