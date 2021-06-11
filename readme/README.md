@@ -80,10 +80,13 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java ${maven.compiler.source}
-- [x] Requires JUnit 5
-- [x] Tested against Spring-Boot `${version.spring-boot}`
+- [x] Tested against Spring-Boot `2.2.13.RELEASE`, `2.3.12.RELEASE`, `2.4.7`, `2.5.1`
 
 ## Changelog
+
+### Version 0.0.7
+* Compatibility to older Spring-Boot versions
+* Remove note about Junit 5 being required. This library actually isn't tied to a specific testing framework 
 
 ### Version 0.0.6
 * Improve JavaDoc
