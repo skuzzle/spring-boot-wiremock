@@ -17,7 +17,7 @@ pipeline {
             def versionsArray = versionsAsString.split(',')
             versionsArray.each {
                 stage("Verify against Spring-Boot ${it}") {
-                    sh "mvn -B clean verify -Dversion.spring-boot=${it}"
+                    sh "mvn -B clean verify -Dversion.spring-boot=${it.trim()}"
                 }
             }
         }
