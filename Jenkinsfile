@@ -50,7 +50,7 @@ pipeline {
   post {
     always {
         archiveArtifacts 'README.md'
-        junit (testResults: 'target/surefire-reports/*.xml' allowEmptyResults: true)
+        junit (testResults: 'target/surefire-reports/*.xml', allowEmptyResults: true)
     }
   }
 }
