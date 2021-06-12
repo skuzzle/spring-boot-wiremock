@@ -37,6 +37,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * }
  * </pre>
  * <p>
+ * It is possible to configure multiple {@link #respond() responses}. If more than one
+ * response is specified, the responses will be returned consecutively for each matched
+ * request. When {@link #wrapAround()} is <code>true</code>, the stub will start over with
+ * the first response, once the last has been returned.
+ * <p>
  * The annotation is repeatable. You can place multiple instances on a test to define
  * multiple stubs. You can also place the annotation on the test class itself to define
  * global stubs. Note that all stubs are reset after each test.
@@ -46,6 +51,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * {@link WireMockServer#stubFor(com.github.tomakehurst.wiremock.client.MappingBuilder)}.
  *
  * @author Simon Taddiken
+ * @see ConsecutiveHttpStub
  * @see Request
  * @see Response
  */
@@ -61,10 +67,17 @@ public @interface HttpStub {
     Request onRequest() default @Request;
 
     /**
-     * The mock response that will be returned by the server if an incoming request
-     * matched what has been configured in {@link #onRequest()}. By default, returns an
-     * empty 200 OK message with no further details.
+     * The mock responses that will consecutively be returned by the server if an incoming
+     * request matched what has been configured in {@link #onRequest()}. By default,
+     * returns an empty 200 OK message with no further details.
      */
-    Response respond() default @Response;
+    Response[] respond() default { @Response };
+
+    /**
+     * Whether to start over with the first response once the last response has been
+     * returned. Only applies if more then one {@link #respond() response} has been
+     * configured. Defaults to <code>false</code>.
+     */
+    boolean wrapAround() default false;
 
 }

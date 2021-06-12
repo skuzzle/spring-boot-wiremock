@@ -67,6 +67,9 @@ public @interface Request {
     /**
      * Allows to configure WireMock scenarios that can be used for stateful request
      * matching.
+     * <p>
+     * Note that this attribute must be left empty when used within a {@link HttpStub}
+     * with multiple responses configured.
      */
     Scenario scenario() default @Scenario;
 

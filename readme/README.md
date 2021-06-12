@@ -87,6 +87,9 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Changelog
 
+### Version 0.0.8
+* Allow to configure consecutive responses for the same request
+
 ### Version 0.0.7
 * Compatibility to older Spring-Boot versions
 * Remove note about Junit 5 being required. This library actually isn't tied to a specific testing framework 

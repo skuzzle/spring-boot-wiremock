@@ -1,6 +1,7 @@
 package de.skuzzle.springboot.test.wiremock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.net.URI;
 
@@ -11,6 +12,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import de.skuzzle.springboot.test.wiremock.TestClients.ClientBuilder;
@@ -137,5 +139,48 @@ public class TestHttpStub {
     void testWithBodyFromFile() throws Exception {
         final ResponseEntity<String> response = client().build().getForEntity(url("/"), String.class);
         assertThat(response.getBody()).isEqualTo("Hello World");
+    }
+
+    @Test
+    @HttpStub(
+            wrapAround = true,
+            onRequest = @Request,
+            respond = {
+                    @Response(withStatus = HttpStatus.CREATED),
+                    @Response(withStatus = HttpStatus.OK),
+                    @Response(withStatus = HttpStatus.ACCEPTED)
+            })
+    void testConsecutiveWithtWrapAround() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        final ResponseEntity<String> response3 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+
+        final ResponseEntity<String> response4 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @HttpStub(
+            onRequest = @Request,
+            respond = {
+                    @Response(withStatus = HttpStatus.CREATED),
+                    @Response(withStatus = HttpStatus.OK),
+                    @Response(withStatus = HttpStatus.ACCEPTED)
+            })
+    void testConsecutiveWithoutWrapAround() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        final ResponseEntity<String> response3 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+
+        assertThatExceptionOfType(HttpClientErrorException.class)
+                .isThrownBy(() -> client().build().getForEntity(url("/"), String.class));
     }
 }
