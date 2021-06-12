@@ -51,7 +51,6 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * {@link WireMockServer#stubFor(com.github.tomakehurst.wiremock.client.MappingBuilder)}.
  *
  * @author Simon Taddiken
- * @see ConsecutiveHttpStub
  * @see Request
  * @see Response
  */
