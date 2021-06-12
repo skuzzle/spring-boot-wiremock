@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 public @interface Scenario {
     String name() default "";
 
-    String state() default "";
+    String state() default com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 
     String nextState() default "";
 }

@@ -1,6 +1,7 @@
 package de.skuzzle.springboot.test.wiremock;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.function.BiConsumer;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -19,14 +20,43 @@ import com.google.common.base.Preconditions;
 class StubTranslator {
 
     static void configureStubOn(WireMockServer wiremock, HttpStub stub) {
-        final MappingBuilder requestBuilder = buildRequest(stub);
-        final ResponseDefinitionBuilder responseBuilder = buildResponse(stub);
-        wiremock.stubFor(requestBuilder.willReturn(responseBuilder));
+        Preconditions.checkArgument(stub.respond().length <= 1 ||
+                nullIfEmpty(stub.onRequest().scenario().name()) == null,
+                "Scenario not supported within stub with multiple responses");
+
+        final Iterator<Response> responses = Arrays.asList(stub.respond()).iterator();
+
+        int state = 0;
+        while (responses.hasNext()) {
+            final Response response = responses.next();
+
+            final MappingBuilder requestBuilder = buildRequest(stub.onRequest());
+
+            if (stub.respond().length > 1) {
+                final String scenarioName = stub.toString();
+
+                final int nextState = stub.wrapAround() && !responses.hasNext()
+                        ? 0
+                        : state + 1;
+
+                requestBuilder.inScenario(scenarioName)
+                        .whenScenarioStateIs(translateState(state))
+                        .willSetStateTo(translateState(nextState));
+            }
+
+            final ResponseDefinitionBuilder responseBuilder = buildResponse(response);
+            wiremock.stubFor(requestBuilder.willReturn(responseBuilder));
+            ++state;
+        }
     }
 
-    private static MappingBuilder buildRequest(HttpStub stub) {
-        final Request request = stub.onRequest();
+    private static String translateState(int state) {
+        return state == 0
+                ? com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
+                : "" + state;
+    }
 
+    private static MappingBuilder buildRequest(Request request) {
         final String toUrl = nullIfEmpty(request.toUrl());
         final String toUrlPattern = nullIfEmpty(request.toUrlPattern());
         final String toUrlPath = nullIfEmpty(request.toUrlPath());
@@ -71,9 +101,7 @@ class StubTranslator {
         return requestBuilder;
     }
 
-    private static ResponseDefinitionBuilder buildResponse(HttpStub stub) {
-        final Response response = stub.respond();
-
+    private static ResponseDefinitionBuilder buildResponse(Response response) {
         final ResponseDefinitionBuilder responseBuilder = WireMock.aResponse()
                 .withStatus(response.withStatus().value());
 

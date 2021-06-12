@@ -1,3 +1,6 @@
+<!-- This file is auto generated during release from readme/README.md -->
+
+
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
@@ -80,9 +83,12 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java ${maven.compiler.source}
-- [x] Tested against Spring-Boot `2.2.13.RELEASE`, `2.3.12.RELEASE`, `2.4.7`, `2.5.1`
+- [x] Tested against Spring-Boot `${version.spring-boot}, ${compatible-spring-boot-versions}`
 
 ## Changelog
+
+### Version 0.0.8
+* Allow to configure consecutive responses for the same request
 
 ### Version 0.0.7
 * Compatibility to older Spring-Boot versions
