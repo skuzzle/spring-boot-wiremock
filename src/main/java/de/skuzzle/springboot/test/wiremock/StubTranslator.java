@@ -98,6 +98,12 @@ class StubTranslator {
         if (requestBody != null) {
             requestBuilder.withRequestBody(StringValuePatterns.parseFromPrefix(requestBody));
         }
+
+        final int priority = request.priority();
+        if (priority != Request.NO_PRIORITY) {
+            requestBuilder.atPriority(priority);
+        }
+
         return requestBuilder;
     }
 
