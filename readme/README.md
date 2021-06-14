@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId}/badge.svg)](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId})
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -16,8 +16,8 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 
 ```xml
 <dependency>
-    <groupId>de.skuzzle.springboot.test</groupId>
-    <artifactId>spring-boot-wiremock</artifactId>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
     <version>${project.version}</version>
 </dependency>
 ```
