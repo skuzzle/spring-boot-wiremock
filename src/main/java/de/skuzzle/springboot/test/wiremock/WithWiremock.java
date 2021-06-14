@@ -11,14 +11,35 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
+
 /**
  * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
- * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}.
+ * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}. You
+ * should configure {@link #injectHttpHostInto()} resp. {@link #injectHttpsHostInto()} in
+ * order to have the mock's random base url injected into a Spring-Boot application
+ * property.
  * <p>
- * By default, the mock server is only served on HTTP. If you want to test with SSL, you
- * need to specify {@link #httpsPort()} with a value &gt;= 0.
+ * By default, the mock server is only serves unencrypted HTTP. If you want to test
+ * encrypted traffic using SSL, you need to specify {@link #httpsPort()} with a value
+ * &gt;= 0.
+ * <p>
+ * The configured {@link WireMockServer} instance is made available in the application
+ * context and thus can easily be injected into a test class like this:
+ *
+ * <pre>
+ * &#64;Autowired
+ * private WireMockServer wiremock;
+ * </pre>
+ *
+ * Subsequently you can use it to configure your stubs if you refrain from using
+ * {@link HttpStub annotation based} stubbing. Note that you should not call any lifecycle
+ * methods like {@link WireMockServer#stop()} on the injected instance. The lifecycle will
+ * be managed by this framework internally.
  *
  * @author Simon Taddiken
+ * @see TestKeystores
+ * @see HttpStub
  * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
  *           configured values of the annotation instance accessible from the
  *           {@link WireMockInitializer}. The {@link WiremockAnnotationProps} class can be

@@ -77,9 +77,11 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
                 .applyTo(applicationContext);
     }
 
+    @Deprecated
     private Stream<String> toStringProps(Map<String, String> props) {
         // Only for compatibility to older Spring-Boot versions that do not support
         // TestPropertyValues.of(Map)
+        // This method can be removed when the base-line spring-boot version is 2.4.x
         return props.entrySet().stream()
                 .map(entry -> entry.getKey() + "=" + entry.getValue());
     }
