@@ -18,8 +18,9 @@ import org.springframework.web.client.RestTemplate;
 import de.skuzzle.springboot.test.wiremock.TestClients.ClientBuilder;
 
 @SpringBootTest
+@TestStubCollectionAnnotation
 @WithWiremock(injectHttpHostInto = "mockHost")
-public class TestHttpStub {
+public class TestHttpStub implements TestStubCollectionInterface {
 
     @Value("${mockHost}")
     private String mockHost;
@@ -182,5 +183,25 @@ public class TestHttpStub {
 
         assertThatExceptionOfType(HttpClientErrorException.class)
                 .isThrownBy(() -> client().build().getForEntity(url("/"), String.class));
+    }
+
+    @Test
+    void testStubsInheritedFromInterface() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/fromInterfaceCollection1"),
+                String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/fromInterfaceCollection2"),
+                String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    @Test
+    void testStubsInheritedFromMetaAnnotation() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/fromAnnotationCollection1"),
+                String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/fromAnnotationCollection2"),
+                String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

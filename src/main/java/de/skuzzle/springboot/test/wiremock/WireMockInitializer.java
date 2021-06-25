@@ -1,6 +1,6 @@
 package de.skuzzle.springboot.test.wiremock;
 
-import java.util.Arrays;
+import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -11,6 +11,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
+import org.springframework.test.context.TestContext;
 import org.springframework.test.context.event.AfterTestExecutionEvent;
 import org.springframework.test.context.event.BeforeTestExecutionEvent;
 
@@ -101,12 +105,12 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
 
-                final HttpStub[] stubsOnClass = e.getTestContext().getTestClass().getAnnotationsByType(HttpStub.class);
-                final HttpStub[] stubsOnMethod = e.getTestContext().getTestMethod()
-                        .getAnnotationsByType(HttpStub.class);
+                final TestContext testContext = e.getTestContext();
+                Stream.concat(
+                        determineStubs(testContext.getTestClass()),
+                        determineStubs(testContext.getTestMethod()))
+                        .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
 
-                Arrays.stream(stubsOnClass).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
-                Arrays.stream(stubsOnMethod).forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {
                 wiremockServer.resetAll();
@@ -115,5 +119,12 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
                 wiremockServer.stop();
             }
         });
+    }
+
+    private Stream<HttpStub> determineStubs(AnnotatedElement e) {
+        return MergedAnnotations.from(e, SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
+                .stream(HttpStub.class)
+                .map(MergedAnnotation::synthesize);
+
     }
 }

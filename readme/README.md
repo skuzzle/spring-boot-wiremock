@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId}/badge.svg)](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId})
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -16,9 +16,9 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 
 ```xml
 <dependency>
-    <groupId>${project.groupId}</groupId>
-    <artifactId>${project.artifactId}</artifactId>
-    <version>${project.version}</version>
+    <groupId>de.skuzzle.springboot.test</groupId>
+    <artifactId>spring-boot-wiremock</artifactId>
+    <version>0.0.9-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -82,10 +82,16 @@ The `@WithWiremock` annotation works just like that: It sets up a WireMock serve
 can be injected into the Spring application properties, simply replacing an existing value. 
 
 ## Compatibility
-- [x] Requires Java ${maven.compiler.source}
-- [x] Tested against Spring-Boot `${version.spring-boot}, ${compatible-spring-boot-versions}`
+- [x] Requires Java 11
+- [x] Tested against Spring-Boot `${compatible-spring-boot-versions}`
 
 ## Changelog
+
+### Version 0.0.9
+* [Add] Possibility to set a stub's priority
+* [Add] Allow to define annotation stubs on inherited super classes and interfaces of the test class
+* [Add] Allow to define annotation stubs using meta-annotated custom annotations
+* [Fix] Possibility to place multiple stubs on the test class (missing `target = { ..., ElementType.TYPE }` on `HttpStubs`) 
 
 ### Version 0.0.8
 * Allow to configure consecutive responses for the same request

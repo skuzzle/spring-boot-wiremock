@@ -6,15 +6,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-/**
- * Container annotation for repeatable {@link HttpStub} annotation.
- *
- * @author Simon Taddiken
- * @see HttpStub
- */
 @Retention(RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface HttpStubs {
-    /** All the stubs that should be added. */
-    HttpStub[] value() default {};
+@HttpStub(onRequest = @Request(toUrl = "/fromAnnotationCollection1"))
+@HttpStub(onRequest = @Request(toUrl = "/fromAnnotationCollection2"))
+public @interface TestStubCollectionAnnotation {
+
 }

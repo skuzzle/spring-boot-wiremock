@@ -18,7 +18,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.8</version>
+    <version>0.0.9-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -83,9 +83,15 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java 11
-- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.7, 2.5.1`
+- [x] Tested against Spring-Boot `2.3.12.RELEASE, 2.4.7, 2.5.1`
 
 ## Changelog
+
+### Version 0.0.9
+* [Add] Possibility to set a stub's priority
+* [Add] Allow to define annotation stubs on inherited super classes and interfaces of the test class
+* [Add] Allow to define annotation stubs using meta-annotated custom annotations
+* [Fix] Possibility to place multiple stubs on the test class (missing `target = { ..., ElementType.TYPE }` on `HttpStubs`) 
 
 ### Version 0.0.8
 * Allow to configure consecutive responses for the same request

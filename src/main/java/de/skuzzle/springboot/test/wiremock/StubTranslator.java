@@ -20,7 +20,8 @@ import com.google.common.base.Preconditions;
 class StubTranslator {
 
     static void configureStubOn(WireMockServer wiremock, HttpStub stub) {
-        Preconditions.checkArgument(stub.respond().length <= 1 ||
+        final boolean multipleResponseStubs = stub.respond().length > 1;
+        Preconditions.checkArgument(!multipleResponseStubs ||
                 nullIfEmpty(stub.onRequest().scenario().name()) == null,
                 "Scenario not supported within stub with multiple responses");
 
@@ -32,7 +33,7 @@ class StubTranslator {
 
             final MappingBuilder requestBuilder = buildRequest(stub.onRequest());
 
-            if (stub.respond().length > 1) {
+            if (multipleResponseStubs) {
                 final String scenarioName = stub.toString();
 
                 final int nextState = stub.wrapAround() && !responses.hasNext()
