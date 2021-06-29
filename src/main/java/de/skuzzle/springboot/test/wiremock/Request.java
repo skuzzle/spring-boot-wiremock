@@ -64,6 +64,12 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @Retention(RUNTIME)
 public @interface Request {
 
+    // sentinel value to signal that no priority was configured
+    static int NO_PRIORITY = Integer.MAX_VALUE - 1;
+
+    /** The stub's priority. */
+    int priority() default NO_PRIORITY;
+
     /**
      * Allows to configure WireMock scenarios that can be used for stateful request
      * matching.
