@@ -16,9 +16,10 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 
 ```xml
 <dependency>
-    <groupId>de.skuzzle.springboot.test</groupId>
-    <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.9-SNAPSHOT</version>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
+    <version>${project.version}</version>
+    <scope>test</scope>
 </dependency>
 ```
 
@@ -84,8 +85,13 @@ can be injected into the Spring application properties, simply replacing an exis
 ## Compatibility
 - [x] Requires Java 11
 - [x] Tested against Spring-Boot `${version.spring-boot}, ${compatible-spring-boot-versions}`
+- [x] Tested against WireMock `${version.wiremock}`
 
 ## Changelog
+
+### Version 0.0.10
+* [FiX] Readme
+* [Change] Use latest WireMock version
 
 ### Version 0.0.9
 * [Add] Possibility to set a stub's priority
