@@ -9,7 +9,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
 
     <name>SpringBoot WireMock</name>
@@ -17,6 +17,7 @@
 
     <properties>
         <coveralls.skip>false</coveralls.skip>
+
 
         <!-- Minimal compatible Spring-Boot version. Newer versions are tested during Jenkins build. -->
         <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
@@ -148,6 +149,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <goals>
@@ -189,7 +191,7 @@
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <configuration>
-                    <postReleaseGoals>deploy</postReleaseGoals>
+                    <postReleaseGoals>github-release:github-release deploy</postReleaseGoals>
                     <detail>true</detail>
                     <verbose>true</verbose>
                     <skipTestProject>true</skipTestProject>
@@ -197,6 +199,20 @@
                         <productionBranch>main</productionBranch>
                         <developmentBranch>dev</developmentBranch>
                     </gitFlowConfig>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.ragedunicorn.tools.maven</groupId>
+                <artifactId>github-release-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <configuration>
+                    <owner>skuzzle</owner>
+                    <repository>${github.name}</repository>
+                    <authToken>${github.release-token}</authToken>
+                    <tagName>v${project.version}</tagName>
+                    <name>${project.version}</name>
+                    <targetCommitish>main</targetCommitish>
+                    <releaseNotes>RELEASE_NOTES.md</releaseNotes>
                 </configuration>
             </plugin>
         </plugins>

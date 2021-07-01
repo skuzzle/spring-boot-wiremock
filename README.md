@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
-
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
+[![JavaDoc](http://javadoc-badge.appspot.com/de.skuzzle.springboot.test/spring-boot-wiremock.svg?label=JavaDoc)](http://javadoc-badge.appspot.com/de.skuzzle.springboot.test/spring-boot-wiremock)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -18,7 +18,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.10</version>
+    <version>0.0.11</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -88,6 +88,9 @@ can be injected into the Spring application properties, simply replacing an exis
 - [x] Tested against WireMock `2.27.1`
 
 ## Changelog
+
+### Version 0.0.11
+* Just some improvements to the build/release process
 
 ### Version 0.0.10
 * [FiX] Readme
