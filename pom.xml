@@ -9,7 +9,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.11-SNAPSHOT</version>
+    <version>0.0.11</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
 
     <name>SpringBoot WireMock</name>
