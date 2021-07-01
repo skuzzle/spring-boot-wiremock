@@ -4,7 +4,7 @@
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.12-SNAPSHOT</version>
+    <version>0.0.12</version>
     <scope>test</scope>
 </dependency>
 ```
