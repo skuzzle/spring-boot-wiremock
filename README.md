@@ -89,6 +89,9 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Changelog
 
+### Version 0.0.11
+* Just some improvements to the build/release process
+
 ### Version 0.0.10
 * [FiX] Readme
 * [Change] Use latest WireMock version

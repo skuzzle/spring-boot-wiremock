@@ -2,7 +2,7 @@
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId}/badge.svg)](https://maven-badges.herokuapp.com/maven-central/${project.groupId}/${project.artifactId})
 [![JavaDoc](http://javadoc-badge.appspot.com/${project.groupId}/${project.artifactId}.svg?label=JavaDoc)](http://javadoc-badge.appspot.com/${project.groupId}/${project.artifactId})
-[![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/skuzzle/${github.name}/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/${github.name}?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
 # spring-boot-wiremock
@@ -88,6 +88,9 @@ can be injected into the Spring application properties, simply replacing an exis
 - [x] Tested against WireMock `${version.wiremock}`
 
 ## Changelog
+
+### Version 0.0.11
+* Just some improvements to the build/release process
 
 ### Version 0.0.10
 * [FiX] Readme

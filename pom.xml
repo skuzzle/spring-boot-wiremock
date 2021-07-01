@@ -17,6 +17,7 @@
 
     <properties>
         <coveralls.skip>false</coveralls.skip>
+        
 
         <!-- Minimal compatible Spring-Boot version. Newer versions are tested during Jenkins build. -->
         <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
@@ -189,7 +190,7 @@
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <configuration>
-                    <postReleaseGoals>deploy</postReleaseGoals>
+                    <postReleaseGoals>deploy github-release:github-release</postReleaseGoals>
                     <detail>true</detail>
                     <verbose>true</verbose>
                     <skipTestProject>true</skipTestProject>
@@ -198,6 +199,24 @@
                         <developmentBranch>dev</developmentBranch>
                     </gitFlowConfig>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.ragedunicorn.tools.maven</groupId>
+                <artifactId>github-release-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <executions>
+                    <execution>
+                        <configuration>
+                            <owner>skuzzle</owner>
+                            <repository>${github.name}</repository>
+                            <authToken>${github.release-token}</authToken>
+                            <tagName>v${project.version}</tagName>
+                            <name>${project.version}</name>
+                            <targetCommitish>master</targetCommitish>
+                            <releaseNotes>RELEASE_NOTES.md</releaseNotes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
