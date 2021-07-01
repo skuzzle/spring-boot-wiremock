@@ -9,7 +9,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.11</version>
+    <version>0.0.12</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
 
     <name>SpringBoot WireMock</name>
@@ -191,7 +191,7 @@
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <configuration>
-                    <postReleaseGoals>github-release:github-release deploy</postReleaseGoals>
+                    <postReleaseGoals>deploy</postReleaseGoals>
                     <detail>true</detail>
                     <verbose>true</verbose>
                     <skipTestProject>true</skipTestProject>
