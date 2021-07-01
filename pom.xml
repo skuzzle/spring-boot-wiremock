@@ -211,7 +211,7 @@
                     <authToken>${github.release-token}</authToken>
                     <tagName>v${project.version}</tagName>
                     <name>${project.version}</name>
-                    <targetCommitish>master</targetCommitish>
+                    <targetCommitish>main</targetCommitish>
                     <releaseNotes>RELEASE_NOTES.md</releaseNotes>
                 </configuration>
             </plugin>
