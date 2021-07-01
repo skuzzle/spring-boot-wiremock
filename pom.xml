@@ -191,7 +191,7 @@
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
                 <configuration>
-                    <postReleaseGoals>github-release:github-release deploy</postReleaseGoals>
+                    <postReleaseGoals>deploy</postReleaseGoals>
                     <detail>true</detail>
                     <verbose>true</verbose>
                     <skipTestProject>true</skipTestProject>
