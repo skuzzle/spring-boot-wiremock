@@ -12,7 +12,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
-- [x] Define simple stubs using annotations
+- [x] Declarative stubs using annotations
 
 ```xml
 <dependency>
@@ -66,6 +66,10 @@ Injecting the host into the application context happens _before_ any bean instan
 property values takes precedence over any other, for example statically configured value. This means, in most cases the 
 extension works out of the box with your current context configuration.
 
+You can see more annotation stubbing examples in 
+[this](https://github.com/skuzzle/spring-boot-wiremock/blob/main/src/test/java/de/skuzzle/springboot/test/wiremock/TestHttpStub.java) 
+test class.
+
 ## Rationale
 [WireMock](http://wiremock.org/) is an awesome library for mocking HTTP endpoints in unit tests. However, it can be 
 quite cumbersome to integrate with Spring-Boot: when you manually manage the `WireMockServer` from within the test,
@@ -87,13 +91,71 @@ can be injected into the Spring application properties, simply replacing an exis
 - [x] Tested against Spring-Boot `${version.spring-boot}, ${compatible-spring-boot-versions}`
 - [x] Tested against WireMock `${version.wiremock}`
 
+## Usage
+
+### WireMock based stubbing
+
+### Annotation based stubbing
+If you opt-in to use annotation based stubbing provided by this library you gain the advantages of full declarative 
+stubbing and easily reusable stubs.
+
+> Warning: Please note that using annotation based stubbing will make it harder to get rid of this library from your 
+> code base in the future. You should consider to only use WireMock based stubbing to reduce coupling to this library.
+
+Not all WireMock features (e.g. verifications) are available in annotation based stubbing. It is always possible though 
+to combine annotation based stubs with plain WireMock based stubs as describe above.
+
+#### Multiple responses
+It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
+requests. Internally, this feature makes use of WireMock scenarios. 
+
+#### Sharing stubs
+It is possible to share stubs among multiple tests. You can either define your stubs on a super class or an interface 
+implemented by your test class. However, the preferred way of sharing stubs is to create a new annotation which 
+is meta-annotated with all the stubs (and optionally also with `@WithWiremock`) like in the following example:
+
+```java
+@Retention(RUNTIME)
+@Target(TYPE)
+@WithWiremock(injectHttpHostInto = "sample-service.url")
+@HttpStub(onRequest = @Request(toUrl = "/info"),
+        respond = @Response(withStatus = HttpStatus.OK, withStatusMessage = "Everything is Ok"))
+@HttpStub(onRequest = @Request(toUrl = "/submit/entity", withMethod = "PUT"), respond = {
+        @Response(withStatus = HttpStatus.CREATED, withStatusMessage = "Entity created"),
+        @Response(withStatus = HttpStatus.OK, withStatusMessage = "Entity already exists")
+})
+public @interface WithSampleServiceMock {
+
+}
+```
+
+You can now easily reuse the complete mock definition in any `SpringBootTest`:
+```java
+@SpringBootTest
+@WithSampleServiceMock
+public class MetaAnnotatedTest {
+
+    @Value("${sample-service.url}")
+    private String sampleServiceUrl;
+    
+    // ...
+}
+```
+
 ## Changelog
+
+### Version 0.0.13
+* Improve documentation
+* [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`.
+
+### Version 0.0.12
+* Just some improvements to the build/release process
 
 ### Version 0.0.11
 * Just some improvements to the build/release process
 
 ### Version 0.0.10
-* [FiX] Readme
+* [Fix] Readme
 * [Change] Use latest WireMock version
 
 ### Version 0.0.9

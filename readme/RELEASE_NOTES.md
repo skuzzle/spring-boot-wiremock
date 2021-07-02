@@ -1,4 +1,5 @@
-* Just some improvements to the build/release process
+* Improve documentation
+* [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`.
 
 ```xml
 <dependency>
