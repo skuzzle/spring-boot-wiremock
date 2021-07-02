@@ -165,6 +165,7 @@ public class MetaAnnotatedTest {
 ### Version 0.0.13
 * Improve documentation
 * [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`.
+* [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request.
 
 ### Version 0.0.12
 * Just some improvements to the build/release process

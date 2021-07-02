@@ -24,7 +24,7 @@ public enum WrapAround {
 
         @Override
         int determineNextState(int currentState, boolean hasNext) {
-            return !hasNext ? 0 : currentState + 1;
+            return hasNext ? currentState + 1 : 0;
         }
 
     },
