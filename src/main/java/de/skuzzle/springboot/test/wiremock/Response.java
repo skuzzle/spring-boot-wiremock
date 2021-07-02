@@ -6,12 +6,20 @@ import java.lang.annotation.Retention;
 
 import org.springframework.http.HttpStatus;
 
+/**
+ * Defines the contents of the mock response that will be sent when the request of a
+ * {@link HttpStub stub} was matched. When no attributes are defined, the response will be
+ * empty with status 200 OK.
+ *
+ * @author Simon Taddiken
+ */
 @Retention(RUNTIME)
 public @interface Response {
 
     /** The HTTP status of the response. Defaults to {@link HttpStatus#OK}. */
     HttpStatus withStatus() default HttpStatus.OK;
 
+    /** The HTTP status line. */
     String withStatusMessage() default "";
 
     /**

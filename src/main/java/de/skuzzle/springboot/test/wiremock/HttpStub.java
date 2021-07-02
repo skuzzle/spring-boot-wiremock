@@ -42,13 +42,24 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * request. When {@link #wrapAround()} is <code>true</code>, the stub will start over with
  * the first response, once the last has been returned.
  * <p>
- * The annotation is repeatable. You can place multiple instances on a test to define
- * multiple stubs. You can also place the annotation on the test class itself to define
- * global stubs. Note that all stubs are reset after each test.
+ * The annotation can be put in versatile places:
+ * <ul>
+ * <li>You can place the annotation on a single test method.</li>
+ * <li>You can place the annotation on the test class itself to define global stubs.</li>
+ * <li>You can place the annotation on a super class or any implemented interface of a
+ * test class for easy reuse of the stub.</li>
+ * <li>You can place the annotation as meta-annotation on a custom annotation type for
+ * easy reuse of the stub.</li>
+ * <li>The annotation is repeatable. Wherever you put a single instance, you can also put
+ * multiple instances to define multiple stubs.</li>
+ * </ul>
+ * Note that all stubs are reset after each test.
  * <p>
  * If you need more sophisticated stubbing, you can always just autowire the
  * {@link WireMockServer} into your test class and use
  * {@link WireMockServer#stubFor(com.github.tomakehurst.wiremock.client.MappingBuilder)}.
+ * The same approach should be used to use verifications which are not supported via
+ * annotations.
  *
  * @author Simon Taddiken
  * @see Request
@@ -76,7 +87,17 @@ public @interface HttpStub {
      * Whether to start over with the first response once the last response has been
      * returned. Only applies if more then one {@link #respond() response} has been
      * configured. Defaults to <code>false</code>.
+     *
+     * @deprecated Since 0.0.12. Use {@link #onLastResponse()} with
+     *             {@link WrapAround#START_OVER} instead.
      */
+    @Deprecated(forRemoval = true, since = "0.0.12")
     boolean wrapAround() default false;
 
+    /**
+     * Defines the response behavior of the mock if multiple responses are defined. By
+     * default, when the last response has been returned, the mock will answer with a 403
+     * status code (see {@link WrapAround#RETURN_ERROR}).
+     */
+    WrapAround onLastResponse() default WrapAround.RETURN_ERROR;
 }

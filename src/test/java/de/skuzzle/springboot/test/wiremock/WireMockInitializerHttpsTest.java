@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import de.skuzzle.springboot.test.wiremock.client.TestClients;
+
 @SpringBootTest
 @WithWiremock(injectHttpsHostInto = "serviceUrl", httpsPort = 0, sslOnly = true)
 public class WireMockInitializerHttpsTest {

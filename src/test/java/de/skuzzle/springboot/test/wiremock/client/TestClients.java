@@ -1,4 +1,4 @@
-package de.skuzzle.springboot.test.wiremock;
+package de.skuzzle.springboot.test.wiremock.client;
 
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -14,13 +14,13 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-final class TestClients {
+public final class TestClients {
 
     public static ClientBuilder<RestTemplateBuilder, RestTemplate> restTemplate() {
         return new RestTemplateClientBuilder(new RestTemplateBuilder());
     }
 
-    static interface ClientBuilder<T, C> {
+    public static interface ClientBuilder<T, C> {
         ClientBuilder<T, C> customize(Function<? super T, T> builder);
 
         ClientBuilder<T, C> withBasicAuth(String username, String password);
@@ -34,7 +34,7 @@ final class TestClients {
         C build();
     }
 
-    static final class RestTemplateClientBuilder implements ClientBuilder<RestTemplateBuilder, RestTemplate> {
+    public static final class RestTemplateClientBuilder implements ClientBuilder<RestTemplateBuilder, RestTemplate> {
 
         private RestTemplateBuilder builder;
         private final SSLContextBuilder sslContextBuilder;

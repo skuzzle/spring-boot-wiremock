@@ -27,6 +27,7 @@ class StubTranslator {
 
         final Iterator<Response> responses = Arrays.asList(stub.respond()).iterator();
 
+        final WrapAround wrapAround = determineWrapAround(stub);
         int state = 0;
         while (responses.hasNext()) {
             final Response response = responses.next();
@@ -36,9 +37,7 @@ class StubTranslator {
             if (multipleResponseStubs) {
                 final String scenarioName = stub.toString();
 
-                final int nextState = stub.wrapAround() && !responses.hasNext()
-                        ? 0
-                        : state + 1;
+                final int nextState = wrapAround.determineNextState(state, responses.hasNext());
 
                 requestBuilder.inScenario(scenarioName)
                         .whenScenarioStateIs(translateState(state))
@@ -49,6 +48,14 @@ class StubTranslator {
             wiremock.stubFor(requestBuilder.willReturn(responseBuilder));
             ++state;
         }
+    }
+
+    private static WrapAround determineWrapAround(HttpStub stub) {
+        // TODO: Remove this statement when wrapAround is removed
+        if (stub.wrapAround() && stub.onLastResponse() == WrapAround.RETURN_ERROR) {
+            return WrapAround.START_OVER;
+        }
+        return stub.onLastResponse();
     }
 
     private static String translateState(int state) {
