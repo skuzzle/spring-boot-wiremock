@@ -19,7 +19,7 @@ import com.google.common.base.Preconditions;
  */
 class StubTranslator {
 
-    static void configureStubOn(WireMockServer wiremock, HttpStub stub) {
+    static void configureStubOn(WireMockServer wiremock, WithWiremock withWiremock, HttpStub stub) {
         final boolean multipleResponseStubs = stub.respond().length > 1;
         Preconditions.checkArgument(!multipleResponseStubs ||
                 nullIfEmpty(stub.onRequest().scenario().name()) == null,
@@ -32,7 +32,7 @@ class StubTranslator {
         while (responses.hasNext()) {
             final Response response = responses.next();
 
-            final MappingBuilder requestBuilder = buildRequest(stub.onRequest());
+            final MappingBuilder requestBuilder = buildRequest(withWiremock, stub.onRequest());
 
             if (multipleResponseStubs) {
                 final String scenarioName = stub.toString();
@@ -64,7 +64,7 @@ class StubTranslator {
                 : "" + state;
     }
 
-    private static MappingBuilder buildRequest(Request request) {
+    private static MappingBuilder buildRequest(WithWiremock withWiremock, Request request) {
         final String toUrl = nullIfEmpty(request.toUrl());
         final String toUrlPattern = nullIfEmpty(request.toUrlPattern());
         final String toUrlPath = nullIfEmpty(request.toUrlPath());
@@ -90,17 +90,9 @@ class StubTranslator {
         parseValueArray(request.withQueryParameters(), requestBuilder::withQueryParam);
         parseValueArray(request.containingCookies(), requestBuilder::withCookie);
 
-        final String basicAuthUsername = nullIfEmpty(request.authenticatedBy().basicAuthUsername());
-        final String basicAuthPassword = nullIfEmpty(request.authenticatedBy().basicAuthPassword());
-        if (basicAuthUsername != null && basicAuthPassword != null) {
-            requestBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
+        if (!configureAuthentication(requestBuilder, request.authenticatedBy())) {
+            configureAuthentication(requestBuilder, withWiremock.withGlobalAuthentication());
         }
-        final String bearerToken = nullIfEmpty(request.authenticatedBy().bearerToken());
-        if (bearerToken != null) {
-            requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
-        }
-        mutuallyExclusive(parameters("basicAuthPassword", "bearerToken"), values(basicAuthPassword, bearerToken));
-        mutuallyExclusive(parameters("basicAuthUsername", "bearerToken"), values(basicAuthUsername, bearerToken));
 
         final String requestBody = nullIfEmpty(request.withBody());
         if (requestBody != null) {
@@ -113,6 +105,24 @@ class StubTranslator {
         }
 
         return requestBuilder;
+    }
+
+    private static boolean configureAuthentication(MappingBuilder mappingBuilder, Auth authenticatedBy) {
+        final String basicAuthUsername = nullIfEmpty(authenticatedBy.basicAuthUsername());
+        final String basicAuthPassword = nullIfEmpty(authenticatedBy.basicAuthPassword());
+        final String bearerToken = nullIfEmpty(authenticatedBy.bearerToken());
+        mutuallyExclusive(parameters("basicAuthPassword", "bearerToken"), values(basicAuthPassword, bearerToken));
+        mutuallyExclusive(parameters("basicAuthUsername", "bearerToken"), values(basicAuthUsername, bearerToken));
+
+        if (basicAuthUsername != null && basicAuthPassword != null) {
+            mappingBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
+            return true;
+        } else if (bearerToken != null) {
+            mappingBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
+            return true;
+        }
+
+        return false;
     }
 
     private static ResponseDefinitionBuilder buildResponse(Response response) {

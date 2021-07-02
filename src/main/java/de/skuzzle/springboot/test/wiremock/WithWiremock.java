@@ -142,4 +142,11 @@ public @interface WithWiremock {
      */
     @PropertyMapping(PROP_HTTPS_PORT)
     int httpsPort() default -1;
+
+    /**
+     * Required authentication information that will be added to every stub which itself
+     * doesn't specify {@link HttpStub#authenticatedBy}. Note that, once authentication is
+     * configured on this level, you can not undo it for specific stubs.
+     */
+    Auth withGlobalAuthentication() default @Auth;
 }

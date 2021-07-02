@@ -105,11 +105,18 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
 
+                final WithWiremock withWiremock = MergedAnnotations
+                        .from(e.getTestContext().getTestClass(), SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
+                        .stream(WithWiremock.class)
+                        .map(MergedAnnotation::synthesize)
+                        .findFirst()
+                        .orElseThrow();
+
                 final TestContext testContext = e.getTestContext();
                 Stream.concat(
                         determineStubs(testContext.getTestClass()),
                         determineStubs(testContext.getTestMethod()))
-                        .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
+                        .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, withWiremock, stub));
 
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {

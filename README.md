@@ -8,9 +8,9 @@
 # spring-boot-wiremock
 _This is **not** an official extension from the Spring Team!_ (Though one exists as part of the 
 [spring-cloud](https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-wiremock) 
-project)
+project).
 
-The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests with *JUnit5*
+The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests.
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
@@ -115,7 +115,7 @@ You can then use the normal WireMock API in your test methods to define stubs an
 If you opt-in to use annotation based stubbing provided by this library you gain the advantages of full declarative 
 stubbing and easily reusable stubs.
 
-> Warning: Please note that using annotation based stubbing will make it harder to get rid of this library from your 
+> **Warning**: Please note that using annotation based stubbing will make it harder to get rid of this library from your 
 > code base in the future. You should consider to only use WireMock based stubbing to reduce coupling to this library.
 
 Not all WireMock features (e.g. verifications) are available in annotation based stubbing. It is always possible though 
@@ -168,6 +168,7 @@ public class MetaAnnotatedTest {
 * Improve documentation
 * [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`.
 * [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request.
+* [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
 
 ### Version 0.0.12
 * Just some improvements to the build/release process

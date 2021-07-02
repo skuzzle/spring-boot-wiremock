@@ -21,6 +21,7 @@ public class MetaAnnotatedTest {
     private RestTemplate client() {
         return TestClients.restTemplate()
                 .withBaseUrl(sampleServiceUrl)
+                .withBasicAuth("user", "password")
                 .build();
     }
 
