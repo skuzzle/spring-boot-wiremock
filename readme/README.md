@@ -6,7 +6,9 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
 # spring-boot-wiremock
-(This is **not** an official extension from the Spring Team!)
+_This is **not** an official extension from the Spring Team!_ (Though one exists as part of the 
+[spring-cloud](https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-wiremock) 
+project)
 
 The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests with *JUnit5*
 - [x] Run WireMock server on random port
