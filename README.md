@@ -94,6 +94,20 @@ can be injected into the Spring application properties, simply replacing an exis
 ## Usage
 
 ### WireMock based stubbing
+If you set up WireMock using `@WithWireMock` the server instance is made available as bean in the Spring 
+`ApplicationContext`. It can thus be injected into the test class like this:
+
+```java
+@WithWiremock(...)
+@SpringBootTest
+public class WiremockTest {
+
+    @Autowired
+    private WireMockServer wiremock;
+}
+```
+
+You can then use the normal WireMock API in your test methods to define stubs and verifications.
 
 ### Annotation based stubbing
 If you opt-in to use annotation based stubbing provided by this library you gain the advantages of full declarative 
@@ -104,6 +118,10 @@ stubbing and easily reusable stubs.
 
 Not all WireMock features (e.g. verifications) are available in annotation based stubbing. It is always possible though 
 to combine annotation based stubs with plain WireMock based stubs as describe above.
+
+#### Simple stubs
+You can define a simple stub by annotating your test/test class with `@HttpStub`. If you specify no further attributes,
+the mock will now respond with `200 OK` for every request it receives.
 
 #### Multiple responses
 It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
