@@ -167,8 +167,10 @@ public class MetaAnnotatedTest {
   
 ### Version 0.0.13
 * Improve documentation
-* [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`.
-* [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request.
+* [Change] Move stubbing annotations into their own package: `de.skuzzle.wiremock.test.stubs` (**breaking**)
+* [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`
+* [Add] New properties that will always be injected: `wiremock.server.http(s)Host`, `wiremock.server.httpsPort`
+* [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request
 * [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
 
 <details>
@@ -182,7 +184,7 @@ public class MetaAnnotatedTest {
 
 ### Version 0.0.10
 * [Fix] Readme
-* [Change] Use latest WireMock version
+* [Change] Use latest WireMock version (`2.27.1`)
 
 ### Version 0.0.9
 * [Add] Possibility to set a stub's priority

@@ -32,6 +32,11 @@ import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
  */
 class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
+    private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
+    private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
+    private static final String SERVER_HTTPS_HOST_PROPERTY = "wiremock.server.httpsHost";
+    private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
+
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
         final WiremockAnnotationProps wiremockProps = WiremockAnnotationProps.from(applicationContext);
@@ -68,6 +73,8 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (!injectHttpPropertyName.isEmpty()) {
                 props.put(injectHttpPropertyName, httpHost);
             }
+            props.put(SERVER_HTTP_HOST_PROPERTY, httpHost);
+            props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
         }
 
         if (isHttpsEnabled) {
@@ -76,6 +83,8 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (!injectHttpsPropertyName.isEmpty()) {
                 props.put(injectHttpsPropertyName, httpsHost);
             }
+            props.put(SERVER_HTTPS_HOST_PROPERTY, httpsHost);
+            props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
         }
 
         TestPropertyValues
