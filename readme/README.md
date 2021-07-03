@@ -125,6 +125,43 @@ to combine annotation based stubs with plain WireMock based stubs as describe ab
 You can define a simple stub by annotating your test/test class with `@HttpStub`. If you specify no further attributes,
 the mock will now respond with `200 OK` for every request it receives.
 
+Here is a more sophisticated stub example:
+```
+@HttpStub(
+        onRequest = @Request(
+                withMethod = "POST",
+                toUrlPath = "/endpoint",
+                withQueryParameters = "param=matching:[a-z]+",
+                containingHeaders = "Request-Header=eq:value",
+                containingCookies = "sessionId=containing:123456",
+                withBody = "containing:Just a body",
+                authenticatedBy = @Auth(
+                        basicAuthUsername = "username",
+                        basicAuthPassword = "password")),
+        respond = @Response(
+                withStatus = HttpStatus.CREATED,
+                withBody = "Hello World",
+                withContentType = "application/text",
+                withHeaders = "Response-Header=value"))
+```
+
+#### String matching
+All stub request attributes that expect a String value optionally take a matcher prefix like shown in the above example.
+The following prefixes are supported:
+| Prefix             | Operation |
+|--------------------|-----------|
+|`eq:`               | Comparison using `String.equals` |
+|`eqIgnoreCase:`     | Comparison using `String.equalsIgnoreCase` |
+|`eqToJson:`         | Interpretes the strings as json |
+|`eqToXml`           | Interpretes the strings as xml |
+|`matching:`         | Comparison using the provided regex pattern |
+|`notMatching:`      | Comparison using the provided regex pattern but negates the result |
+|`matchingJsonPath:` | Interpretes the string as json and matches it against the provided json path |
+|`matchingXPath:`    | Interpretes the string as xml and matches it against the provided xpath |
+|`containing:`       | Comparison using `String.contains` |
+
+No prefix always results in a comparison using `String.equals`.
+
 #### Multiple responses
 It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
 requests. Internally, this feature makes use of WireMock scenarios. 
