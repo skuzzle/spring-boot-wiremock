@@ -12,6 +12,13 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.google.common.base.Preconditions;
 
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+import de.skuzzle.springboot.test.wiremock.stubs.Scenario;
+import de.skuzzle.springboot.test.wiremock.stubs.WrapAround;
+
 /**
  * Translates the {@link HttpStub} instance into a WireMock stub.
  *

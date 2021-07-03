@@ -22,6 +22,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.base.Preconditions;
 
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+
 /**
  * Sets up the WireMock server and integrates it with the Spring
  * {@link ApplicationContext}.

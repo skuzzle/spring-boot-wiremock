@@ -13,6 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+
 /**
  * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
  * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}. You

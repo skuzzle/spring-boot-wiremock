@@ -17,6 +17,12 @@ import org.springframework.web.client.RestTemplate;
 
 import de.skuzzle.springboot.test.wiremock.client.TestClients;
 import de.skuzzle.springboot.test.wiremock.client.TestClients.ClientBuilder;
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+import de.skuzzle.springboot.test.wiremock.stubs.Scenario;
+import de.skuzzle.springboot.test.wiremock.stubs.WrapAround;
 
 @SpringBootTest
 @TestStubCollectionAnnotation

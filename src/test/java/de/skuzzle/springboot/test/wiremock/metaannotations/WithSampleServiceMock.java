@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 
 import org.springframework.http.HttpStatus;
 
-import de.skuzzle.springboot.test.wiremock.Auth;
-import de.skuzzle.springboot.test.wiremock.HttpStub;
-import de.skuzzle.springboot.test.wiremock.Request;
-import de.skuzzle.springboot.test.wiremock.Response;
 import de.skuzzle.springboot.test.wiremock.WithWiremock;
-import de.skuzzle.springboot.test.wiremock.WrapAround;
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+import de.skuzzle.springboot.test.wiremock.stubs.WrapAround;
 
 @Retention(RUNTIME)
 @Target(TYPE)

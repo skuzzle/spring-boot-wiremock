@@ -1,4 +1,4 @@
-package de.skuzzle.springboot.test.wiremock;
+package de.skuzzle.springboot.test.wiremock.stubs;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 

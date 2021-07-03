@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import de.skuzzle.springboot.test.wiremock.client.TestClients;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
 @SpringBootTest
 @HttpStub

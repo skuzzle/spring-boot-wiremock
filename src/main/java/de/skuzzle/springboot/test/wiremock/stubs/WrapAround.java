@@ -1,4 +1,4 @@
-package de.skuzzle.springboot.test.wiremock;
+package de.skuzzle.springboot.test.wiremock.stubs;
 
 /**
  * Defines the response behavior in case a {@link HttpStub} has multiple responses.
@@ -12,7 +12,7 @@ public enum WrapAround {
      */
     RETURN_ERROR {
         @Override
-        int determineNextState(int currentState, boolean hasNext) {
+        public int determineNextState(int currentState, boolean hasNext) {
             return currentState + 1;
         }
     },
@@ -23,7 +23,7 @@ public enum WrapAround {
     START_OVER {
 
         @Override
-        int determineNextState(int currentState, boolean hasNext) {
+        public int determineNextState(int currentState, boolean hasNext) {
             return hasNext ? currentState + 1 : 0;
         }
 
@@ -35,7 +35,7 @@ public enum WrapAround {
     REPEAT {
 
         @Override
-        int determineNextState(int currentState, boolean hasNext) {
+        public int determineNextState(int currentState, boolean hasNext) {
             return hasNext
                     ? currentState + 1
                     : currentState;
@@ -43,5 +43,5 @@ public enum WrapAround {
 
     };
 
-    abstract int determineNextState(int currentState, boolean hasNext);
+    public abstract int determineNextState(int currentState, boolean hasNext);
 }
