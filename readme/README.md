@@ -172,7 +172,7 @@ public class MetaAnnotatedTest {
 * [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
 
 <details>
-  <summary>**Previous releases**</summary>
+  <summary><b>Previous releases</b></summary>
   
 ### Version 0.0.12
 * Just some improvements to the build/release process
