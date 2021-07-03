@@ -126,7 +126,7 @@ You can define a simple stub by annotating your test/test class with `@HttpStub`
 the mock will now respond with `200 OK` for every request it receives.
 
 Here is a more sophisticated stub example:
-```
+```java
 @HttpStub(
         onRequest = @Request(
                 withMethod = "POST",
