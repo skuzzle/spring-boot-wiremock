@@ -123,26 +123,26 @@ to combine annotation based stubs with plain WireMock based stubs as describe ab
 
 #### Simple stubs
 You can define a simple stub by annotating your test/test class with `@HttpStub`. If you specify no further attributes,
-the mock will now respond with `200 OK` for every request it receives.
+the mock will now respond with `200 OK` for every request it receives. Note that all additional attributes are optional.
 
 Here is a more sophisticated stub example:
 ```java
 @HttpStub(
-        onRequest = @Request(
-                withMethod = "POST",
-                toUrlPath = "/endpoint",
-                withQueryParameters = "param=matching:[a-z]+",
-                containingHeaders = "Request-Header=eq:value",
-                containingCookies = "sessionId=containing:123456",
-                withBody = "containing:Just a body",
-                authenticatedBy = @Auth(
-                        basicAuthUsername = "username",
-                        basicAuthPassword = "password")),
-        respond = @Response(
-                withStatus = HttpStatus.CREATED,
-                withBody = "Hello World",
-                withContentType = "application/text",
-                withHeaders = "Response-Header=value"))
+    onRequest = @Request(
+            withMethod = "POST",
+            toUrlPath = "/endpoint",
+            withQueryParameters = "param=matching:[a-z]+",
+            containingHeaders = "Request-Header=eq:value",
+            containingCookies = "sessionId=containing:123456",
+            withBody = "containing:Just a body",
+            authenticatedBy = @Auth(
+                    basicAuthUsername = "username",
+                    basicAuthPassword = "password")),
+    respond = @Response(
+            withStatus = HttpStatus.CREATED,
+            withBody = "Hello World",
+            withContentType = "application/text",
+            withHeaders = "Response-Header=value"))
 ```
 
 #### String matching
@@ -164,7 +164,35 @@ No prefix always results in a comparison using `String.equals`.
 
 #### Multiple responses
 It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
-requests. Internally, this feature makes use of WireMock scenarios. 
+requests. Internally this feature will create a WireMock scenario, thus you can not combine multiple responses and 
+explicit scenario creation using `Requst.scenario`.
+
+```java
+@HttpStub(
+    respond = {
+            @Response(withStatus = HttpStatus.CREATED),
+            @Response(withStatus = HttpStatus.OK),
+            @Response(withStatus = HttpStatus.ACCEPTED)
+    })
+```
+When stubbing multiple responses you can define what happens when the last response has been returned using 
+`HttpStub.onLastResponse` with the following options:
+
+| `onLastResponse`         | Behavior |
+|--------------------------|----------|
+|`WrapAround.RETURN_ERROR` | Default behavior. Mock will answer with a `403` code after the last response |
+|`WrapAround.START_OVER`   | After the last response the mock will start over and answer with the first response |
+|`WrapAround.REPEAT`       | The mock keeps returning the last response |
+
+```java
+@HttpStub(
+    // ...
+    respond = {
+        // ...
+    },
+    onLastResponse = WrapAround.REPEAT;
+)
+ 
 
 #### Sharing stubs
 It is possible to share stubs among multiple tests. You can either define your stubs on a super class or an interface 
