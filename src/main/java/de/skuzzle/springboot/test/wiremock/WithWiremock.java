@@ -15,6 +15,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 
 import de.skuzzle.springboot.test.wiremock.stubs.Auth;
 import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
 
 /**
  * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
@@ -148,8 +149,8 @@ public @interface WithWiremock {
 
     /**
      * Required authentication information that will be added to every stub which itself
-     * doesn't specify {@link HttpStub#authenticatedBy}. Note that, once authentication is
-     * configured on this level, you can not undo it for specific stubs.
+     * doesn't specify {@link Request#authenticatedBy()}. Note that, once authentication
+     * is configured on this level, you can not undo it for specific stubs.
      */
     Auth withGlobalAuthentication() default @Auth;
 }
