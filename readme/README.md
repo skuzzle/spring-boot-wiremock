@@ -192,7 +192,7 @@ When stubbing multiple responses you can define what happens when the last respo
     },
     onLastResponse = WrapAround.REPEAT;
 )
- 
+```
 
 #### Sharing stubs
 It is possible to share stubs among multiple tests. You can either define your stubs on a super class or an interface 
