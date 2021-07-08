@@ -22,6 +22,8 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.base.Preconditions;
 
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+
 /**
  * Sets up the WireMock server and integrates it with the Spring
  * {@link ApplicationContext}.
@@ -29,6 +31,11 @@ import com.google.common.base.Preconditions;
  * @author Simon Taddiken
  */
 class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+    private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
+    private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
+    private static final String SERVER_HTTPS_HOST_PROPERTY = "wiremock.server.httpsHost";
+    private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -66,6 +73,8 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (!injectHttpPropertyName.isEmpty()) {
                 props.put(injectHttpPropertyName, httpHost);
             }
+            props.put(SERVER_HTTP_HOST_PROPERTY, httpHost);
+            props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
         }
 
         if (isHttpsEnabled) {
@@ -74,6 +83,8 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (!injectHttpsPropertyName.isEmpty()) {
                 props.put(injectHttpsPropertyName, httpsHost);
             }
+            props.put(SERVER_HTTPS_HOST_PROPERTY, httpsHost);
+            props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
         }
 
         TestPropertyValues
@@ -105,11 +116,18 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
 
+                final WithWiremock withWiremock = MergedAnnotations
+                        .from(e.getTestContext().getTestClass(), SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
+                        .stream(WithWiremock.class)
+                        .map(MergedAnnotation::synthesize)
+                        .findFirst()
+                        .orElseThrow();
+
                 final TestContext testContext = e.getTestContext();
                 Stream.concat(
                         determineStubs(testContext.getTestClass()),
                         determineStubs(testContext.getTestMethod()))
-                        .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, stub));
+                        .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, withWiremock, stub));
 
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {

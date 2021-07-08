@@ -8,6 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.RestTemplate;
 
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+
 @SpringBootTest
 @WithWiremock(injectHttpHostInto = "serviceUrl")
 public class HelloWorldTest {

@@ -1,4 +1,4 @@
-package de.skuzzle.springboot.test.wiremock;
+package de.skuzzle.springboot.test.wiremock.stubs;
 
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
@@ -57,6 +57,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
  * <td>{@link WireMock#containing(String)}</td>
  * </tr>
  * </table>
+ * With no prefix the string comparison defaults to <em>eq:</em>.
  *
  * @author Simon Taddiken
  * @see Response

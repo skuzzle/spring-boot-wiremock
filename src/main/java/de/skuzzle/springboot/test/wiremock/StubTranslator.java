@@ -12,6 +12,13 @@ import com.github.tomakehurst.wiremock.matching.StringValuePattern;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import com.google.common.base.Preconditions;
 
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+import de.skuzzle.springboot.test.wiremock.stubs.Scenario;
+import de.skuzzle.springboot.test.wiremock.stubs.WrapAround;
+
 /**
  * Translates the {@link HttpStub} instance into a WireMock stub.
  *
@@ -19,7 +26,7 @@ import com.google.common.base.Preconditions;
  */
 class StubTranslator {
 
-    static void configureStubOn(WireMockServer wiremock, HttpStub stub) {
+    static void configureStubOn(WireMockServer wiremock, WithWiremock withWiremock, HttpStub stub) {
         final boolean multipleResponseStubs = stub.respond().length > 1;
         Preconditions.checkArgument(!multipleResponseStubs ||
                 nullIfEmpty(stub.onRequest().scenario().name()) == null,
@@ -27,18 +34,17 @@ class StubTranslator {
 
         final Iterator<Response> responses = Arrays.asList(stub.respond()).iterator();
 
+        final WrapAround wrapAround = determineWrapAround(stub);
         int state = 0;
         while (responses.hasNext()) {
             final Response response = responses.next();
 
-            final MappingBuilder requestBuilder = buildRequest(stub.onRequest());
+            final MappingBuilder requestBuilder = buildRequest(withWiremock, stub.onRequest());
 
             if (multipleResponseStubs) {
                 final String scenarioName = stub.toString();
 
-                final int nextState = stub.wrapAround() && !responses.hasNext()
-                        ? 0
-                        : state + 1;
+                final int nextState = wrapAround.determineNextState(state, responses.hasNext());
 
                 requestBuilder.inScenario(scenarioName)
                         .whenScenarioStateIs(translateState(state))
@@ -51,13 +57,21 @@ class StubTranslator {
         }
     }
 
+    private static WrapAround determineWrapAround(HttpStub stub) {
+        // TODO: Remove this statement when wrapAround is removed
+        if (stub.wrapAround() && stub.onLastResponse() == WrapAround.RETURN_ERROR) {
+            return WrapAround.START_OVER;
+        }
+        return stub.onLastResponse();
+    }
+
     private static String translateState(int state) {
         return state == 0
                 ? com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED
                 : "" + state;
     }
 
-    private static MappingBuilder buildRequest(Request request) {
+    private static MappingBuilder buildRequest(WithWiremock withWiremock, Request request) {
         final String toUrl = nullIfEmpty(request.toUrl());
         final String toUrlPattern = nullIfEmpty(request.toUrlPattern());
         final String toUrlPath = nullIfEmpty(request.toUrlPath());
@@ -83,17 +97,9 @@ class StubTranslator {
         parseValueArray(request.withQueryParameters(), requestBuilder::withQueryParam);
         parseValueArray(request.containingCookies(), requestBuilder::withCookie);
 
-        final String basicAuthUsername = nullIfEmpty(request.authenticatedBy().basicAuthUsername());
-        final String basicAuthPassword = nullIfEmpty(request.authenticatedBy().basicAuthPassword());
-        if (basicAuthUsername != null && basicAuthPassword != null) {
-            requestBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
+        if (!configureAuthentication(requestBuilder, request.authenticatedBy())) {
+            configureAuthentication(requestBuilder, withWiremock.withGlobalAuthentication());
         }
-        final String bearerToken = nullIfEmpty(request.authenticatedBy().bearerToken());
-        if (bearerToken != null) {
-            requestBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
-        }
-        mutuallyExclusive(parameters("basicAuthPassword", "bearerToken"), values(basicAuthPassword, bearerToken));
-        mutuallyExclusive(parameters("basicAuthUsername", "bearerToken"), values(basicAuthUsername, bearerToken));
 
         final String requestBody = nullIfEmpty(request.withBody());
         if (requestBody != null) {
@@ -106,6 +112,24 @@ class StubTranslator {
         }
 
         return requestBuilder;
+    }
+
+    private static boolean configureAuthentication(MappingBuilder mappingBuilder, Auth authenticatedBy) {
+        final String basicAuthUsername = nullIfEmpty(authenticatedBy.basicAuthUsername());
+        final String basicAuthPassword = nullIfEmpty(authenticatedBy.basicAuthPassword());
+        final String bearerToken = nullIfEmpty(authenticatedBy.bearerToken());
+        mutuallyExclusive(parameters("basicAuthPassword", "bearerToken"), values(basicAuthPassword, bearerToken));
+        mutuallyExclusive(parameters("basicAuthUsername", "bearerToken"), values(basicAuthUsername, bearerToken));
+
+        if (basicAuthUsername != null && basicAuthPassword != null) {
+            mappingBuilder.withBasicAuth(basicAuthUsername, basicAuthPassword);
+            return true;
+        } else if (bearerToken != null) {
+            mappingBuilder.withHeader("Authorization", WireMock.equalToIgnoreCase("Bearer " + bearerToken));
+            return true;
+        }
+
+        return false;
     }
 
     private static ResponseDefinitionBuilder buildResponse(Response response) {

@@ -13,6 +13,10 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+
 /**
  * Configures a WireMock server that is integrated with the Spring ApplicationContext. Use
  * in conjunction with any Spring Boot test annotation like {@link SpringBootTest}. You
@@ -142,4 +146,11 @@ public @interface WithWiremock {
      */
     @PropertyMapping(PROP_HTTPS_PORT)
     int httpsPort() default -1;
+
+    /**
+     * Required authentication information that will be added to every stub which itself
+     * doesn't specify {@link Request#authenticatedBy()}. Note that, once authentication
+     * is configured on this level, you can not undo it for specific stubs.
+     */
+    Auth withGlobalAuthentication() default @Auth;
 }

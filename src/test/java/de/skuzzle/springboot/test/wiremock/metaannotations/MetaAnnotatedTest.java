@@ -1,4 +1,4 @@
-package de.skuzzle.springboot.test.wiremock;
+package de.skuzzle.springboot.test.wiremock.metaannotations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,26 +10,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import de.skuzzle.springboot.test.wiremock.client.TestClients;
-import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
 @SpringBootTest
-@HttpStub
-@WithWiremock(injectHttpHostInto = "serviceUrl")
-public class WireMockInitializerHttpTest {
+@WithSampleServiceMock
+public class MetaAnnotatedTest {
 
-    @Value("${serviceUrl}")
-    private String serviceUrl;
+    @Value("${sample-service.url}")
+    private String sampleServiceUrl;
 
     private RestTemplate client() {
         return TestClients.restTemplate()
-                .withBaseUrl(serviceUrl)
+                .withBaseUrl(sampleServiceUrl)
+                .withBasicAuth("user", "password")
                 .build();
     }
 
     @Test
-    void testCallWiremockWithRestTemplate() throws Exception {
-        final ResponseEntity<String> response = client()
-                .getForEntity("/", null, String.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    void testGetInfo() throws Exception {
+        final ResponseEntity<Object> entity = client().getForEntity("/info", Object.class);
+        assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

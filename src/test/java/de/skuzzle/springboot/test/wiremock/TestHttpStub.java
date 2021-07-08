@@ -15,7 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import de.skuzzle.springboot.test.wiremock.TestClients.ClientBuilder;
+import de.skuzzle.springboot.test.wiremock.client.TestClients;
+import de.skuzzle.springboot.test.wiremock.client.TestClients.ClientBuilder;
+import de.skuzzle.springboot.test.wiremock.stubs.Auth;
+import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
+import de.skuzzle.springboot.test.wiremock.stubs.Request;
+import de.skuzzle.springboot.test.wiremock.stubs.Response;
+import de.skuzzle.springboot.test.wiremock.stubs.Scenario;
+import de.skuzzle.springboot.test.wiremock.stubs.WrapAround;
 
 @SpringBootTest
 @TestStubCollectionAnnotation
@@ -182,7 +189,32 @@ public class TestHttpStub implements TestStubCollectionInterface {
         assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
 
         assertThatExceptionOfType(HttpClientErrorException.class)
-                .isThrownBy(() -> client().build().getForEntity(url("/"), String.class));
+                .isThrownBy(() -> client().build().getForEntity(url("/"), String.class))
+                .satisfies(e -> {
+                    assertThat(e.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+                });
+    }
+
+    @Test
+    @HttpStub(
+            onRequest = @Request,
+            respond = {
+                    @Response(withStatus = HttpStatus.CREATED),
+                    @Response(withStatus = HttpStatus.OK),
+                    @Response(withStatus = HttpStatus.ACCEPTED)
+            },
+            onLastResponse = WrapAround.REPEAT)
+    void testConsecutiveWithWrapAroundRepeatLast() throws Exception {
+        final ResponseEntity<String> response1 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response1.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        final ResponseEntity<String> response2 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response2.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        final ResponseEntity<String> response3 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+
+        final ResponseEntity<String> response4 = client().build().getForEntity(url("/"), String.class);
+        assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
     @Test
