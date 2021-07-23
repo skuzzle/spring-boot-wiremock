@@ -11,7 +11,7 @@ Maven Central coordinates for this release:
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```

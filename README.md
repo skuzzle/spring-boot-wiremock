@@ -20,7 +20,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -90,7 +90,7 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java 11
-- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.8, 2.5.2`
+- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.9, 2.5.3`
 - [x] Tested against WireMock `2.27.1`
 
 ## Usage
