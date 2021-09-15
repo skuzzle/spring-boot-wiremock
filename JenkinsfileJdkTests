@@ -31,7 +31,7 @@ pipeline {
                 }
             }
             steps {
-                testAgainstJdk("18")
+                testAgainstJdk("17")
             }
         }
     }
