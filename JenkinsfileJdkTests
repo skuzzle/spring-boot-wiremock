@@ -2,39 +2,37 @@ pipeline {
     agent none
     stages {
         stage("Build for different JDKs") {
-            parallel {
-                stage('JDK-11') {
-                    agent {
-                        docker {
-                            image 'maven:3.6-jdk-11'
-                            args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
-                        }
-                    }
-                    steps {
-                        testAgainstJdk("11")
+            stage('JDK-11') {
+                agent {
+                    docker {
+                        image 'maven:3.8-jdk-11'
+                        args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
                     }
                 }
-                stage('JDK-14') {
-                    agent {
-                        docker {
-                            image 'maven:3.6-jdk-14'
-                            args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
-                        }
-                    }
-                    steps {
-                        testAgainstJdk("14")
+                steps {
+                    testAgainstJdk("11")
+                }
+            }
+            stage('JDK-14') {
+                agent {
+                    docker {
+                        image 'maven:3.8-jdk-14'
+                        args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
                     }
                 }
-                stage('JDK-17') {
-                    agent {
-                        docker {
-                            image 'maven:3.6-jdk-17'
-                            args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
-                        }
+                steps {
+                    testAgainstJdk("14")
+                }
+            }
+            stage('JDK-17') {
+                agent {
+                    docker {
+                        image 'maven:3.8-jdk-17'
+                        args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
                     }
-                    steps {
-                        testAgainstJdk("17")
-                    }
+                }
+                steps {
+                    testAgainstJdk("18")
                 }
             }
         }
