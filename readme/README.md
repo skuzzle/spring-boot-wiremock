@@ -229,6 +229,11 @@ public class MetaAnnotatedTest {
 
 ## Changelog
 
+### Version 0.0.14
+* [Dependency] Update to WireMock 2.27.2
+
+<details>
+  <summary><b>Previous releases</b></summary>
   
 ### Version 0.0.13
 * Improve documentation
@@ -238,9 +243,7 @@ public class MetaAnnotatedTest {
 * [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request
 * [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
 
-<details>
-  <summary><b>Previous releases</b></summary>
-  
+ 
 ### Version 0.0.12
 * Just some improvements to the build/release process
 

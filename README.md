@@ -91,7 +91,7 @@ can be injected into the Spring application properties, simply replacing an exis
 ## Compatibility
 - [x] Requires Java 11
 - [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.10, 2.5.4`
-- [x] Tested against WireMock `2.27.1`
+- [x] Tested against WireMock `2.27.2`
 
 ## Usage
 
@@ -229,6 +229,11 @@ public class MetaAnnotatedTest {
 
 ## Changelog
 
+### Version 0.0.14
+* [Dependency] Update to WireMock 2.27.2
+
+<details>
+  <summary><b>Previous releases</b></summary>
   
 ### Version 0.0.13
 * Improve documentation
@@ -238,9 +243,7 @@ public class MetaAnnotatedTest {
 * [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request
 * [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
 
-<details>
-  <summary><b>Previous releases</b></summary>
-  
+ 
 ### Version 0.0.12
 * Just some improvements to the build/release process
 
