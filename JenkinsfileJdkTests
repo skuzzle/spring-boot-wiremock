@@ -1,0 +1,53 @@
+pipeline {
+    agent none
+    stages {
+        stage('JDK-14') {
+            agent {
+                docker {
+                    image 'maven:3.6-jdk-14'
+                    args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
+                }
+            }
+            steps {
+                testAgainstJdk("14")
+            }
+        }
+        stage('JDK-17') {
+            agent {
+                docker {
+                    image 'maven:3.6-jdk-17'
+                    args '-v /home/jenkins/.m2:/var/maven/.m2 -v /home/jenkins/.gnupg:/.gnupg -e MAVEN_CONFIG=/var/maven/.m2 -e MAVEN_OPTS=-Duser.home=/var/maven'
+                }
+            }
+            steps {
+                testAgainstJdk("17")
+            }
+        }
+    }
+}
+
+void testAgainstJdk(version) {
+    stage("Show Versions") {
+        script {
+            sh 'mvn -version'
+            sh 'java -version'
+            sh 'javac -version'
+        }
+    }
+
+    stage("Clean Maven Project") {
+        script {
+            sh 'mvn clean -Dmaven.clean.failOnError=false -Dmaven.clean.retryOnError=true'
+        }
+    }
+
+    stage("Test against JDK $version") {
+        script {
+            try {
+                sh "mvn verify -Dmaven.compiler.release=$version"
+            } catch (err) {
+                currentBuild.result = 'FAILURE'
+            }
+        }
+    }
+}

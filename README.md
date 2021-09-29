@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock/badge.svg)](https://maven-badges.herokuapp.com/maven-central/de.skuzzle.springboot.test/spring-boot-wiremock)
-[![JavaDoc](http://javadoc-badge.appspot.com/de.skuzzle.springboot.test/spring-boot-wiremock.svg?label=JavaDoc)](http://javadoc-badge.appspot.com/de.skuzzle.springboot.test/spring-boot-wiremock)
+[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.14&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14/jar)
+[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.14&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -20,9 +20,13 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.13</version>
+    <version>0.0.14</version>
     <scope>test</scope>
 </dependency>
+```
+
+```
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14'
 ```
 
 ## Quick start
@@ -90,8 +94,8 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java 11
-- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.8, 2.5.2`
-- [x] Tested against WireMock `2.27.1`
+- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.11, 2.5.5`
+- [x] Tested against WireMock `2.27.2`
 
 ## Usage
 
@@ -165,7 +169,7 @@ No prefix always results in a comparison using `String.equals`.
 #### Multiple responses
 It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
 requests. Internally this feature will create a WireMock scenario, thus you can not combine multiple responses and 
-explicit scenario creation using `Requst.scenario`.
+explicit scenario creation using `Request.scenario`.
 
 ```java
 @HttpStub(
@@ -227,69 +231,3 @@ public class MetaAnnotatedTest {
 }
 ```
 
-## Changelog
-
-  
-### Version 0.0.13
-* Improve documentation
-* [Change] Move stubbing annotations into their own package: `de.skuzzle.wiremock.test.stubs` (**breaking**)
-* [Change] Deprecated `HttpStub.wrapAround` and introduced `HttpStub.onLastResponse` with new enum `WrapAround`
-* [Add] New properties that will always be injected: `wiremock.server.http(s)Host`, `wiremock.server.http(s)Port`
-* [Add] `WrapAround.REPEAT` which will repeat the last response on every subsequent request
-* [Add] Allow to globally define required authentication via `WithWiremock.withGlobalAuthentication`
-
-<details>
-  <summary><b>Previous releases</b></summary>
-  
-### Version 0.0.12
-* Just some improvements to the build/release process
-
-### Version 0.0.11
-* Just some improvements to the build/release process
-
-### Version 0.0.10
-* [Fix] Readme
-* [Change] Use latest WireMock version (`2.27.1`)
-
-### Version 0.0.9
-* [Add] Possibility to set a stub's priority
-* [Add] Allow to define annotation stubs on inherited super classes and interfaces of the test class
-* [Add] Allow to define annotation stubs using meta-annotated custom annotations
-* [Fix] Possibility to place multiple stubs on the test class (missing `target = { ..., ElementType.TYPE }` on `HttpStubs`) 
-
-### Version 0.0.8
-* Allow to configure consecutive responses for the same request
-
-### Version 0.0.7
-* Compatibility to older Spring-Boot versions
-* Remove note about Junit 5 being required. This library actually isn't tied to a specific testing framework 
-
-### Version 0.0.6
-* Improve JavaDoc
-* Add automatic module name to jar manifest
-
-### Version 0.0.5
-* Improve JavaDoc
-* Improve configuration consistency checks
-* Allow `@HttpStub` on test class itself (instead of only on test method)
-* Allow to set _status message_ on mock response
-* Allow to configure WireMock _scenarios_ for stateful request matching using annotations
-
-### Version 0.0.4
-* Skipped by accident 🤡
-
-### Version 0.0.3
-* Renamed `SimpleStub` to `HttpStub` and split into multiple annotations
-* `HttpStatus` enum is now used for defining the stubbed response status
-* Match _any_ HTTP method by default (instead of _GET_)
-* Allow to define different matchers for params, cookies, headers and body using prefixes like `eq:` or `containing:`
-
-### Version 0.0.2
-* Support multiple `@SimpleStub` instances per test method
-* Allow to stub authentication and response headers via `@SimpleStub`
-* Fix bug with unresolvable test keystore locations
-
-### Version 0.0.1
-* Initial prototype
-
-</details>

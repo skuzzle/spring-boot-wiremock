@@ -125,7 +125,7 @@ final class WiremockAnnotationProps {
         }
         final Resource resource = resourceLoader.getResource(location);
         try {
-            return resource.getFile().toString();
+            return resource.getURL().toString();
         } catch (final IOException e) {
             throw new IllegalArgumentException("Error resolving location for property " + key, e);
         }
