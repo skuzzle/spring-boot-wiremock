@@ -165,7 +165,7 @@ No prefix always results in a comparison using `String.equals`.
 #### Multiple responses
 It is possible to define multiple responses that will be returned by the stub when a stub is matched by consecutive 
 requests. Internally this feature will create a WireMock scenario, thus you can not combine multiple responses and 
-explicit scenario creation using `Requst.scenario`.
+explicit scenario creation using `Request.scenario`.
 
 ```java
 @HttpStub(
