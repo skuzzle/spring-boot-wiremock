@@ -8,6 +8,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
 import com.google.common.io.Resources;
 
 /**
@@ -19,6 +22,7 @@ import com.google.common.io.Resources;
  *
  * @author Simon Taddiken
  */
+@API(status = Status.EXPERIMENTAL)
 public final class TestKeystores {
 
     private TestKeystores() {
@@ -47,7 +51,6 @@ public final class TestKeystores {
             "certs/server_keystore.jks",
             "password",
             "JKS");
-
     /**
      * A truststore for trusting the self signed server certificate contained in
      * {@link #TEST_SERVER_CERTIFICATE}

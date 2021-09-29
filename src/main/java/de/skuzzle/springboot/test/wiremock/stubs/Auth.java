@@ -4,6 +4,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
 /**
  * For defining authentication information for a stub. If no attributes are specified, no
  * authentication will be required in order for the stub to match.
@@ -11,6 +14,7 @@ import java.lang.annotation.Retention;
  * @author Simon Taddiken
  * @see Request
  */
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 public @interface Auth {
 

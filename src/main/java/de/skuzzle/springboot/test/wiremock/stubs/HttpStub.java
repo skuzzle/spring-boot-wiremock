@@ -7,6 +7,9 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 /**
@@ -65,6 +68,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * @see Request
  * @see Response
  */
+@API(status = Status.EXPERIMENTAL)
 @Repeatable(HttpStubs.class)
 @Retention(RUNTIME)
 @Target({ ElementType.METHOD, ElementType.TYPE })
@@ -92,6 +96,7 @@ public @interface HttpStub {
      *             {@link WrapAround#START_OVER} instead.
      */
     @Deprecated(forRemoval = true, since = "0.0.12")
+    @API(status = Status.DEPRECATED, since = "0.0.12")
     boolean wrapAround() default false;
 
     /**

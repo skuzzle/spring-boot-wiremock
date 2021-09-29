@@ -22,6 +22,7 @@
         <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
         <version.wiremock>2.27.2</version.wiremock>
         <version.guava>30.1.1-jre</version.guava>
+        <version.api-guardian>1.1.2</version.api-guardian>
         <!-- All the remaining spring-boot versions we run the tests against (comma separated) -->
         <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.11, 2.5.5</compatible-spring-boot-versions>
 
@@ -48,6 +49,11 @@
                 <artifactId>guava</artifactId>
                 <version>${version.guava}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apiguardian</groupId>
+                <artifactId>apiguardian-api</artifactId>
+                <version>${version.api-guardian}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -56,6 +62,10 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apiguardian</groupId>
+            <artifactId>apiguardian-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>

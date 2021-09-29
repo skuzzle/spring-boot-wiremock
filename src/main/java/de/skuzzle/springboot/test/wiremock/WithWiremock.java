@@ -6,6 +6,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
 import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
@@ -46,9 +48,11 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * @see HttpStub
  * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
  *           configured values of the annotation instance accessible from the
- *           {@link WireMockInitializer}. The {@link WiremockAnnotationConfiguration} class can be
- *           used to read the configured values from the {@link ApplicationContext}.
+ *           {@link WireMockInitializer}. The {@link WiremockAnnotationConfiguration}
+ *           class can be used to read the configured values from the
+ *           {@link ApplicationContext}.
  */
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
 @ContextConfiguration(initializers = WireMockInitializer.class)
