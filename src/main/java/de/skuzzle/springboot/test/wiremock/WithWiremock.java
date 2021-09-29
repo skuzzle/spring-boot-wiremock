@@ -46,7 +46,7 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * @see HttpStub
  * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
  *           configured values of the annotation instance accessible from the
- *           {@link WireMockInitializer}. The {@link WiremockAnnotationProps} class can be
+ *           {@link WireMockInitializer}. The {@link WiremockAnnotationConfiguration} class can be
  *           used to read the configured values from the {@link ApplicationContext}.
  */
 @Retention(RUNTIME)

@@ -29,19 +29,19 @@ import com.google.common.base.Preconditions;
  *
  * @author Simon Taddiken
  */
-final class WiremockAnnotationProps {
+final class WiremockAnnotationConfiguration {
 
     private final ResourceLoader resourceLoader;
     private final Environment environment;
 
-    private WiremockAnnotationProps(ApplicationContext applicationContext) {
+    private WiremockAnnotationConfiguration(ApplicationContext applicationContext) {
         Preconditions.checkArgument(applicationContext != null, "applicationContext must not be null");
         this.environment = applicationContext.getEnvironment();
         this.resourceLoader = applicationContext;
     }
 
-    public static WiremockAnnotationProps from(ApplicationContext applicationContext) {
-        return new WiremockAnnotationProps(applicationContext);
+    public static WiremockAnnotationConfiguration from(ApplicationContext applicationContext) {
+        return new WiremockAnnotationConfiguration(applicationContext);
     }
 
     public String getInjectHttpHostPropertyName() {

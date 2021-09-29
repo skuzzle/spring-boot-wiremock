@@ -39,7 +39,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
 
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
-        final WiremockAnnotationProps wiremockProps = WiremockAnnotationProps.from(applicationContext);
+        final WiremockAnnotationConfiguration wiremockProps = WiremockAnnotationConfiguration.from(applicationContext);
         final WireMockServer wiremockServer = startWiremock(wiremockProps);
 
         injectWiremockHostIntoProperty(applicationContext, wiremockProps, wiremockServer);
@@ -47,7 +47,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
         addLifecycleEvents(applicationContext, wiremockServer);
     }
 
-    private WireMockServer startWiremock(WiremockAnnotationProps wiremockProps) {
+    private WireMockServer startWiremock(WiremockAnnotationConfiguration wiremockProps) {
         final WireMockConfiguration wiremockConfig = wiremockProps.createWiremockConfig();
         final WireMockServer wiremockServer = new WireMockServer(wiremockConfig);
         wiremockServer.start();
@@ -55,7 +55,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
     }
 
     private void injectWiremockHostIntoProperty(ConfigurableApplicationContext applicationContext,
-            WiremockAnnotationProps wiremockProps,
+            WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
 
         final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
@@ -102,7 +102,7 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
     }
 
     private void registerWiremockServerAsBean(ConfigurableApplicationContext applicationContext,
-            WiremockAnnotationProps wiremockProps,
+            WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
         final ConfigurableListableBeanFactory beanFactory = applicationContext
                 .getBeanFactory();
