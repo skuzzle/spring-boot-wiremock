@@ -25,6 +25,10 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 </dependency>
 ```
 
+```
+de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14-SNAPSHOT
+```
+
 ## Quick start
 All you need to do is to add the `@WithWiremock` annotation to your Spring-Boot test. The annotation has some 
 configuration options but the most notable one is `injectHttpHostInto`.
