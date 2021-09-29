@@ -17,5 +17,5 @@ Maven Central coordinates for this release:
 Gradle coordinates for this release:
 
 ```
-de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14-SNAPSHOT
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14-SNAPSHOT'
 ```

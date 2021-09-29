@@ -26,7 +26,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 ```
 
 ```
-de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14-SNAPSHOT
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14-SNAPSHOT'
 ```
 
 ## Quick start

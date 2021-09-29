@@ -26,7 +26,7 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 ```
 
 ```
-${project.groupId}:${project.artifactId}:${project.version}
+testImplementation '${project.groupId}:${project.artifactId}:${project.version}'
 ```
 
 ## Quick start

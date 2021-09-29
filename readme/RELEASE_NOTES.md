@@ -17,5 +17,5 @@ Maven Central coordinates for this release:
 Gradle coordinates for this release:
 
 ```
-${project.groupId}:${project.artifactId}:${project.version}
+testImplementation '${project.groupId}:${project.artifactId}:${project.version}'
 ```
