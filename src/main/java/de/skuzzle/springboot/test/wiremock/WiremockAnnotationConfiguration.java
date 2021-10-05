@@ -1,86 +1,70 @@
 package de.skuzzle.springboot.test.wiremock;
 
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_HTTPS_PORT;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_HTTP_PORT;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_INJECT_HTTPS_HOST_INTO;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_INJECT_HTTP_HOST_INTO;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_KEYSTORE_LOCATION;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_KEYSTORE_PASSWORD;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_KEYSTORE_TYPE;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_NEED_CLIENT_AUTH;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_SSL_ONLY;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_TRUSTSTORE_LOCATION;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_TRUSTSTORE_PASSWORD;
-import static de.skuzzle.springboot.test.wiremock.WithWiremock.PROP_TRUSTSTORE_TYPE;
-
 import java.io.IOException;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.base.Preconditions;
 
 /**
- * Reads the application properties configured from {@link WithWiremock} annotation and
- * creates a {@link WireMockConfiguration}.
+ * Creates the {@link WireMockServer} from the values configured in {@link WithWiremock}
+ * annotation.
  *
  * @author Simon Taddiken
  */
 final class WiremockAnnotationConfiguration {
 
+    private final WithWiremock wwm;
     private final ResourceLoader resourceLoader;
-    private final Environment environment;
 
-    private WiremockAnnotationConfiguration(ApplicationContext applicationContext) {
-        Preconditions.checkArgument(applicationContext != null, "applicationContext must not be null");
-        this.environment = applicationContext.getEnvironment();
+    private WiremockAnnotationConfiguration(WithWiremock wwm, ApplicationContext applicationContext) {
+        Preconditions.checkArgument(wwm != null, "WithWiremock annotation must not be null");
+        Preconditions.checkArgument(applicationContext != null, "applicationContext annotation must not be null");
         this.resourceLoader = applicationContext;
+        this.wwm = wwm;
     }
 
-    public static WiremockAnnotationConfiguration from(ApplicationContext applicationContext) {
-        return new WiremockAnnotationConfiguration(applicationContext);
+    public static WiremockAnnotationConfiguration from(WithWiremock wwm, ApplicationContext applicationContext) {
+        return new WiremockAnnotationConfiguration(wwm, applicationContext);
+    }
+
+    public WithWiremock withWiremockAnnotation() {
+        return this.wwm;
     }
 
     public String getInjectHttpHostPropertyName() {
-        return getString(fromProperty(PROP_INJECT_HTTP_HOST_INTO));
+        return wwm.injectHttpHostInto();
     }
 
     public String getInjectHttpsHostPropertyName() {
-        return getString(fromProperty(PROP_INJECT_HTTPS_HOST_INTO));
-    }
-
-    public boolean needsClientAuth() {
-        return getBoolean(fromProperty(PROP_NEED_CLIENT_AUTH));
-    }
-
-    public int httpPort() {
-        return getInt(fromProperty(PROP_HTTP_PORT));
-    }
-
-    public int httpsPort() {
-        return getInt(fromProperty(PROP_HTTPS_PORT));
+        return wwm.injectHttpsHostInto();
     }
 
     public boolean sslOnly() {
-        return getBoolean(fromProperty(PROP_SSL_ONLY));
+        return wwm.sslOnly();
     }
 
-    WireMockConfiguration createWiremockConfig() {
-        final boolean needClientAuth = needsClientAuth();
-        final boolean sslOnly = sslOnly();
-        final int httpPort = httpPort();
-        final int httpsPort = httpsPort();
+    public WireMockServer createWireMockServer() {
+        return new WireMockServer(createWiremockConfig());
+    }
 
-        final String keystoreLocation = getResource(fromProperty(PROP_KEYSTORE_LOCATION));
-        final String keystorePassword = getString(fromProperty(PROP_KEYSTORE_PASSWORD));
-        final String keystoreType = getString(fromProperty(PROP_KEYSTORE_TYPE));
+    private WireMockConfiguration createWiremockConfig() {
+        final boolean needClientAuth = wwm.needClientAuth();
+        final boolean sslOnly = wwm.sslOnly();
+        final int httpPort = wwm.httpPort();
+        final int httpsPort = wwm.httpsPort();
 
-        final String truststoreLocation = getResource(fromProperty(PROP_TRUSTSTORE_LOCATION));
-        final String truststorePassword = getString(fromProperty(PROP_TRUSTSTORE_PASSWORD));
-        final String truststoreType = getString(fromProperty(PROP_TRUSTSTORE_TYPE));
+        final String keystoreLocation = getResource(wwm.keystoreLocation());
+        final String keystorePassword = wwm.keystorePassword();
+        final String keystoreType = wwm.keystoreType();
+
+        final String truststoreLocation = getResource(wwm.truststoreLocation());
+        final String truststorePassword = wwm.truststorePassword();
+        final String truststoreType = wwm.truststoreType();
 
         final WireMockConfiguration configuration = new WireMockConfiguration()
                 .needClientAuth(needClientAuth)
@@ -102,32 +86,15 @@ final class WiremockAnnotationConfiguration {
         return configuration;
     }
 
-    private String fromProperty(String prop) {
-        return WithWiremock.PREFIX + "." + prop;
-    }
-
-    private int getInt(String key) {
-        return environment.getProperty(key, Integer.class, 0);
-    }
-
-    private boolean getBoolean(String key) {
-        return environment.getProperty(key, Boolean.class, false);
-    }
-
-    private String getString(String key) {
-        return environment.getProperty(key, "");
-    }
-
-    private String getResource(String key) {
-        final String location = environment.getProperty(key);
-        if (location == null || location.isEmpty()) {
+    private String getResource(String location) {
+        if (location.isEmpty()) {
             return null;
         }
         final Resource resource = resourceLoader.getResource(location);
         try {
             return resource.getURL().toString();
         } catch (final IOException e) {
-            throw new IllegalArgumentException("Error resolving location for property " + key, e);
+            throw new IllegalArgumentException("Error resolving resource for location " + location, e);
         }
     }
 }

@@ -7,30 +7,27 @@ import java.util.stream.Stream;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextClosedEvent;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
 import org.springframework.test.context.TestContext;
+import org.springframework.test.context.TestExecutionListener;
 import org.springframework.test.context.event.AfterTestExecutionEvent;
 import org.springframework.test.context.event.BeforeTestExecutionEvent;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.base.Preconditions;
 
 import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
 /**
- * Sets up the WireMock server and integrates it with the Spring
- * {@link ApplicationContext}.
+ * Initializes the WireMock during test class setup.
  *
  * @author Simon Taddiken
  */
-class WireMockInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+class WithWiremockTestExecutionListener implements TestExecutionListener {
 
     private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
     private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
@@ -38,18 +35,36 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
     private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
 
     @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        final WiremockAnnotationConfiguration wiremockProps = WiremockAnnotationConfiguration.from(applicationContext);
+    public void beforeTestClass(TestContext testContext) throws Exception {
+        final ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) testContext
+                .getApplicationContext();
+        final WiremockAnnotationConfiguration wiremockProps = wiremockProps(testContext);
+        initializeWiremock(applicationContext, wiremockProps);
+    }
+
+    private WiremockAnnotationConfiguration wiremockProps(TestContext testContext) {
+        final Class<?> testClass = testContext.getTestClass();
+        final WithWiremock wwm = MergedAnnotations
+                .from(testClass, SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
+                .stream(WithWiremock.class)
+                .map(MergedAnnotation::synthesize)
+                .findFirst()
+                .orElseThrow();
+
+        return WiremockAnnotationConfiguration.from(wwm, testContext.getApplicationContext());
+    }
+
+    private void initializeWiremock(ConfigurableApplicationContext applicationContext,
+            WiremockAnnotationConfiguration wiremockProps) {
         final WireMockServer wiremockServer = startWiremock(wiremockProps);
 
         injectWiremockHostIntoProperty(applicationContext, wiremockProps, wiremockServer);
         registerWiremockServerAsBean(applicationContext, wiremockProps, wiremockServer);
-        addLifecycleEvents(applicationContext, wiremockServer);
+        addLifecycleEvents(applicationContext, wiremockProps, wiremockServer);
     }
 
     private WireMockServer startWiremock(WiremockAnnotationConfiguration wiremockProps) {
-        final WireMockConfiguration wiremockConfig = wiremockProps.createWiremockConfig();
-        final WireMockServer wiremockServer = new WireMockServer(wiremockConfig);
+        final WireMockServer wiremockServer = wiremockProps.createWireMockServer();
         wiremockServer.start();
         return wiremockServer;
     }
@@ -111,17 +126,13 @@ class WireMockInitializer implements ApplicationContextInitializer<ConfigurableA
     }
 
     private void addLifecycleEvents(ConfigurableApplicationContext applicationContext,
+            WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
         applicationContext.addApplicationListener(applicationEvent -> {
             if (applicationEvent instanceof BeforeTestExecutionEvent) {
                 final BeforeTestExecutionEvent e = (BeforeTestExecutionEvent) applicationEvent;
 
-                final WithWiremock withWiremock = MergedAnnotations
-                        .from(e.getTestContext().getTestClass(), SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
-                        .stream(WithWiremock.class)
-                        .map(MergedAnnotation::synthesize)
-                        .findFirst()
-                        .orElseThrow();
+                final WithWiremock withWiremock = wiremockProps.withWiremockAnnotation();
 
                 final TestContext testContext = e.getTestContext();
                 Stream.concat(
