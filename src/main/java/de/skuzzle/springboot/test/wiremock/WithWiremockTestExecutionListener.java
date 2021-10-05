@@ -3,6 +3,7 @@ package de.skuzzle.springboot.test.wiremock;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -83,21 +84,19 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
 
         final Map<String, String> props = new HashMap<>();
         if (isHttpEnabled) {
-            final String injectHttpPropertyName = wiremockProps.getInjectHttpHostPropertyName();
             final String httpHost = String.format("http://localhost:%d", wiremockServer.port());
-            if (!injectHttpPropertyName.isEmpty()) {
-                props.put(injectHttpPropertyName, httpHost);
-            }
+            final Set<String> injectHttpPropertyNames = wiremockProps.getInjectHttpHostPropertyName();
+
+            injectHttpPropertyNames.forEach(propertyName -> props.put(propertyName, httpHost));
             props.put(SERVER_HTTP_HOST_PROPERTY, httpHost);
             props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
         }
 
         if (isHttpsEnabled) {
-            final String injectHttpsPropertyName = wiremockProps.getInjectHttpsHostPropertyName();
             final String httpsHost = String.format("https://localhost:%d", wiremockServer.httpsPort());
-            if (!injectHttpsPropertyName.isEmpty()) {
-                props.put(injectHttpsPropertyName, httpsHost);
-            }
+            final Set<String> injectHttpsPropertyNames = wiremockProps.getInjectHttpsHostPropertyName();
+
+            injectHttpsPropertyNames.forEach(propertyName -> props.put(propertyName, httpsHost));
             props.put(SERVER_HTTPS_HOST_PROPERTY, httpsHost);
             props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
         }

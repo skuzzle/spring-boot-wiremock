@@ -1,6 +1,7 @@
 package de.skuzzle.springboot.test.wiremock;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
@@ -36,12 +37,12 @@ final class WiremockAnnotationConfiguration {
         return this.wwm;
     }
 
-    public String getInjectHttpHostPropertyName() {
-        return wwm.injectHttpHostInto();
+    public Set<String> getInjectHttpHostPropertyName() {
+        return Set.of(wwm.injectHttpHostInto());
     }
 
-    public String getInjectHttpsHostPropertyName() {
-        return wwm.injectHttpsHostInto();
+    public Set<String> getInjectHttpsHostPropertyName() {
+        return Set.of(wwm.injectHttpsHostInto());
     }
 
     public boolean sslOnly() {

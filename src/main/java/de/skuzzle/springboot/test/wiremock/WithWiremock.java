@@ -62,16 +62,16 @@ public @interface WithWiremock {
     static final String PREFIX = "wiremock";
 
     /**
-     * The name of the application property that will be added and contain the wiremock's
-     * http url.
+     * The names of the application properties that will be added and contain the
+     * wiremock's http url.
      */
-    String injectHttpsHostInto() default "";
+    String[] injectHttpsHostInto() default "";
 
     /**
-     * The name of the application property that will be added and contain the wiremock's
-     * https url.
+     * The names of the application properties that will be added and contain the
+     * wiremock's https url.
      */
-    String injectHttpHostInto() default "";
+    String[] injectHttpHostInto() default "";
 
     /**
      * Whether client authentication (via SSL client certificate) is required. When

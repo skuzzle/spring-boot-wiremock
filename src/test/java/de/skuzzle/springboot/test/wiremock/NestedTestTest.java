@@ -9,27 +9,42 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class NestedTestTest {
 
     @SpringBootTest
-    @WithWiremock(injectHttpHostInto = "httpHost")
+    @WithWiremock(injectHttpHostInto = { "httpHost1", "httpHost2" })
     static class Nested1 {
-        @Value("${httpHost}")
-        private String host;
+
+        @Value("${httpHost1}")
+        private String host1;
+        @Value("${httpHost2}")
+        private String host2;
 
         @Test
-        void testName() throws Exception {
-            assertThat(host).startsWith("http:");
+        void testInjectHost1() throws Exception {
+            assertThat(host1).startsWith("http:");
+        }
+
+        @Test
+        void testInjectHost2() throws Exception {
+            assertThat(host2).startsWith("http:");
         }
     }
 
     @SpringBootTest
-    @WithWiremock(injectHttpsHostInto = "httpsHost", httpsPort = 0)
+    @WithWiremock(injectHttpsHostInto = { "httpsHost1", "httpsHost2" }, httpsPort = 0)
     static class Nested2 {
 
-        @Value("${httpsHost}")
-        private String host;
+        @Value("${httpsHost1}")
+        private String host1;
+        @Value("${httpsHost2}")
+        private String host2;
 
         @Test
-        void testName() throws Exception {
-            assertThat(host).startsWith("https:");
+        void testInjectHost1() throws Exception {
+            assertThat(host1).startsWith("https:");
+        }
+
+        @Test
+        void testInjectHost2() throws Exception {
+            assertThat(host2).startsWith("https:");
         }
     }
 }
