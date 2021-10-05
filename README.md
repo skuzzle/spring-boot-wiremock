@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
-[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.14&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14/jar)
-[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.14&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14)
+[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.15-SNAPSHOT&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15-SNAPSHOT/jar)
+[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.15-SNAPSHOT&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15-SNAPSHOT)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -20,13 +20,13 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.14</version>
+    <version>0.0.15-SNAPSHOT</version>
     <scope>test</scope>
 </dependency>
 ```
 
 ```
-testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14'
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.15-SNAPSHOT'
 ```
 
 ## Quick start
