@@ -10,7 +10,7 @@ _This is **not** an official extension from the Spring Team!_ (Though one exists
 [spring-cloud](https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-wiremock) 
 project).
 
-The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests.
+_The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests._
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
