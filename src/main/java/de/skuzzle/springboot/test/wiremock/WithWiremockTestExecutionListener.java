@@ -1,9 +1,7 @@
 package de.skuzzle.springboot.test.wiremock;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -21,7 +19,6 @@ import org.springframework.test.context.event.AfterTestExecutionEvent;
 import org.springframework.test.context.event.BeforeTestExecutionEvent;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.google.common.base.Preconditions;
 
 import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
@@ -33,11 +30,6 @@ import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 class WithWiremockTestExecutionListener implements TestExecutionListener {
 
     private static final Logger log = LoggerFactory.getLogger(WithWiremockTestExecutionListener.class);
-
-    private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
-    private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
-    private static final String SERVER_HTTPS_HOST_PROPERTY = "wiremock.server.httpsHost";
-    private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
@@ -79,47 +71,12 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
             WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
 
-        final Map<String, String> propertiesToInject = determineInjectionProperties(wiremockProps, wiremockServer);
-        log.debug("Injected properties map: {}", propertiesToInject);
+        final Map<String, String> propertiesToInject = wiremockProps.determineInjectionPropertiesFrom(wiremockServer);
+        log.info("Injected properties map: {}", propertiesToInject);
 
         TestPropertyValues
                 .of(toStringProps(propertiesToInject))
                 .applyTo(applicationContext);
-    }
-
-    private Map<String, String> determineInjectionProperties(WiremockAnnotationConfiguration wiremockProps,
-            WireMockServer wiremockServer) {
-        final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
-        final boolean sslOnly = wiremockProps.sslOnly();
-        final boolean isHttpsEnabled = wiremockServer.getOptions().httpsSettings().enabled();
-        Preconditions.checkArgument(isHttpsEnabled || !sslOnly,
-                "WireMock configured for 'sslOnly' but with HTTPS disabled. Configure httpsPort with value >= 0");
-        Preconditions.checkArgument(isHttpEnabled || isHttpsEnabled,
-                "WireMock configured with disabled HTTP and disabled HTTPS. Please configure either httpPort or httpsPort with a value >= 0");
-
-        final Map<String, String> props = new HashMap<>();
-        if (isHttpEnabled) {
-            final String httpHost = String.format("http://localhost:%d", wiremockServer.port());
-            final Set<String> injectHttpPropertyNames = wiremockProps.getInjectHttpHostPropertyName();
-
-            injectHttpPropertyNames.forEach(propertyName -> props.put(propertyName, httpHost));
-            props.put(SERVER_HTTP_HOST_PROPERTY, httpHost);
-            props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
-            log.info("Injected WireMock HTTP host '{}' into following properties: {}", httpHost,
-                    injectHttpPropertyNames);
-        }
-
-        if (isHttpsEnabled) {
-            final String httpsHost = String.format("https://localhost:%d", wiremockServer.httpsPort());
-            final Set<String> injectHttpsPropertyNames = wiremockProps.getInjectHttpsHostPropertyName();
-
-            injectHttpsPropertyNames.forEach(propertyName -> props.put(propertyName, httpsHost));
-            props.put(SERVER_HTTPS_HOST_PROPERTY, httpsHost);
-            props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
-            log.info("Injected WireMock HTTP host '{}' into following properties: ", httpsHost,
-                    injectHttpsPropertyNames);
-        }
-        return props;
     }
 
     @Deprecated

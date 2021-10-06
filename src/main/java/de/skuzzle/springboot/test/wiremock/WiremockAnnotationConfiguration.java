@@ -1,7 +1,10 @@
 package de.skuzzle.springboot.test.wiremock;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +26,11 @@ final class WiremockAnnotationConfiguration {
 
     private static final Logger log = LoggerFactory.getLogger(WiremockAnnotationConfiguration.class);
 
+    private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
+    private static final String SERVER_HTTPS_HOST_PROPERTY = "wiremock.server.httpsHost";
+    private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
+    private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
+
     private final WithWiremock wwm;
     private final ResourceLoader resourceLoader;
 
@@ -41,12 +49,12 @@ final class WiremockAnnotationConfiguration {
         return this.wwm;
     }
 
-    public Set<String> getInjectHttpHostPropertyName() {
-        return Set.of(wwm.injectHttpHostInto());
+    public Stream<String> getInjectHttpHostPropertyNames() {
+        return Stream.concat(Arrays.stream(wwm.injectHttpHostInto()), Stream.of(SERVER_HTTP_HOST_PROPERTY));
     }
 
-    public Set<String> getInjectHttpsHostPropertyName() {
-        return Set.of(wwm.injectHttpsHostInto());
+    public Stream<String> getInjectHttpsHostPropertyNames() {
+        return Stream.concat(Arrays.stream(wwm.injectHttpsHostInto()), Stream.of(SERVER_HTTPS_HOST_PROPERTY));
     }
 
     public boolean sslOnly() {
@@ -92,6 +100,32 @@ final class WiremockAnnotationConfiguration {
 
     public WireMockServer createWireMockServer() {
         return new WireMockServer(createWiremockConfig());
+    }
+
+    public Map<String, String> determineInjectionPropertiesFrom(WireMockServer wiremockServer) {
+        final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
+        final boolean sslOnly = sslOnly();
+        final boolean isHttpsEnabled = wiremockServer.getOptions().httpsSettings().enabled();
+        Preconditions.checkArgument(isHttpsEnabled || !sslOnly,
+                "WireMock configured for 'sslOnly' but with HTTPS disabled. Configure httpsPort with value >= 0");
+        Preconditions.checkArgument(isHttpEnabled || isHttpsEnabled,
+                "WireMock configured with disabled HTTP and disabled HTTPS. Please configure either httpPort or httpsPort with a value >= 0");
+
+        final Map<String, String> props = new HashMap<>();
+        if (isHttpEnabled) {
+            final String httpHost = String.format("http://localhost:%d", wiremockServer.port());
+            getInjectHttpHostPropertyNames()
+                    .forEach(propertyName -> props.put(propertyName, httpHost));
+            props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
+        }
+
+        if (isHttpsEnabled) {
+            final String httpsHost = String.format("https://localhost:%d", wiremockServer.httpsPort());
+            getInjectHttpsHostPropertyNames()
+                    .forEach(propertyName -> props.put(propertyName, httpsHost));
+            props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
+        }
+        return props;
     }
 
     private WireMockConfiguration createWiremockConfig() {
