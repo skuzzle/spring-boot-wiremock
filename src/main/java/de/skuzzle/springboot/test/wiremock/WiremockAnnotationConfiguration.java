@@ -3,6 +3,8 @@ package de.skuzzle.springboot.test.wiremock;
 import java.io.IOException;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -18,6 +20,8 @@ import com.google.common.base.Preconditions;
  * @author Simon Taddiken
  */
 final class WiremockAnnotationConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(WiremockAnnotationConfiguration.class);
 
     private final WithWiremock wwm;
     private final ResourceLoader resourceLoader;
@@ -94,7 +98,9 @@ final class WiremockAnnotationConfiguration {
         final boolean needClientAuth = wwm.needClientAuth();
         final boolean sslOnly = wwm.sslOnly();
         final int httpPort = httpPort();
+        log.debug("Determined {} as HTTP port from {}", httpPort, wwm);
         final int httpsPort = httpsPort();
+        log.debug("Determined {} as HTTPS port from {}", httpsPort, wwm);
 
         final String keystoreLocation = getResource(wwm.keystoreLocation());
         final String keystorePassword = wwm.keystorePassword();

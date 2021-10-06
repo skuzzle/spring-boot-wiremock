@@ -57,7 +57,7 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
 public @interface WithWiremock {
 
     static final int DEFAULT_HTTP_PORT = 0;
-    static final int DEFAULT_HTTPS_PORT = 1;
+    static final int DEFAULT_HTTPS_PORT = -1;
 
     /**
      * The names of the application properties that will be added and contain the

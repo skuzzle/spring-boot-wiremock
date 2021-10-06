@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -29,6 +31,8 @@ import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
  * @author Simon Taddiken
  */
 class WithWiremockTestExecutionListener implements TestExecutionListener {
+
+    private static final Logger log = LoggerFactory.getLogger(WithWiremockTestExecutionListener.class);
 
     private static final String SERVER_HTTP_HOST_PROPERTY = "wiremock.server.httpHost";
     private static final String SERVER_HTTP_PORT_PROPERTY = "wiremock.server.httpPort";
@@ -75,6 +79,16 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
             WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
 
+        final Map<String, String> propertiesToInject = determineInjectionProperties(wiremockProps, wiremockServer);
+        log.debug("Injected properties map: {}", propertiesToInject);
+
+        TestPropertyValues
+                .of(toStringProps(propertiesToInject))
+                .applyTo(applicationContext);
+    }
+
+    private Map<String, String> determineInjectionProperties(WiremockAnnotationConfiguration wiremockProps,
+            WireMockServer wiremockServer) {
         final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
         final boolean sslOnly = wiremockProps.sslOnly();
         final boolean isHttpsEnabled = wiremockServer.getOptions().httpsSettings().enabled();
@@ -91,6 +105,8 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
             injectHttpPropertyNames.forEach(propertyName -> props.put(propertyName, httpHost));
             props.put(SERVER_HTTP_HOST_PROPERTY, httpHost);
             props.put(SERVER_HTTP_PORT_PROPERTY, "" + wiremockServer.port());
+            log.info("Injected WireMock HTTP host '{}' into following properties: {}", httpHost,
+                    injectHttpPropertyNames);
         }
 
         if (isHttpsEnabled) {
@@ -100,11 +116,10 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
             injectHttpsPropertyNames.forEach(propertyName -> props.put(propertyName, httpsHost));
             props.put(SERVER_HTTPS_HOST_PROPERTY, httpsHost);
             props.put(SERVER_HTTPS_PORT_PROPERTY, "" + wiremockServer.httpsPort());
+            log.info("Injected WireMock HTTP host '{}' into following properties: ", httpsHost,
+                    injectHttpsPropertyNames);
         }
-
-        TestPropertyValues
-                .of(toStringProps(props))
-                .applyTo(applicationContext);
+        return props;
     }
 
     @Deprecated
