@@ -8,7 +8,7 @@
 * `WithWiremock.httpPort()` (in favor of `WithWiremock.randomHttpPort` or `WithWiremock.fixedHttpPort`)
 * `WithWiremock.httpsPort()` (in favor of `WithWiremock.randomHttpsPort` or `WithWiremock.fixedHttpsPort`)
 
-Maven Central coordinates for this release:
+### Maven Central coordinates for this release:
 
 ```xml
 <dependency>
@@ -19,7 +19,7 @@ Maven Central coordinates for this release:
 </dependency>
 ```
 
-Gradle coordinates for this release:
+### Gradle coordinates for this release:
 
 ```
 testImplementation '${project.groupId}:${project.artifactId}:${project.version}'
