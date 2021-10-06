@@ -2,6 +2,7 @@ package de.skuzzle.springboot.test.wiremock;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ public class NestedTestTest {
         }
     }
 
+    @Disabled
     @SpringBootTest
     @WithWiremock(fixedHttpPort = 13337)
     static class TestFixedHttpPort {
@@ -60,6 +62,7 @@ public class NestedTestTest {
         }
     }
 
+    @Disabled
     @SpringBootTest
     @WithWiremock(fixedHttpPort = 13338, randomHttpPort = true)
     static class TestFixedHttpPortTakesPrecedenceOverRandomHttpPort {
@@ -72,6 +75,7 @@ public class NestedTestTest {
         }
     }
 
+    @Disabled
     @SpringBootTest
     @WithWiremock(fixedHttpsPort = 13339)
     static class TestFixedHttpsPort {
