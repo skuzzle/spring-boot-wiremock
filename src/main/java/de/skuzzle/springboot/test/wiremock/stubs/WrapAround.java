@@ -47,5 +47,6 @@ public enum WrapAround {
 
     };
 
+    @API(status = Status.INTERNAL)
     public abstract int determineNextState(int currentState, boolean hasNext);
 }
