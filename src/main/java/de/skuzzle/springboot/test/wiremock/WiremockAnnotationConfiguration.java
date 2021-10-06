@@ -49,6 +49,43 @@ final class WiremockAnnotationConfiguration {
         return wwm.sslOnly();
     }
 
+    private int httpPort() {
+        // NOTE: for HTTP (in contrast to HTTPS), the fixed port takes precedence over
+        // random port. (Otherwise one would need to specify both randomHttpPort = false
+        // AND fixedHttpPort = 1337 to use a fixed port (because randomHttpPort defaults
+        // to true)
+        if (wwm.fixedHttpPort() != WithWiremock.DEFAULT_HTTP_PORT) {
+            return wwm.fixedHttpPort();
+        }
+        if (wwm.randomHttpPort()) {
+            Preconditions.checkArgument(wwm.fixedHttpPort() == 0,
+                    "Inconsistent HTTP port configuration. Either configure 'randomHttpPort' OR 'fixedHttpPort'");
+            Preconditions.checkArgument(wwm.httpPort() == 0,
+                    "Inconsistent HTTP port configuration. Either configure 'randomHttpPort' OR 'fixedHttpPort'");
+            return 0;
+        }
+        if (wwm.httpPort() != WithWiremock.DEFAULT_HTTP_PORT) {
+            return wwm.httpPort();
+        }
+        return wwm.fixedHttpPort();
+    }
+
+    private int httpsPort() {
+        if (wwm.randomHttpsPort()) {
+            Preconditions.checkArgument(wwm.fixedHttpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
+                    "Inconsistent HTTPS port configuration. Either configure 'randomHttpsPort' OR 'fixedHttpsPort'");
+            Preconditions.checkArgument(wwm.httpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
+                    "Inconsistent HTTPS port configuration. Either configure 'randomHttpsPort' OR 'fixedHttpsPort'");
+            return 0;
+        }
+        if (wwm.httpsPort() != WithWiremock.DEFAULT_HTTPS_PORT) {
+            Preconditions.checkArgument(wwm.fixedHttpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
+                    "Inconsistent HTTPS port configuration: Deprecated and new port attribute specified. Please use 'fixedHttpsPort' instead");
+            return wwm.httpsPort();
+        }
+        return wwm.fixedHttpsPort();
+    }
+
     public WireMockServer createWireMockServer() {
         return new WireMockServer(createWiremockConfig());
     }
@@ -56,8 +93,8 @@ final class WiremockAnnotationConfiguration {
     private WireMockConfiguration createWiremockConfig() {
         final boolean needClientAuth = wwm.needClientAuth();
         final boolean sslOnly = wwm.sslOnly();
-        final int httpPort = wwm.httpPort();
-        final int httpsPort = wwm.httpsPort();
+        final int httpPort = httpPort();
+        final int httpsPort = httpsPort();
 
         final String keystoreLocation = getResource(wwm.keystoreLocation());
         final String keystorePassword = wwm.keystorePassword();
