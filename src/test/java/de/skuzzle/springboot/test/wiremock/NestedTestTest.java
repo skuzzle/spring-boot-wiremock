@@ -49,38 +49,38 @@ public class NestedTestTest {
     }
 
     @SpringBootTest
-    @WithWiremock(fixedHttpPort = 1337)
+    @WithWiremock(fixedHttpPort = 13337)
     static class TestFixedHttpPort {
         @Value("${wiremock.server.httpHost}")
         private String host;
 
         @Test
         void testInjectHost1() throws Exception {
-            assertThat(host).endsWith(":1337");
+            assertThat(host).endsWith(":13337");
         }
     }
 
     @SpringBootTest
-    @WithWiremock(fixedHttpPort = 1337, randomHttpPort = true)
+    @WithWiremock(fixedHttpPort = 13338, randomHttpPort = true)
     static class TestFixedHttpPortTakesPrecedenceOverRandomHttpPort {
         @Value("${wiremock.server.httpHost}")
         private String host;
 
         @Test
         void testInjectHost() throws Exception {
-            assertThat(host).endsWith(":1337");
+            assertThat(host).endsWith(":13338");
         }
     }
 
     @SpringBootTest
-    @WithWiremock(fixedHttpsPort = 1337)
+    @WithWiremock(fixedHttpsPort = 13339)
     static class TestFixedHttpsPort {
         @Value("${wiremock.server.httpsHost}")
         private String host;
 
         @Test
         void testInjectHost() throws Exception {
-            assertThat(host).endsWith(":1337");
+            assertThat(host).endsWith(":13339");
         }
     }
 
