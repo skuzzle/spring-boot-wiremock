@@ -10,7 +10,7 @@ public class NestedTestTest {
 
     @SpringBootTest
     @WithWiremock(injectHttpHostInto = { "httpHost1", "httpHost2" })
-    static class Nested1 {
+    static class TestInjectMultipleHttpHosts {
 
         @Value("${httpHost1}")
         private String host1;
@@ -29,8 +29,8 @@ public class NestedTestTest {
     }
 
     @SpringBootTest
-    @WithWiremock(injectHttpsHostInto = { "httpsHost1", "httpsHost2" }, httpsPort = 0)
-    static class Nested2 {
+    @WithWiremock(injectHttpsHostInto = { "httpsHost1", "httpsHost2" }, randomHttpsPort = true)
+    static class TestInjectMultipleHttpsHosts {
 
         @Value("${httpsHost1}")
         private String host1;
@@ -45,6 +45,53 @@ public class NestedTestTest {
         @Test
         void testInjectHost2() throws Exception {
             assertThat(host2).startsWith("https:");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpPort = 1337)
+    static class TestFixedHttpPort {
+        @Value("${wiremock.server.httpHost}")
+        private String host;
+
+        @Test
+        void testInjectHost1() throws Exception {
+            assertThat(host).endsWith(":1337");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpPort = 1337, randomHttpPort = true)
+    static class TestFixedHttpPortTakesPrecedenceOverRandomHttpPort {
+        @Value("${wiremock.server.httpHost}")
+        private String host;
+
+        @Test
+        void testInjectHost() throws Exception {
+            assertThat(host).endsWith(":1337");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpsPort = 1337)
+    static class TestFixedHttpsPort {
+        @Value("${wiremock.server.httpsHost}")
+        private String host;
+
+        @Test
+        void testInjectHost() throws Exception {
+            assertThat(host).endsWith(":1337");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(randomHttpsPort = true)
+    static class TestRandomHttpsHost {
+        @Value("${wiremock.server.httpsHost}")
+        private String host;
+
+        @Test
+        void testContextStarts() throws Exception {
         }
     }
 }

@@ -28,7 +28,8 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * property.
  * <p>
  * By default, the mock server is only serves unencrypted HTTP. If you want to test
- * encrypted traffic using SSL, you need to specify {@link #httpsPort()} with a value
+ * encrypted traffic using SSL, you need to either specify
+ * {@link #randomHttpsPort()}<code>=true</code> or {@link #fixedHttpsPort()} with a value
  * &gt;= 0.
  * <p>
  * The configured {@link WireMockServer} instance is made available in the application
@@ -54,6 +55,9 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
 @TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners = WithWiremockTestExecutionListener.class)
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public @interface WithWiremock {
+
+    static final int DEFAULT_HTTP_PORT = 0;
+    static final int DEFAULT_HTTPS_PORT = 1;
 
     /**
      * The names of the application properties that will be added and contain the
@@ -113,14 +117,53 @@ public @interface WithWiremock {
     boolean sslOnly() default false;
 
     /**
-     * Port for HTTP. Use 0 for random port.
+     * Port for HTTP. Defaults to 0 for random port.
+     *
+     * @deprecated Use {@link #randomHttpPort()} or {@link #fixedHttpPort()} instead.
      */
-    int httpPort() default 0;
+    @Deprecated(since = "0.0.15", forRemoval = true)
+    @API(status = Status.DEPRECATED, since = "0.0.15")
+    int httpPort() default DEFAULT_HTTP_PORT;
 
     /**
-     * Port for HTTPS. Use 0 for random port. Use -1 to disable HTTPS.
+     * Port for HTTPS. Use 0 for random port. Defaults to -1 to disable HTTPS.
+     *
+     * @deprecated Use {@link #randomHttpsPort()} or {@link #fixedHttpsPort()} instead.
      */
-    int httpsPort() default -1;
+    @Deprecated(since = "0.0.15", forRemoval = true)
+    @API(status = Status.DEPRECATED, since = "0.0.15")
+    int httpsPort() default DEFAULT_HTTPS_PORT;
+
+    /**
+     * Whether to use random HTTP port. Defaults to <code>true</code> but will be silently
+     * ignored if {@link #fixedHttpPort()} is specified with a value &gt; 0
+     *
+     * @since 0.0.15
+     */
+    boolean randomHttpPort() default true;
+
+    /**
+     * Enables HTTPS on a random port. Defaults to <code>false</code>. Mutual exclusive to
+     * {@link #fixedHttpsPort()}.
+     *
+     * @since 0.0.15
+     */
+    boolean randomHttpsPort() default false;
+
+    /**
+     * Enables HTTP on a fixed port. If specified with a value &gt; 0 the fixed port will
+     * take precedence even if {@link #randomHttpPort()} is set to <code>true</code>.
+     *
+     * @since 0.0.15
+     */
+    int fixedHttpPort() default DEFAULT_HTTP_PORT;
+
+    /**
+     * Enables HTTPS on a fixed port. Mutual exclusive to {@link #randomHttpsPort()}.
+     *
+     * @since 0.0.15
+     */
+    int fixedHttpsPort() default DEFAULT_HTTPS_PORT;
 
     /**
      * Required authentication information that will be added to every stub which itself
