@@ -55,13 +55,14 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
         return WiremockAnnotationConfiguration.from(wwm, testContext.getApplicationContext());
     }
 
-    private void initializeWiremock(ConfigurableApplicationContext applicationContext,
+    private WireMockServer initializeWiremock(ConfigurableApplicationContext applicationContext,
             WiremockAnnotationConfiguration wiremockProps) {
         final WireMockServer wiremockServer = startWiremock(wiremockProps);
 
         injectWiremockHostIntoProperty(applicationContext, wiremockProps, wiremockServer);
         registerWiremockServerAsBean(applicationContext, wiremockProps, wiremockServer);
         addLifecycleEvents(applicationContext, wiremockProps, wiremockServer);
+        return wiremockServer;
     }
 
     private WireMockServer startWiremock(WiremockAnnotationConfiguration wiremockProps) {
@@ -118,8 +119,7 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
     private void registerWiremockServerAsBean(ConfigurableApplicationContext applicationContext,
             WiremockAnnotationConfiguration wiremockProps,
             WireMockServer wiremockServer) {
-        final ConfigurableListableBeanFactory beanFactory = applicationContext
-                .getBeanFactory();
+        final ConfigurableListableBeanFactory beanFactory = applicationContext.getBeanFactory();
         beanFactory.registerSingleton("wiremockServer", wiremockServer);
         beanFactory.registerSingleton("wiremockProps", wiremockProps);
     }
@@ -138,7 +138,6 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
                         determineStubs(testContext.getTestClass()),
                         determineStubs(testContext.getTestMethod()))
                         .forEach(stub -> StubTranslator.configureStubOn(wiremockServer, withWiremock, stub));
-
             }
             if (applicationEvent instanceof AfterTestExecutionEvent) {
                 wiremockServer.resetAll();

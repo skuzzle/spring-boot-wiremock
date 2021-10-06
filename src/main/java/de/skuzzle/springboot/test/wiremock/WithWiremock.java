@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 
 import org.apiguardian.api.API;
 import org.apiguardian.api.API.Status;
-import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestExecutionListeners.MergeMode;
 
@@ -47,19 +47,13 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * @author Simon Taddiken
  * @see TestKeystores
  * @see HttpStub
- * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
- *           configured values of the annotation instance accessible from the
- *           {@link WireMockInitializer}. The {@link WiremockAnnotationConfiguration}
- *           class can be used to read the configured values from the
- *           {@link ApplicationContext}.
  */
 @API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
 @TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners = WithWiremockTestExecutionListener.class)
-@PropertyMapping(WithWiremock.PREFIX)
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public @interface WithWiremock {
-    static final String PREFIX = "wiremock";
 
     /**
      * The names of the application properties that will be added and contain the
@@ -124,7 +118,7 @@ public @interface WithWiremock {
     int httpPort() default 0;
 
     /**
-     * Port for HTTPS. Use 0 for random port. Use -1 for disable HTTPS.
+     * Port for HTTPS. Use 0 for random port. Use -1 to disable HTTPS.
      */
     int httpsPort() default -1;
 
