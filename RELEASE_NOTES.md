@@ -3,6 +3,7 @@
 ### Features:
 * [#3](https://github.com/skuzzle/spring-boot-wiremock/issues/3) Allow to inject host values into multiple properties
 * [#4](https://github.com/skuzzle/spring-boot-wiremock/issues/4) New properties to configure ports
+* [#9](https://github.com/skuzzle/spring-boot-wiremock/issues/9) Introduce ApiGuard annotations
 
 ### Deprecations
 * `WithWiremock.httpPort()` (in favor of `WithWiremock.randomHttpPort` or `WithWiremock.fixedHttpPort`)
