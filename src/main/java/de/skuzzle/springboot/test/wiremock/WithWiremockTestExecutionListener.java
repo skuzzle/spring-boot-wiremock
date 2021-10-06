@@ -143,7 +143,7 @@ class WithWiremockTestExecutionListener implements TestExecutionListener {
                 wiremockServer.resetAll();
             }
             if (applicationEvent instanceof ContextClosedEvent) {
-                wiremockServer.stop();
+                wiremockServer.shutdown();
             }
         });
     }
