@@ -9,10 +9,6 @@ import java.lang.annotation.Target;
 import org.apiguardian.api.API;
 import org.apiguardian.api.API.Status;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.TestExecutionListeners.MergeMode;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
@@ -52,11 +48,13 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
 @API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
-@TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners = WithWiremockTestExecutionListener.class)
+// @TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners =
+// WithWiremockTestExecutionListener.class)
 // We need to mark the context as dirty because we manually add the WireMockServer as
 // bean. Such a modification otherwise doesn't invalidate the context, leading to
 // duplicate bean issues when there are multiple WithWiremock tests.
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+// @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+// @ContextConfiguration(initializers = WiremockContextInitializer.class)
 public @interface WithWiremock {
 
     static final int DEFAULT_HTTP_PORT = 0;

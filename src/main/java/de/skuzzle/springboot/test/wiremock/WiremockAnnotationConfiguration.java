@@ -4,6 +4,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -43,17 +45,27 @@ final class WiremockAnnotationConfiguration {
         return new WiremockAnnotationConfiguration(wwm);
     }
 
-    public static WiremockAnnotationConfiguration fromAnnotatedElement(AnnotatedElement source) {
-        final WithWiremock wwm = MergedAnnotations
+    public static Optional<WiremockAnnotationConfiguration> fromAnnotatedElement(AnnotatedElement source) {
+        return MergedAnnotations
                 .from(source, SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
                 .stream(WithWiremock.class)
                 .map(MergedAnnotation::synthesize)
                 .findFirst()
-                .orElseThrow();
-        return from(wwm);
+                .map(WiremockAnnotationConfiguration::from);
     }
 
-    public WithWiremock withWiremockAnnotation() {
+    @Override
+    public int hashCode() {
+        return Objects.hash(wwm);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || obj instanceof WiremockAnnotationConfiguration
+                && Objects.equals(wwm, ((WiremockAnnotationConfiguration) obj).wwm);
+    }
+
+    public WithWiremock annotation() {
         return this.wwm;
     }
 

@@ -3,7 +3,10 @@ package de.skuzzle.springboot.test.wiremock;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 
 public class NestedTestTest {
@@ -92,6 +95,34 @@ public class NestedTestTest {
 
         @Test
         void testContextStarts() throws Exception {
+        }
+    }
+
+    @SpringBootTest
+    @EnableConfigurationProperties(TestConfigurationProperties.class)
+    @WithWiremock(injectHttpHostInto = "url.in.propertiesfile")
+    static class InjectIntoConfigurationProperties {
+        @Autowired
+        private TestConfigurationProperties properties;
+        @Value("${url.in.propertiesfile}")
+        private String host;
+
+        @Test
+        void testWiremockLocationTakesPrecedenceOverStaticConfiguration() throws Exception {
+            assertThat(properties.getPropertiesfile()).isEqualTo(host);
+        }
+    }
+
+    @ConfigurationProperties("url.in")
+    static class TestConfigurationProperties {
+        private String propertiesfile;
+
+        public String getPropertiesfile() {
+            return this.propertiesfile;
+        }
+
+        public void setPropertiesfile(String propertiesfile) {
+            this.propertiesfile = propertiesfile;
         }
     }
 }
