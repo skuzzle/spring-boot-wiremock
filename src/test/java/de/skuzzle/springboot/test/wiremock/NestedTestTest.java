@@ -9,27 +9,89 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class NestedTestTest {
 
     @SpringBootTest
-    @WithWiremock(injectHttpHostInto = "httpHost")
-    static class Nested1 {
-        @Value("${httpHost}")
-        private String host;
+    @WithWiremock(injectHttpHostInto = { "httpHost1", "httpHost2" })
+    static class TestInjectMultipleHttpHosts {
+
+        @Value("${httpHost1}")
+        private String host1;
+        @Value("${httpHost2}")
+        private String host2;
 
         @Test
-        void testName() throws Exception {
-            assertThat(host).startsWith("http:");
+        void testInjectHost1() throws Exception {
+            assertThat(host1).startsWith("http:");
+        }
+
+        @Test
+        void testInjectHost2() throws Exception {
+            assertThat(host2).startsWith("http:");
         }
     }
 
     @SpringBootTest
-    @WithWiremock(injectHttpsHostInto = "httpsHost", httpsPort = 0)
-    static class Nested2 {
+    @WithWiremock(injectHttpsHostInto = { "httpsHost1", "httpsHost2" }, randomHttpsPort = true)
+    static class TestInjectMultipleHttpsHosts {
 
-        @Value("${httpsHost}")
+        @Value("${httpsHost1}")
+        private String host1;
+        @Value("${httpsHost2}")
+        private String host2;
+
+        @Test
+        void testInjectHost1() throws Exception {
+            assertThat(host1).startsWith("https:");
+        }
+
+        @Test
+        void testInjectHost2() throws Exception {
+            assertThat(host2).startsWith("https:");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpPort = 13337)
+    static class TestFixedHttpPort {
+        @Value("${wiremock.server.httpHost}")
         private String host;
 
         @Test
-        void testName() throws Exception {
-            assertThat(host).startsWith("https:");
+        void testInjectHost1() throws Exception {
+            assertThat(host).endsWith(":13337");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpPort = 13338, randomHttpPort = true)
+    static class TestFixedHttpPortTakesPrecedenceOverRandomHttpPort {
+        @Value("${wiremock.server.httpHost}")
+        private String host;
+
+        @Test
+        void testInjectHost() throws Exception {
+            assertThat(host).endsWith(":13338");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(fixedHttpsPort = 13339)
+    static class TestFixedHttpsPort {
+        @Value("${wiremock.server.httpsHost}")
+        private String host;
+
+        @Test
+        void testInjectHost() throws Exception {
+            assertThat(host).endsWith(":13339");
+        }
+    }
+
+    @SpringBootTest
+    @WithWiremock(randomHttpsPort = true)
+    static class TestRandomHttpsHost {
+        @Value("${wiremock.server.httpsHost}")
+        private String host;
+
+        @Test
+        void testContextStarts() throws Exception {
         }
     }
 }

@@ -4,6 +4,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
 import com.github.tomakehurst.wiremock.client.WireMock;
 
 /**
@@ -62,6 +65,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
  * @author Simon Taddiken
  * @see Response
  */
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 public @interface Request {
 

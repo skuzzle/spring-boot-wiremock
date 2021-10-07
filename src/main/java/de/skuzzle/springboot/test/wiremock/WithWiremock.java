@@ -6,10 +6,13 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.springframework.boot.test.autoconfigure.properties.PropertyMapping;
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestExecutionListeners.MergeMode;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
@@ -25,7 +28,8 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * property.
  * <p>
  * By default, the mock server is only serves unencrypted HTTP. If you want to test
- * encrypted traffic using SSL, you need to specify {@link #httpsPort()} with a value
+ * encrypted traffic using SSL, you need to either specify
+ * {@link #randomHttpsPort()}<code>=true</code> or {@link #fixedHttpsPort()} with a value
  * &gt;= 0.
  * <p>
  * The configured {@link WireMockServer} instance is made available in the application
@@ -44,43 +48,31 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * @author Simon Taddiken
  * @see TestKeystores
  * @see HttpStub
- * @implNote The meta annotation {@link PropertyMapping} serves to actually make the
- *           configured values of the annotation instance accessible from the
- *           {@link WireMockInitializer}. The {@link WiremockAnnotationProps} class can be
- *           used to read the configured values from the {@link ApplicationContext}.
  */
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
-@ContextConfiguration(initializers = WireMockInitializer.class)
-@PropertyMapping(WithWiremock.PREFIX)
+@TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners = WithWiremockTestExecutionListener.class)
+// We need to mark the context as dirty because we manually add the WireMockServer as
+// bean. Such a modification otherwise doesn't invalidate the context, leading to
+// duplicate bean issues when there are multiple WithWiremock tests.
+@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public @interface WithWiremock {
-    static final String PREFIX = "wiremock";
-    static final String PROP_INJECT_HTTP_HOST_INTO = "injectHttpHostInto";
-    static final String PROP_HTTP_PORT = "httpPort";
-    static final String PROP_INJECT_HTTPS_HOST_INTO = "injectHttpsHostInto";
-    static final String PROP_HTTPS_PORT = "httpsPort";
-    static final String PROP_NEED_CLIENT_AUTH = "needClientAuth";
-    static final String PROP_KEYSTORE_PASSWORD = "keystorePassword";
-    static final String PROP_KEYSTORE_LOCATION = "keystoreLocation";
-    static final String PROP_KEYSTORE_TYPE = "keystoreType";
-    static final String PROP_TRUSTSTORE_PASSWORD = "truststorePassword";
-    static final String PROP_TRUSTSTORE_LOCATION = "truststoreLocation";
-    static final String PROP_TRUSTSTORE_TYPE = "truststoreType";
-    static final String PROP_SSL_ONLY = "sslOnly";
+
+    static final int DEFAULT_HTTP_PORT = 0;
+    static final int DEFAULT_HTTPS_PORT = -1;
 
     /**
-     * The name of the application property that will be added and contain the wiremock's
-     * http url.
+     * The names of the application properties that will be added and contain the
+     * wiremock's http url.
      */
-    @PropertyMapping(PROP_INJECT_HTTPS_HOST_INTO)
-    String injectHttpsHostInto() default "";
+    String[] injectHttpsHostInto() default "";
 
     /**
-     * The name of the application property that will be added and contain the wiremock's
-     * https url.
+     * The names of the application properties that will be added and contain the
+     * wiremock's https url.
      */
-    @PropertyMapping(PROP_INJECT_HTTP_HOST_INTO)
-    String injectHttpHostInto() default "";
+    String[] injectHttpHostInto() default "";
 
     /**
      * Whether client authentication (via SSL client certificate) is required. When
@@ -88,64 +80,93 @@ public @interface WithWiremock {
      * single certificate that can be retrieved using
      * {@link TestKeystores#TEST_CLIENT_CERTIFICATE}.
      */
-    @PropertyMapping(PROP_NEED_CLIENT_AUTH)
     boolean needClientAuth() default false;
 
     /**
      * Location of the keystore to use for server side SSL. Defaults to
      * {@link TestKeystores#TEST_SERVER_CERTIFICATE}.
      */
-    @PropertyMapping(PROP_KEYSTORE_LOCATION)
     String keystoreLocation() default "classpath:/certs/server_keystore.jks";
 
     /**
      * Type of the {@link #keystoreLocation() keystore}.
      */
-    @PropertyMapping(PROP_KEYSTORE_TYPE)
     String keystoreType() default "JKS";
 
     /**
      * Password of the {@link #keystoreLocation() keystore}.
      */
-    @PropertyMapping(PROP_KEYSTORE_PASSWORD)
     String keystorePassword() default "password";
 
     /**
      * Location for the trustsore to use for client side SSL. Defaults to
      * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}.
      */
-    @PropertyMapping(PROP_TRUSTSTORE_LOCATION)
     String truststoreLocation() default "classpath:/certs/server_truststore.jks";
 
     /**
      * Password of the {@link #truststoreLocation() truststore}.
      */
-    @PropertyMapping(PROP_TRUSTSTORE_PASSWORD)
     String truststorePassword() default "password";
 
     /**
      * Type of the {@link #truststoreLocation() truststore}.
      */
-    @PropertyMapping(PROP_TRUSTSTORE_TYPE)
     String truststoreType() default "JKS";
 
     /**
      * Disable HTTP and only serves HTTPS.
      */
-    @PropertyMapping(PROP_SSL_ONLY)
     boolean sslOnly() default false;
 
     /**
-     * Port for HTTP. Use 0 for random port.
+     * Port for HTTP. Defaults to 0 for random port.
+     *
+     * @deprecated Use {@link #randomHttpPort()} or {@link #fixedHttpPort()} instead.
      */
-    @PropertyMapping(PROP_HTTP_PORT)
-    int httpPort() default 0;
+    @Deprecated(since = "0.0.15", forRemoval = true)
+    @API(status = Status.DEPRECATED, since = "0.0.15")
+    int httpPort() default DEFAULT_HTTP_PORT;
 
     /**
-     * Port for HTTPS. Use 0 for random port. Use -1 for disable HTTPS.
+     * Port for HTTPS. Use 0 for random port. Defaults to -1 to disable HTTPS.
+     *
+     * @deprecated Use {@link #randomHttpsPort()} or {@link #fixedHttpsPort()} instead.
      */
-    @PropertyMapping(PROP_HTTPS_PORT)
-    int httpsPort() default -1;
+    @Deprecated(since = "0.0.15", forRemoval = true)
+    @API(status = Status.DEPRECATED, since = "0.0.15")
+    int httpsPort() default DEFAULT_HTTPS_PORT;
+
+    /**
+     * Whether to use random HTTP port. Defaults to <code>true</code> but will be silently
+     * ignored if {@link #fixedHttpPort()} is specified with a value &gt; 0
+     *
+     * @since 0.0.15
+     */
+    boolean randomHttpPort() default true;
+
+    /**
+     * Enables HTTPS on a random port. Defaults to <code>false</code>. Mutual exclusive to
+     * {@link #fixedHttpsPort()}.
+     *
+     * @since 0.0.15
+     */
+    boolean randomHttpsPort() default false;
+
+    /**
+     * Enables HTTP on a fixed port. If specified with a value &gt; 0 the fixed port will
+     * take precedence even if {@link #randomHttpPort()} is set to <code>true</code>.
+     *
+     * @since 0.0.15
+     */
+    int fixedHttpPort() default DEFAULT_HTTP_PORT;
+
+    /**
+     * Enables HTTPS on a fixed port. Mutual exclusive to {@link #randomHttpsPort()}.
+     *
+     * @since 0.0.15
+     */
+    int fixedHttpsPort() default DEFAULT_HTTPS_PORT;
 
     /**
      * Required authentication information that will be added to every stub which itself

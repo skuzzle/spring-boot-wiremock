@@ -152,7 +152,6 @@ public class TestHttpStub implements TestStubCollectionInterface {
     @Test
     @HttpStub(
             wrapAround = true,
-            onRequest = @Request,
             respond = {
                     @Response(withStatus = HttpStatus.CREATED),
                     @Response(withStatus = HttpStatus.OK),
@@ -173,7 +172,6 @@ public class TestHttpStub implements TestStubCollectionInterface {
 
     @Test
     @HttpStub(
-            onRequest = @Request,
             respond = {
                     @Response(withStatus = HttpStatus.CREATED),
                     @Response(withStatus = HttpStatus.OK),
@@ -197,7 +195,6 @@ public class TestHttpStub implements TestStubCollectionInterface {
 
     @Test
     @HttpStub(
-            onRequest = @Request,
             respond = {
                     @Response(withStatus = HttpStatus.CREATED),
                     @Response(withStatus = HttpStatus.OK),

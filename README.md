@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
-[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.14&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14/jar)
-[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.14&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.14)
+[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.15&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15/jar)
+[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.15&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -10,7 +10,7 @@ _This is **not** an official extension from the Spring Team!_ (Though one exists
 [spring-cloud](https://cloud.spring.io/spring-cloud-contract/reference/html/project-features.html#features-wiremock) 
 project).
 
-The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests.
+_The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spring-Boot tests._
 - [x] Run WireMock server on random port
 - [x] Inject WireMock hosts (http and https) as spring application property
 - [x] Easily setup server- and client side SSL
@@ -20,13 +20,13 @@ The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spri
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.14</version>
+    <version>0.0.15</version>
     <scope>test</scope>
 </dependency>
 ```
 
 ```
-testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.14'
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.15'
 ```
 
 ## Quick start

@@ -4,6 +4,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 public @interface Scenario {
     String name() default "";

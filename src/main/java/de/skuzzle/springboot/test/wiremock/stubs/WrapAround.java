@@ -1,10 +1,14 @@
 package de.skuzzle.springboot.test.wiremock.stubs;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
+
 /**
  * Defines the response behavior in case a {@link HttpStub} has multiple responses.
  *
  * @author Simon Taddiken
  */
+@API(status = Status.EXPERIMENTAL)
 public enum WrapAround {
     /**
      * If the mock reached the last defined response, it will respond with a 403 status
@@ -43,5 +47,6 @@ public enum WrapAround {
 
     };
 
+    @API(status = Status.INTERNAL)
     public abstract int determineNextState(int currentState, boolean hasNext);
 }

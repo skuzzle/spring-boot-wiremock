@@ -4,6 +4,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 import java.lang.annotation.Retention;
 
+import org.apiguardian.api.API;
+import org.apiguardian.api.API.Status;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -13,6 +15,7 @@ import org.springframework.http.HttpStatus;
  *
  * @author Simon Taddiken
  */
+@API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 public @interface Response {
 
