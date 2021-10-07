@@ -1,0 +1,2 @@
+org.springframework.test.context.ContextCustomizerFactory = \
+de.skuzzle.springboot.test.wiremock.WiremockContextCustomizerFactory

@@ -9,10 +9,6 @@ import java.lang.annotation.Target;
 import org.apiguardian.api.API;
 import org.apiguardian.api.API.Status;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.TestExecutionListeners.MergeMode;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 
@@ -52,11 +48,13 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
 @API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
-@TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners = WithWiremockTestExecutionListener.class)
+// @TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners =
+// WithWiremockTestExecutionListener.class)
 // We need to mark the context as dirty because we manually add the WireMockServer as
 // bean. Such a modification otherwise doesn't invalidate the context, leading to
 // duplicate bean issues when there are multiple WithWiremock tests.
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+// @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+// @ContextConfiguration(initializers = WiremockContextInitializer.class)
 public @interface WithWiremock {
 
     static final int DEFAULT_HTTP_PORT = 0;
@@ -84,9 +82,10 @@ public @interface WithWiremock {
 
     /**
      * Location of the keystore to use for server side SSL. Defaults to
-     * {@link TestKeystores#TEST_SERVER_CERTIFICATE}.
+     * {@link TestKeystores#TEST_SERVER_CERTIFICATE}. The location will be resolved using
+     * {@link ClassLoader#getResource(String)}.
      */
-    String keystoreLocation() default "classpath:/certs/server_keystore.jks";
+    String keystoreLocation() default "certs/server_keystore.jks";
 
     /**
      * Type of the {@link #keystoreLocation() keystore}.
@@ -100,9 +99,10 @@ public @interface WithWiremock {
 
     /**
      * Location for the trustsore to use for client side SSL. Defaults to
-     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}.
+     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}. The location will be resolved
+     * using {@link ClassLoader#getResource(String)}.
      */
-    String truststoreLocation() default "classpath:/certs/server_truststore.jks";
+    String truststoreLocation() default "certs/server_truststore.jks";
 
     /**
      * Password of the {@link #truststoreLocation() truststore}.

@@ -1,20 +1,23 @@
 package de.skuzzle.springboot.test.wiremock;
 
-import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.annotation.MergedAnnotation;
+import org.springframework.core.annotation.MergedAnnotations;
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.base.Preconditions;
+import com.google.common.io.Resources;
 
 /**
  * Creates the {@link WireMockServer} from the values configured in {@link WithWiremock}
@@ -32,20 +35,37 @@ final class WiremockAnnotationConfiguration {
     private static final String SERVER_HTTPS_PORT_PROPERTY = "wiremock.server.httpsPort";
 
     private final WithWiremock wwm;
-    private final ResourceLoader resourceLoader;
 
-    private WiremockAnnotationConfiguration(WithWiremock wwm, ApplicationContext applicationContext) {
+    private WiremockAnnotationConfiguration(WithWiremock wwm) {
         Preconditions.checkArgument(wwm != null, "WithWiremock annotation must not be null");
-        Preconditions.checkArgument(applicationContext != null, "applicationContext annotation must not be null");
-        this.resourceLoader = applicationContext;
         this.wwm = wwm;
     }
 
-    public static WiremockAnnotationConfiguration from(WithWiremock wwm, ApplicationContext applicationContext) {
-        return new WiremockAnnotationConfiguration(wwm, applicationContext);
+    public static WiremockAnnotationConfiguration from(WithWiremock wwm) {
+        return new WiremockAnnotationConfiguration(wwm);
     }
 
-    public WithWiremock withWiremockAnnotation() {
+    public static Optional<WiremockAnnotationConfiguration> fromAnnotatedElement(AnnotatedElement source) {
+        return MergedAnnotations
+                .from(source, SearchStrategy.TYPE_HIERARCHY_AND_ENCLOSING_CLASSES)
+                .stream(WithWiremock.class)
+                .map(MergedAnnotation::synthesize)
+                .findFirst()
+                .map(WiremockAnnotationConfiguration::from);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(wwm);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || obj instanceof WiremockAnnotationConfiguration
+                && Objects.equals(wwm, ((WiremockAnnotationConfiguration) obj).wwm);
+    }
+
+    public WithWiremock annotation() {
         return this.wwm;
     }
 
@@ -168,11 +188,6 @@ final class WiremockAnnotationConfiguration {
         if (location.isEmpty()) {
             return null;
         }
-        final Resource resource = resourceLoader.getResource(location);
-        try {
-            return resource.getURL().toString();
-        } catch (final IOException e) {
-            throw new IllegalArgumentException("Error resolving resource for location " + location, e);
-        }
+        return Resources.getResource(location).toString();
     }
 }
