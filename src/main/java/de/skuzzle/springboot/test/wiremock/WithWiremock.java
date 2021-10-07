@@ -84,9 +84,10 @@ public @interface WithWiremock {
 
     /**
      * Location of the keystore to use for server side SSL. Defaults to
-     * {@link TestKeystores#TEST_SERVER_CERTIFICATE}.
+     * {@link TestKeystores#TEST_SERVER_CERTIFICATE}. The location will be resolved using
+     * {@link ClassLoader#getResource(String)}.
      */
-    String keystoreLocation() default "classpath:/certs/server_keystore.jks";
+    String keystoreLocation() default "certs/server_keystore.jks";
 
     /**
      * Type of the {@link #keystoreLocation() keystore}.
@@ -100,9 +101,10 @@ public @interface WithWiremock {
 
     /**
      * Location for the trustsore to use for client side SSL. Defaults to
-     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}.
+     * {@link TestKeystores#TEST_CLIENT_CERTIFICATE_TRUST}. The location will be resolved
+     * using {@link ClassLoader#getResource(String)}.
      */
-    String truststoreLocation() default "classpath:/certs/server_truststore.jks";
+    String truststoreLocation() default "certs/server_truststore.jks";
 
     /**
      * Password of the {@link #truststoreLocation() truststore}.
