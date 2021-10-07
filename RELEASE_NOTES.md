@@ -1,4 +1,4 @@
-[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.15-SNAPSHOT&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15-SNAPSHOT/jar) [![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.15-SNAPSHOT&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15-SNAPSHOT)
+[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.15&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15/jar) [![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.15&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.15)
 
 ### Features
 * [#3](https://github.com/skuzzle/spring-boot-wiremock/issues/3) Allow to inject host values into multiple properties
@@ -15,7 +15,7 @@
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.15-SNAPSHOT</version>
+    <version>0.0.15</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -23,5 +23,5 @@
 ### Gradle coordinates for this release
 
 ```
-testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.15-SNAPSHOT'
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.15'
 ```
