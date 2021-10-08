@@ -96,8 +96,7 @@ public @interface Request {
     /**
      * The URL for this stub. Mutual exclusive to {@link #toUrlPattern()},
      * {@link #toUrlPath()} and {@link #toUrlPathPattern()}. If not specified, every url
-     * will be matched. Mutual exclusive to {@link #toUrlPath()},
-     * {@link #toUrlPathPattern()} and {@link #toUrlPattern()}.
+     * will be matched.
      * <p>
      * Warning: Using {@link #toUrl()} in combination with {@link #withQueryParameters()}
      * will effectively result in a conflicting stub definition that will never match. Use

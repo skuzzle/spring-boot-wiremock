@@ -23,8 +23,8 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
  * order to have the mock's random base url injected into a Spring-Boot application
  * property.
  * <p>
- * By default, the mock server is only serves unencrypted HTTP. If you want to test
- * encrypted traffic using SSL, you need to either specify
+ * By default, the mock server only serves unencrypted HTTP. If you want to test encrypted
+ * traffic using SSL, you need to either specify
  * {@link #randomHttpsPort()}<code>=true</code> or {@link #fixedHttpsPort()} with a value
  * &gt;= 0.
  * <p>
