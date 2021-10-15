@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.skuzzle.springboot.test</groupId>
         <artifactId>spring-boot-wiremock-parent</artifactId>
-        <version>0.0.18-SNAPSHOT</version>
+        <version>0.0.18</version>
     </parent>
 
     <artifactId>spring-boot-wiremock-examples</artifactId>

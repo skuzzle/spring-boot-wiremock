@@ -10,7 +10,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock-parent</artifactId>
-    <version>0.0.18-SNAPSHOT</version>
+    <version>0.0.18</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
     <packaging>pom</packaging>
 
