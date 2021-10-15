@@ -4,7 +4,7 @@
     <parent>
         <groupId>de.skuzzle.springboot.test</groupId>
         <artifactId>spring-boot-wiremock-parent</artifactId>
-        <version>0.0.17</version>
+        <version>0.0.18</version>
     </parent>
 
     <artifactId>spring-boot-wiremock</artifactId>
@@ -116,6 +116,28 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <outputDirectory>${basedir}/..</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/../readme/</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <archive>
@@ -123,6 +145,14 @@
                             <Automatic-Module-Name>de.skuzzle.springboot.test.wiremock</Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <usedDependencies>
+                        <usedDependency>org.springframework.boot:spring-boot-starter</usedDependency>
+                    </usedDependencies>
                 </configuration>
             </plugin>
         </plugins>

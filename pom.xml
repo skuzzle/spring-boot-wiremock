@@ -10,7 +10,7 @@
 
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock-parent</artifactId>
-    <version>0.0.17</version>
+    <version>0.0.18</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
     <packaging>pom</packaging>
 
@@ -77,38 +77,9 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <phase>validate</phase>
-                        <configuration>
-                            <outputDirectory>${basedir}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>readme/</directory>
-                                    <filtering>true</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <usedDependencies>
-                        <usedDependency>org.springframework.boot:spring-boot-starter</usedDependency>
-                    </usedDependencies>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
+                <inherited>false</inherited>
                 <configuration>
                     <postReleaseGoals>deploy</postReleaseGoals>
                     <detail>true</detail>
@@ -124,6 +95,7 @@
                 <groupId>com.ragedunicorn.tools.maven</groupId>
                 <artifactId>github-release-maven-plugin</artifactId>
                 <version>1.0.2</version>
+                <inherited>false</inherited>
                 <configuration>
                     <owner>skuzzle</owner>
                     <repository>${github.name}</repository>
