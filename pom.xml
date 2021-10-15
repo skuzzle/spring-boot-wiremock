@@ -22,6 +22,7 @@
         <version.wiremock>2.27.2</version.wiremock>
         <version.guava>30.1.1-jre</version.guava>
         <version.api-guardian>1.1.2</version.api-guardian>
+        <version.equalsverifier>3.7.1</version.equalsverifier>
         <!-- All the remaining spring-boot versions we run the tests against (comma separated) -->
         <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.11, 2.5.5</compatible-spring-boot-versions>
 
@@ -64,6 +65,11 @@
                 <groupId>org.apiguardian</groupId>
                 <artifactId>apiguardian-api</artifactId>
                 <version>${version.api-guardian}</version>
+            </dependency>
+            <dependency>
+                <groupId>nl.jqno.equalsverifier</groupId>
+                <artifactId>equalsverifier</artifactId>
+                <version>${version.equalsverifier}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

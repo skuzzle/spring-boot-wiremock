@@ -77,10 +77,6 @@ final class WiremockAnnotationConfiguration {
         return Stream.concat(Arrays.stream(wwm.injectHttpsHostInto()), Stream.of(SERVER_HTTPS_HOST_PROPERTY));
     }
 
-    public boolean sslOnly() {
-        return wwm.sslOnly();
-    }
-
     private int httpPort() {
         // NOTE: for HTTP (in contrast to HTTPS), the fixed port takes precedence over
         // random port. (Otherwise one would need to specify both randomHttpPort = false
@@ -112,8 +108,8 @@ final class WiremockAnnotationConfiguration {
 
     public Map<String, String> determineInjectionPropertiesFrom(WireMockServer wiremockServer) {
         final boolean isHttpEnabled = !wiremockServer.getOptions().getHttpDisabled();
-        final boolean sslOnly = sslOnly();
         final boolean isHttpsEnabled = wiremockServer.getOptions().httpsSettings().enabled();
+        final boolean sslOnly = wwm.sslOnly();
         Preconditions.checkArgument(isHttpsEnabled || !sslOnly,
                 "WireMock configured for 'sslOnly' but with HTTPS disabled. Configure httpsPort with value >= 0");
         Preconditions.checkArgument(isHttpEnabled || isHttpsEnabled,

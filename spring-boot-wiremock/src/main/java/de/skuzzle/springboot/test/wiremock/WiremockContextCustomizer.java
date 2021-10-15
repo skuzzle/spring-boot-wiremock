@@ -22,6 +22,13 @@ import com.google.common.base.Preconditions;
 
 import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
+/**
+ * Starts and manages the lifecycle of the WireMock server and injects its hosts into the
+ * properties defined in {@link WithWiremock#injectHttpHostInto()} and
+ * {@link WithWiremock#injectHttpsHostInto()}.
+ *
+ * @author Simon Taddiken
+ */
 final class WiremockContextCustomizer implements ContextCustomizer {
 
     private final WiremockAnnotationConfiguration wiremockProps;
@@ -29,17 +36,6 @@ final class WiremockContextCustomizer implements ContextCustomizer {
     public WiremockContextCustomizer(WiremockAnnotationConfiguration wiremockProps) {
         Preconditions.checkArgument(wiremockProps != null, "props must not be null");
         this.wiremockProps = wiremockProps;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(wiremockProps);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj == this || obj instanceof WiremockContextCustomizer
-                && Objects.equals(wiremockProps, ((WiremockContextCustomizer) obj).wiremockProps);
     }
 
     @Override
@@ -102,4 +98,14 @@ final class WiremockContextCustomizer implements ContextCustomizer {
                 .map(entry -> entry.getKey() + "=" + entry.getValue());
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(wiremockProps);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this || obj instanceof WiremockContextCustomizer
+                && Objects.equals(wiremockProps, ((WiremockContextCustomizer) obj).wiremockProps);
+    }
 }

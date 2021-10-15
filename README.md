@@ -184,9 +184,9 @@ When stubbing multiple responses you can define what happens when the last respo
 
 | `onLastResponse`         | Behavior |
 |--------------------------|----------|
-|`WrapAround.RETURN_ERROR` | Default behavior. Mock will answer with a `403` code after the last response |
-|`WrapAround.START_OVER`   | After the last response the mock will start over and answer with the first response |
-|`WrapAround.REPEAT`       | The mock keeps returning the last response |
+|`WrapAround.RETURN_ERROR` | Default behavior. Mock will answer with a `403` code after the last stubbed response |
+|`WrapAround.START_OVER`   | After the last response the mock will start over and answer with the first stubbed response |
+|`WrapAround.REPEAT`       | The mock keeps returning the last stubbed response |
 
 ```java
 @HttpStub(
