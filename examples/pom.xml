@@ -8,10 +8,6 @@
     </parent>
 
     <artifactId>spring-boot-wiremock-examples</artifactId>
-    
-    <properties>
-        <skipDeploy>true</skipDeploy>
-    </properties>
 
     <dependencies>
         <dependency>
