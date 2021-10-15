@@ -42,10 +42,9 @@ import com.github.tomakehurst.wiremock.WireMockServer;
  * <p>
  * It is possible to configure multiple {@link #respond() responses}. If more than one
  * response is specified, the responses will be returned consecutively for each matched
- * request. When {@link #wrapAround()} is <code>true</code>, the stub will start over with
- * the first response, once the last has been returned.
+ * request.
  * <p>
- * The annotation can be put in versatile places:
+ * The annotation can be put in various places:
  * <ul>
  * <li>You can place the annotation on a single test method.</li>
  * <li>You can place the annotation on the test class itself to define global stubs.</li>
