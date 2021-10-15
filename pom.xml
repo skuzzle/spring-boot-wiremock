@@ -99,16 +99,9 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <usedDependencies>
-                        <usedDependency>org.springframework.boot:spring-boot-starter</usedDependency>
-                    </usedDependencies>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
+                <inherited>false</inherited>
                 <configuration>
                     <postReleaseGoals>deploy</postReleaseGoals>
                     <detail>true</detail>
@@ -124,6 +117,7 @@
                 <groupId>com.ragedunicorn.tools.maven</groupId>
                 <artifactId>github-release-maven-plugin</artifactId>
                 <version>1.0.2</version>
+                <inherited>false</inherited>
                 <configuration>
                     <owner>skuzzle</owner>
                     <repository>${github.name}</repository>
