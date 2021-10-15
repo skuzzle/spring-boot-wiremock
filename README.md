@@ -1,7 +1,7 @@
 <!-- This file is auto generated during release from readme/README.md -->
 
-[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.16&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.16/jar)
-[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.16&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock/0.0.16)
+[![Maven Central](https://img.shields.io/static/v1?label=MavenCentral&message=0.0.17&color=blue)](https://search.maven.org/artifact/de.skuzzle.springboot.test/spring-boot-wiremock-parent/0.0.17/jar)
+[![JavaDoc](https://img.shields.io/static/v1?label=JavaDoc&message=0.0.17&color=orange)](http://www.javadoc.io/doc/de.skuzzle.springboot.test/spring-boot-wiremock-parent/0.0.17)
 [![Coverage Status](https://coveralls.io/repos/github/skuzzle/spring-boot-wiremock/badge.svg?branch=main)](https://coveralls.io/github/skuzzle/spring-boot-wiremock?branch=main)
 [![Twitter Follow](https://img.shields.io/twitter/follow/skuzzleOSS.svg?style=social)](https://twitter.com/skuzzleOSS)
 
@@ -19,14 +19,14 @@ _The easiest way to setup a [WireMock](http://wiremock.org/)  server in your Spr
 ```xml
 <dependency>
     <groupId>de.skuzzle.springboot.test</groupId>
-    <artifactId>spring-boot-wiremock</artifactId>
-    <version>0.0.16</version>
+    <artifactId>spring-boot-wiremock-parent</artifactId>
+    <version>0.0.17</version>
     <scope>test</scope>
 </dependency>
 ```
 
 ```
-testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock:0.0.16'
+testImplementation 'de.skuzzle.springboot.test:spring-boot-wiremock-parent:0.0.17'
 ```
 
 ## Quick start
@@ -184,9 +184,9 @@ When stubbing multiple responses you can define what happens when the last respo
 
 | `onLastResponse`         | Behavior |
 |--------------------------|----------|
-|`WrapAround.RETURN_ERROR` | Default behavior. Mock will answer with a `403` code after the last response |
-|`WrapAround.START_OVER`   | After the last response the mock will start over and answer with the first response |
-|`WrapAround.REPEAT`       | The mock keeps returning the last response |
+|`WrapAround.RETURN_ERROR` | Default behavior. Mock will answer with a `403` code after the last stubbed response |
+|`WrapAround.START_OVER`   | After the last response the mock will start over and answer with the first stubbed response |
+|`WrapAround.REPEAT`       | The mock keeps returning the last stubbed response |
 
 ```java
 @HttpStub(
