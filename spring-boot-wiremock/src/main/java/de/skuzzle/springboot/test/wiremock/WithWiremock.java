@@ -48,13 +48,6 @@ import de.skuzzle.springboot.test.wiremock.stubs.Request;
 @API(status = Status.EXPERIMENTAL)
 @Retention(RUNTIME)
 @Target(TYPE)
-// @TestExecutionListeners(mergeMode = MergeMode.MERGE_WITH_DEFAULTS, listeners =
-// WithWiremockTestExecutionListener.class)
-// We need to mark the context as dirty because we manually add the WireMockServer as
-// bean. Such a modification otherwise doesn't invalidate the context, leading to
-// duplicate bean issues when there are multiple WithWiremock tests.
-// @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
-// @ContextConfiguration(initializers = WiremockContextInitializer.class)
 public @interface WithWiremock {
 
     static final int DEFAULT_HTTP_PORT = 0;
