@@ -3,10 +3,14 @@
 ### Features:
 * Add `@Response.withJsonBody` which allows to specify a json response body and automatically sets the `Content-Type` to `application/json` 
 
+### Bug Fixes:
+* [#10](https://github.com/skuzzle/spring-boot-wiremock/issues/10) Remove `DirtiesContext` annotation
+* [#11](https://github.com/skuzzle/spring-boot-wiremock/issues/11) Replaced `TestExecutionListener` with `ContextCustomizer`
+
 ### Changes:
-* Remove deprecated attribute `HttpStub.wrapAround` (Deprecated since `0.0.12`). Use `HttpStub.onLastResponse` instead.
-* Remove deprecated attribute `WithWiremock.httpPort` (Deprecated since `0.0.15`). Use `WithWiremock.fixedHttpPort` or `WithWiremock.randomHttpPort` instead.
-* Remove deprecated attribute `WithWiremock.httpsPort` (Deprecated since `0.0.15`). Use `WithWiremock.fixedHttpsPort` or `WithWiremock.randomHttpsPort` instead.
+* [#6](https://github.com/skuzzle/spring-boot-wiremock/issues/6) Remove deprecated attribute `HttpStub.wrapAround` (Deprecated since `0.0.12`). Use `HttpStub.onLastResponse` instead.
+* [#6](https://github.com/skuzzle/spring-boot-wiremock/issues/6) Remove deprecated attribute `WithWiremock.httpPort` (Deprecated since `0.0.15`). Use `WithWiremock.fixedHttpPort` or `WithWiremock.randomHttpPort` instead.
+* [#6](https://github.com/skuzzle/spring-boot-wiremock/issues/6) Remove deprecated attribute `WithWiremock.httpsPort` (Deprecated since `0.0.15`). Use `WithWiremock.fixedHttpsPort` or `WithWiremock.randomHttpsPort` instead.
 
 ### Maven Central coordinates for this release
 
