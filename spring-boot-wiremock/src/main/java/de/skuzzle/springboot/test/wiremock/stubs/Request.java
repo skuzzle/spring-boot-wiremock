@@ -106,6 +106,11 @@ public @interface Request {
 
     String toUrlPattern() default "";
 
+    /**
+     * The URL path for this stub. Mutual exclusive to {@link #toUrlPattern()},
+     * {@link #toUrl()} and {@link #toUrlPathPattern()}. If not specified, every url will
+     * be matched.
+     */
     String toUrlPath() default "";
 
     String toUrlPathPattern() default "";

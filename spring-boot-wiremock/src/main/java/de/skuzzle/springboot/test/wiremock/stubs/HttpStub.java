@@ -88,18 +88,6 @@ public @interface HttpStub {
     Response[] respond() default { @Response };
 
     /**
-     * Whether to start over with the first response once the last response has been
-     * returned. Only applies if more then one {@link #respond() response} has been
-     * configured. Defaults to <code>false</code>.
-     *
-     * @deprecated Since 0.0.12. Use {@link #onLastResponse()} with
-     *             {@link WrapAround#START_OVER} instead.
-     */
-    @Deprecated(forRemoval = true, since = "0.0.12")
-    @API(status = Status.DEPRECATED, since = "0.0.12")
-    boolean wrapAround() default false;
-
-    /**
      * Defines the response behavior of the mock if multiple responses are defined. By
      * default, when the last response has been returned, the mock will answer with a 403
      * status code (see {@link WrapAround#RETURN_ERROR}).

@@ -34,7 +34,7 @@ class StubTranslator {
 
         final Iterator<Response> responses = Arrays.asList(stub.respond()).iterator();
 
-        final WrapAround wrapAround = determineWrapAround(stub);
+        final WrapAround wrapAround = stub.onLastResponse();
         int state = 0;
         while (responses.hasNext()) {
             final Response response = responses.next();
@@ -55,14 +55,6 @@ class StubTranslator {
             wiremock.stubFor(requestBuilder.willReturn(responseBuilder));
             ++state;
         }
-    }
-
-    private static WrapAround determineWrapAround(HttpStub stub) {
-        // TODO: Remove this statement when wrapAround is removed
-        if (stub.wrapAround() && stub.onLastResponse() == WrapAround.RETURN_ERROR) {
-            return WrapAround.START_OVER;
-        }
-        return stub.onLastResponse();
     }
 
     private static String translateState(int state) {
@@ -142,11 +134,12 @@ class StubTranslator {
         }
 
         final String body = nullIfEmpty(response.withBody());
+        final String jsonBody = nullIfEmpty(response.withJsonBody());
         final String bodyBase64 = nullIfEmpty(response.withBodyBase64());
         final String bodyFile = nullIfEmpty(response.withBodyFile());
         mutuallyExclusive(
-                parameters("body", "bodyBase64", "bodyFile"),
-                values(body, bodyBase64, bodyFile));
+                parameters("body", "bodyBase64", "bodyFile", "jsonBody"),
+                values(body, bodyBase64, bodyFile, jsonBody));
 
         if (body != null) {
             responseBuilder.withBody(body);
@@ -154,6 +147,10 @@ class StubTranslator {
             responseBuilder.withBase64Body(bodyBase64);
         } else if (bodyFile != null) {
             responseBuilder.withBodyFile(bodyFile);
+        } else if (jsonBody != null) {
+            responseBuilder
+                    .withBody(jsonBody)
+                    .withHeader("Content-Type", "application/json");
         }
 
         final String[] responseHeaders = response.withHeaders();

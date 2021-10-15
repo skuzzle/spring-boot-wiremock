@@ -26,20 +26,32 @@ public @interface Response {
     String withStatusMessage() default "";
 
     /**
-     * The body of the response. Mutual exclusive to {@link #withBodyBase64()} and
-     * {@link #withBodyFile()}. Defaults to 'no body'.
+     * The body of the response as json string. Will also set the Content-Type to
+     * <code>application/json</code>. The Content-Type can still be overridden by
+     * {@link #withContentType()} or {@link #withHeaders()}.
+     * <p>
+     * Mutual exclusive to {@link #withBody()}, {@link #withBodyFile()} and
+     * {@link #withBodyBase64()}. Defaults to 'no body'.
+     *
+     * @since 0.0.17
+     */
+    String withJsonBody() default "";
+
+    /**
+     * The body of the response. Mutual exclusive to {@link #withBodyBase64()},
+     * {@link #withJsonBody()} and {@link #withBodyFile()}. Defaults to 'no body'.
      */
     String withBody() default "";
 
     /**
-     * The body of the response. Mutual exclusive to {@link #withBody()} and
-     * {@link #withBodyFile()}. Defaults to 'no body'.
+     * The body of the response. Mutual exclusive to {@link #withBody()},
+     * {@link #withJsonBody()} and {@link #withBodyFile()}. Defaults to 'no body'.
      */
     String withBodyBase64() default "";
 
     /**
-     * The body of the response. Mutual exclusive to {@link #withBody()} and
-     * {@link #withBodyBase64()}. Defaults to 'no body'.
+     * The body of the response. Mutual exclusive to {@link #withBody()},
+     * {@link #withJsonBody()} and {@link #withBodyBase64()}. Defaults to 'no body'.
      * <p>
      * By default, files must be contained in a folder on the classpath called
      * {@code __files}.

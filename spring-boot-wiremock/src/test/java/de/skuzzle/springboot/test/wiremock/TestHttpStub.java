@@ -151,7 +151,7 @@ public class TestHttpStub implements TestStubCollectionInterface {
 
     @Test
     @HttpStub(
-            wrapAround = true,
+            onLastResponse = WrapAround.START_OVER,
             respond = {
                     @Response(withStatus = HttpStatus.CREATED),
                     @Response(withStatus = HttpStatus.OK),
