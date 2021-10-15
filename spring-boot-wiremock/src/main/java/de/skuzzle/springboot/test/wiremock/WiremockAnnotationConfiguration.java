@@ -92,12 +92,7 @@ final class WiremockAnnotationConfiguration {
         if (wwm.randomHttpPort()) {
             Preconditions.checkArgument(wwm.fixedHttpPort() == 0,
                     "Inconsistent HTTP port configuration. Either configure 'randomHttpPort' OR 'fixedHttpPort'");
-            Preconditions.checkArgument(wwm.httpPort() == 0,
-                    "Inconsistent HTTP port configuration. Either configure 'randomHttpPort' OR 'fixedHttpPort'");
             return 0;
-        }
-        if (wwm.httpPort() != WithWiremock.DEFAULT_HTTP_PORT) {
-            return wwm.httpPort();
         }
         return wwm.fixedHttpPort();
     }
@@ -106,14 +101,7 @@ final class WiremockAnnotationConfiguration {
         if (wwm.randomHttpsPort()) {
             Preconditions.checkArgument(wwm.fixedHttpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
                     "Inconsistent HTTPS port configuration. Either configure 'randomHttpsPort' OR 'fixedHttpsPort'");
-            Preconditions.checkArgument(wwm.httpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
-                    "Inconsistent HTTPS port configuration. Either configure 'randomHttpsPort' OR 'fixedHttpsPort'");
             return 0;
-        }
-        if (wwm.httpsPort() != WithWiremock.DEFAULT_HTTPS_PORT) {
-            Preconditions.checkArgument(wwm.fixedHttpsPort() == WithWiremock.DEFAULT_HTTPS_PORT,
-                    "Inconsistent HTTPS port configuration: Deprecated and new port attribute specified. Please use 'fixedHttpsPort' instead");
-            return wwm.httpsPort();
         }
         return wwm.fixedHttpsPort();
     }

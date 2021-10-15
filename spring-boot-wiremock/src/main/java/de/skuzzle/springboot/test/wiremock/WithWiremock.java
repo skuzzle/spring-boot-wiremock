@@ -113,24 +113,6 @@ public @interface WithWiremock {
     boolean sslOnly() default false;
 
     /**
-     * Port for HTTP. Defaults to 0 for random port.
-     *
-     * @deprecated Use {@link #randomHttpPort()} or {@link #fixedHttpPort()} instead.
-     */
-    @Deprecated(since = "0.0.15", forRemoval = true)
-    @API(status = Status.DEPRECATED, since = "0.0.15")
-    int httpPort() default DEFAULT_HTTP_PORT;
-
-    /**
-     * Port for HTTPS. Use 0 for random port. Defaults to -1 to disable HTTPS.
-     *
-     * @deprecated Use {@link #randomHttpsPort()} or {@link #fixedHttpsPort()} instead.
-     */
-    @Deprecated(since = "0.0.15", forRemoval = true)
-    @API(status = Status.DEPRECATED, since = "0.0.15")
-    int httpsPort() default DEFAULT_HTTPS_PORT;
-
-    /**
      * Whether to use random HTTP port. Defaults to <code>true</code> but will be silently
      * ignored if {@link #fixedHttpPort()} is specified with a value &gt; 0
      *

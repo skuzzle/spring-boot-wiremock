@@ -13,7 +13,7 @@ import de.skuzzle.springboot.test.wiremock.client.TestClients;
 import de.skuzzle.springboot.test.wiremock.stubs.HttpStub;
 
 @SpringBootTest
-@WithWiremock(injectHttpsHostInto = "serviceUrl", httpsPort = 0, sslOnly = true)
+@WithWiremock(injectHttpsHostInto = "serviceUrl", randomHttpsPort = true, sslOnly = true)
 public class WireMockInitializerHttpsTest {
 
     @Value("${serviceUrl}")
