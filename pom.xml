@@ -24,7 +24,7 @@
         <version.api-guardian>1.1.2</version.api-guardian>
         <version.equalsverifier>3.7.1</version.equalsverifier>
         <!-- All the remaining spring-boot versions we run the tests against (comma separated) -->
-        <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.11, 2.5.5</compatible-spring-boot-versions>
+        <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.12, 2.5.6</compatible-spring-boot-versions>
 
         <site.name>spring-boot-wiremock</site.name>
         <github.name>spring-boot-wiremock</github.name>
