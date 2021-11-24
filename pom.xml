@@ -19,7 +19,7 @@
 
         <!-- Minimal compatible Spring-Boot version. Newer versions are tested during Jenkins build. -->
         <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
-        <version.wiremock>2.27.2</version.wiremock>
+        <version.wiremock>2.31.0</version.wiremock>
         <version.guava>30.1.1-jre</version.guava>
         <version.api-guardian>1.1.2</version.api-guardian>
         <version.equalsverifier>3.7.1</version.equalsverifier>

@@ -94,8 +94,8 @@ can be injected into the Spring application properties, simply replacing an exis
 
 ## Compatibility
 - [x] Requires Java 11
-- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.12, 2.5.8, 2.6.0`
-- [x] Tested against WireMock `2.27.2`
+- [x] Tested against Spring-Boot `2.2.13.RELEASE, 2.3.12.RELEASE, 2.4.13, 2.5.7, 2.6.0`
+- [x] Tested against WireMock `2.31.0`
 
 ## Usage
 
