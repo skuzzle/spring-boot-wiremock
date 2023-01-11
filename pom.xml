@@ -7,38 +7,31 @@
         <artifactId>skuzzle-parent</artifactId>
         <version>3.0.3</version>
     </parent>
-
     <groupId>de.skuzzle.springboot.test</groupId>
     <artifactId>spring-boot-wiremock-parent</artifactId>
     <version>0.0.19-SNAPSHOT</version>
     <url>https://github.com/skuzzle/spring-boot-wiremock</url>
     <packaging>pom</packaging>
-
     <properties>
         <coveralls.skip>false</coveralls.skip>
         <failOnWarning>false</failOnWarning>
-
         <!-- Minimal compatible Spring-Boot version. Newer versions are tested during Jenkins build. -->
         <version.spring-boot>2.2.13.RELEASE</version.spring-boot>
         <!-- All the remaining spring-boot versions we run the tests against (comma separated) -->
-        <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.13, 2.5.12, 2.6.14 and 2.7.7</compatible-spring-boot-versions>
-        
+        <compatible-spring-boot-versions>2.3.12.RELEASE, 2.4.13, 2.5.12, 2.6.14, 2.7.7 and 3.0.1</compatible-spring-boot-versions>
         <version.wiremock>2.35.0</version.wiremock>
         <version.guava>31.1-jre</version.guava>
         <version.api-guardian>1.1.2</version.api-guardian>
         <version.equalsverifier>3.12.3</version.equalsverifier>
         <version.junit>5.9.2</version.junit>
-
+        <version.assertj>3.22.0</version.assertj>
         <site.name>spring-boot-wiremock</site.name>
         <github.name>spring-boot-wiremock</github.name>
     </properties>
-
-
     <modules>
         <module>spring-boot-wiremock</module>
         <module>examples</module>
     </modules>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -46,7 +39,6 @@
                 <artifactId>spring-boot-wiremock</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -81,9 +73,13 @@
                 <artifactId>equalsverifier</artifactId>
                 <version>${version.equalsverifier}</version>
             </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${version.assertj}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -104,7 +100,6 @@
             <plugin>
                 <groupId>com.ragedunicorn.tools.maven</groupId>
                 <artifactId>github-release-maven-plugin</artifactId>
-                <version>1.0.2</version>
                 <inherited>false</inherited>
                 <configuration>
                     <owner>skuzzle</owner>

@@ -6,11 +6,9 @@
         <artifactId>spring-boot-wiremock-parent</artifactId>
         <version>0.0.19-SNAPSHOT</version>
     </parent>
-
     <artifactId>spring-boot-wiremock</artifactId>
     <name>SpringBoot WireMock</name>
     <description>Easily set up WireMock in your SpringBoot tests</description>
-
     <dependencies>
         <!-- Util -->
         <dependency>
@@ -51,7 +49,6 @@
             <artifactId>httpcore</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -72,23 +69,19 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-            <scope>provided</scope>
         </dependency>
         <!-- Spring Boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-test</artifactId>
-            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.junit.vintage</groupId>
@@ -111,7 +104,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -157,5 +149,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
